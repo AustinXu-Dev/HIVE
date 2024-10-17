@@ -28,24 +28,7 @@ struct OnboardingView: View {
             if showHome{
                 ContentView()
             } else if showInsta{
-                VStack{
-                    ShareSocialView()
-                    Spacer()
-                    RoundedRectangle(cornerRadius: 20)
-                        .frame(width: 250, height: 50)
-                        .overlay {
-                            Text("Done")
-                                .foregroundStyle(.white)
-                                .fontWeight(.semibold)
-                                .font(.title3)
-                        }
-                        .onTapGesture {
-                            // MARK: - Go to Home
-                            withAnimation(.linear.delay(0.5)){
-                                showHome = true
-                            }
-                        }
-                }
+                ShareSocialView(showHome: $showHome)
             } else {
                 VStack{
                     ProgressView(steps: onboardingSteps.count, currentStep: $currentStep)

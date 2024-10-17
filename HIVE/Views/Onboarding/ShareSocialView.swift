@@ -11,46 +11,74 @@ struct ShareSocialView: View {
     
     @State private var instagramLink: String = ""
     @State private var isValid: Bool? = nil
+    @Binding var showHome: Bool
     
     var body: some View {
-        VStack(alignment: .leading) {
-            Text("Connect easily")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title)
-            Text("Share your Instagram so others can reach out!")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title3)
-                .padding(.bottom, 50)
-            
-            TextField("Paste your instagram link here", text: $instagramLink)
-                .onChange(of: instagramLink, { oldValue, newValue in
-                    validateLink()
-                })
-                .multilineTextAlignment(.center)
-                .padding()
-                .background(RoundedRectangle(cornerRadius: 20)
-                    .stroke(isValid == true ? Color.green : (isValid == false ? Color.red : Color.gray), lineWidth: 2)
-                )
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-            
-            if isValid == false {
-                Text("Invalid link! Please enter a valid Instagram profile link.")
-                    .foregroundColor(.red)
-                    .font(.caption)
+        VStack{
+            VStack(alignment: .leading) {
+                Text("Connect easily")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.title)
+                Text("Share your Instagram so others can reach out!")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .font(.title3)
+                    .padding(.bottom, 50)
+                
+                TextField("Paste your instagram link here", text: $instagramLink)
+                    .onChange(of: instagramLink, { oldValue, newValue in
+                        validateLink()
+                    })
+                    .multilineTextAlignment(.center)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 20)
+                        .stroke(isValid == true ? Color.green : (isValid == false ? Color.red : Color.gray), lineWidth: 2)
+                    )
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                
+                if isValid == false {
+                    Text("Invalid link! Please enter a valid Instagram profile link.")
+                        .foregroundColor(.red)
+                        .font(.caption)
+                }
+                
             }
+            .frame(maxWidth: .infinity)
+            .padding()
             
-        }
-        .frame(maxWidth: .infinity)
-        .padding()
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button("Skip"){
-
+            Spacer()
+            
+            RoundedRectangle(cornerRadius: 20)
+                .frame(width: 250, height: 50)
+                .overlay {
+                    Text("Done")
+                        .foregroundStyle(.white)
+                        .fontWeight(.semibold)
+                        .font(.title3)
+                }
+                .onTapGesture {
+                    // MARK: - Go to Home
+                    withAnimation(.linear.delay(0.5)){
+                        showHome = true
+                    }
+                    
+                    // if instagram link valid, post the instagram link to backend
+                    if isValid == true{
+                        // Do action
+                    }
+                }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Skip"){
+                        //MARK: - Post to backend without instagram link
+                        withAnimation(.linear.delay(0.5)){
+                            showHome = true
+                        }
+                        
+                    }
                 }
             }
         }
-    
         
     }
     
@@ -69,5 +97,5 @@ struct ShareSocialView: View {
 }
 
 #Preview {
-    ShareSocialView()
+    ShareSocialView(showHome: .constant(false))
 }

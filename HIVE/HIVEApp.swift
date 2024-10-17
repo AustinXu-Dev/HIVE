@@ -9,9 +9,13 @@ import SwiftUI
 
 @main
 struct HIVEApp: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
+//    @AppStorage("appState") var isSingIn = false
+
     var body: some Scene {
         WindowGroup {
-            OnboardingView()
+            CoordinatorView()
         }
     }
 }
