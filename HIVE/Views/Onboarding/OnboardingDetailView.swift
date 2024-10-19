@@ -6,6 +6,8 @@
 //
 
 import SwiftUI
+import PhotosUI
+import FirebaseStorage
 
 struct OnboardingDetailView: View {
     var onboardingSteps: [OnboardingStep]
@@ -19,6 +21,9 @@ struct OnboardingDetailView: View {
         GridItem(.flexible()),
         GridItem(.flexible())
     ]
+    
+    @State private var isPickerPresented = false
+    @State private var isUploading = false
     
     var body: some View {
         VStack(alignment: .leading){
@@ -49,7 +54,51 @@ struct OnboardingDetailView: View {
                 .padding()
 
             case .Pfp:
-                Text("hello")
+                VStack {
+                    // Display the selected image or prompt the user to select an image
+                    if let profileImage = viewModel.profileImage {
+                        Image(uiImage: profileImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 200)
+                    } else {
+                        Text("Select an image")
+                            .foregroundColor(.gray)
+                            .frame(height: 200)
+                    }
+                    
+                    // Button to trigger the image picker and then upload the image
+                    Button(action: {
+                        // Present the image picker
+                        viewModel.isPickerPresented = true // This flag triggers the image picker
+                    }) {
+                        Text("Select Image")
+                            .padding()
+                            .background(Color.gray)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                    .sheet(isPresented: $viewModel.isPickerPresented) {
+                        PhotoPicker(selectedImage: $viewModel.profileImage)
+                    }
+
+                    // Button to trigger the upload
+                    Button(action: {
+                        // Call the uploadProfileImage() function in the ViewModel
+                        viewModel.uploadProfileImage()
+                    }) {
+                        Text("Upload Image")
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+
+                    // Show a progress view if uploading
+                    if viewModel.isUploading {
+                        ProgressView("Uploading...")
+                    }
+                }
 
             case .SelfInfo:
                 VStack(alignment: .leading) {
@@ -107,3 +156,41 @@ struct RectangleOption: View {
 //#Preview {
 //    OnboardingDetailView()
 //}
+
+struct PhotoPicker: UIViewControllerRepresentable {
+    @Binding var selectedImage: UIImage?
+
+    func makeUIViewController(context: Context) -> PHPickerViewController {
+        var config = PHPickerConfiguration()
+        config.filter = .images
+        let picker = PHPickerViewController(configuration: config)
+        picker.delegate = context.coordinator
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, PHPickerViewControllerDelegate {
+        let parent: PhotoPicker
+
+        init(_ parent: PhotoPicker) {
+            self.parent = parent
+        }
+
+        func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+            picker.dismiss(animated: true)
+
+            guard let provider = results.first?.itemProvider, provider.canLoadObject(ofClass: UIImage.self) else { return }
+
+            provider.loadObject(ofClass: UIImage.self) { image, _ in
+                DispatchQueue.main.async {
+                    self.parent.selectedImage = image as? UIImage
+                }
+            }
+        }
+    }
+}

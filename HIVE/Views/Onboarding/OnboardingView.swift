@@ -27,19 +27,40 @@ struct OnboardingView: View {
         ZStack{
             if showHome{
                 ContentView()
+                    
             } else if showInsta{
                 ShareSocialView(showHome: $showHome)
+                    .onAppear {
+                        print("Image", viewModel.profileImageURL!)
+                    }
             } else {
                 VStack{
-                    ProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
+                    BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
                     OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel)
                     Spacer()
                     ContinueButton(currentStep: $currentStep) {
-                        if currentStep < onboardingSteps.count - 1{
-                            currentStep += 1
+                        
+                        if currentStep == onboardingSteps.firstIndex(where: { $0.type == .Pfp }) {
+                            if viewModel.profileImageURL == nil {
+                                // Show an alert or prevent the user from continuing if the image is not uploaded
+                                print("Please upload a profile picture before proceeding.")
+                            } else {
+                                // Proceed to the next step
+                                if currentStep < onboardingSteps.count - 1 {
+                                    currentStep += 1
+                                } else {
+                                    withAnimation(.linear.delay(0.5)) {
+                                        showInsta = true
+                                    }
+                                }
+                            }
                         } else {
-                            withAnimation(.linear.delay(0.5)){
-                                showInsta = true
+                            if currentStep < onboardingSteps.count - 1{
+                                currentStep += 1
+                            } else {
+                                withAnimation(.linear.delay(0.5)){
+                                    showInsta = true
+                                }
                             }
                         }
                     }

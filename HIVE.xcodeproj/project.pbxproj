@@ -17,6 +17,7 @@
 		BC71B5332CC157DF00F516C2 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5322CC157DF00F516C2 /* FirebaseAuth */; };
 		BC71B5352CC157DF00F516C2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5342CC157DF00F516C2 /* FirebaseFirestore */; };
 		BC71B5372CC157DF00F516C2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5362CC157DF00F516C2 /* FirebaseStorage */; };
+		BC71B5542CC3AC0100F516C2 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5532CC3AC0100F516C2 /* KeychainSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 				BC71B5372CC157DF00F516C2 /* FirebaseStorage in Frameworks */,
 				BC71B5262CC1579C00F516C2 /* GoogleSignInSwift in Frameworks */,
 				BC71B5292CC157DF00F516C2 /* FirebaseAnalytics in Frameworks */,
+				BC71B5542CC3AC0100F516C2 /* KeychainSwift in Frameworks */,
 				BC71B5352CC157DF00F516C2 /* FirebaseFirestore in Frameworks */,
 				BC71B52F2CC157DF00F516C2 /* FirebaseAppCheck in Frameworks */,
 				BC71B52B2CC157DF00F516C2 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
@@ -119,6 +121,7 @@
 				BC71B5322CC157DF00F516C2 /* FirebaseAuth */,
 				BC71B5342CC157DF00F516C2 /* FirebaseFirestore */,
 				BC71B5362CC157DF00F516C2 /* FirebaseStorage */,
+				BC71B5532CC3AC0100F516C2 /* KeychainSwift */,
 			);
 			productName = HIVE;
 			productReference = BC71B4F02CBE7F0000F516C2 /* HIVE.app */;
@@ -151,6 +154,7 @@
 			packageReferences = (
 				BC71B5212CC1577F00F516C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				BC71B5222CC1579C00F516C2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BC71B4F12CBE7F0000F516C2 /* Products */;
@@ -408,6 +412,14 @@
 				minimumVersion = 8.0.0;
 			};
 		};
+		BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 24.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -460,6 +472,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC71B5212CC1577F00F516C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		BC71B5532CC3AC0100F516C2 /* KeychainSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */;
+			productName = KeychainSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

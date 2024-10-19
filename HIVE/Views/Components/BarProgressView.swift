@@ -1,13 +1,13 @@
 //
-//  ProgressView.swift
+//  BarProgressView.swift
 //  HIVE
 //
-//  Created by Austin Xu on 2024/10/17.
+//  Created by Austin Xu on 2024/10/18.
 //
 
 import SwiftUI
 
-struct ProgressView: View {
+struct BarProgressView: View {
     var steps : Int
     @Binding var currentStep : Int
     
@@ -30,5 +30,5 @@ struct ProgressView: View {
 }
 
 #Preview {
-    ProgressView(steps: 5, currentStep: .constant(0))
+    BarProgressView(steps: 5, currentStep: .constant(0))
 }
