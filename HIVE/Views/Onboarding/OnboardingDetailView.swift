@@ -43,7 +43,7 @@ struct OnboardingDetailView: View {
                 DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
                     .datePickerStyle(.wheel)
                     .padding()
-
+                
             case .Gender:
                 Picker("Gender", selection: $viewModel.gender) {
                     Text("Male").tag(Gender.male)
@@ -52,63 +52,48 @@ struct OnboardingDetailView: View {
                 }
                 .pickerStyle(SegmentedPickerStyle())
                 .padding()
-
+                
             case .Pfp:
-                VStack {
+                VStack(alignment: .center) {
                     // Display the selected image or prompt the user to select an image
-                    if let profileImage = viewModel.profileImage {
-                        Image(uiImage: profileImage)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: 200)
-                    } else {
-                        Text("Select an image")
-                            .foregroundColor(.gray)
-                            .frame(height: 200)
-                    }
-                    
-                    // Button to trigger the image picker and then upload the image
-                    Button(action: {
-                        // Present the image picker
-                        viewModel.isPickerPresented = true // This flag triggers the image picker
-                    }) {
-                        Text("Select Image")
-                            .padding()
-                            .background(Color.gray)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                    .sheet(isPresented: $viewModel.isPickerPresented) {
-                        PhotoPicker(selectedImage: $viewModel.profileImage)
-                    }
-
-                    // Button to trigger the upload
-                    Button(action: {
-                        // Call the uploadProfileImage() function in the ViewModel
-                        viewModel.uploadProfileImage()
-                    }) {
-                        Text("Upload Image")
-                            .padding()
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-
+                    RoundedRectangle(cornerRadius: 30)
+                        .frame(width: 300, height: 300)
+                        .overlay {
+                            if let profileImage = viewModel.profileImage {
+                                Image(uiImage: profileImage)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 200)
+                            } else {
+                                Text("Select an image")
+                                    .foregroundColor(.gray)
+                                    .frame(height: 200)
+                            }
+                        }
+                        .onTapGesture {
+                            viewModel.isPickerPresented = true
+                            
+                        }
+                        .sheet(isPresented: $viewModel.isPickerPresented) {
+                            PhotoPicker(selectedImage: $viewModel.profileImage)
+                        }
                     // Show a progress view if uploading
                     if viewModel.isUploading {
                         ProgressView("Uploading...")
                     }
                 }
-
+                .frame(maxWidth: .infinity)
+                
             case .SelfInfo:
                 VStack(alignment: .leading) {
                     LazyVGrid(columns: columns, spacing: 10) {
                         ForEach(options, id: \.self) { option in
-                            RectangleOption(option: option.rawValue, isSelected: viewModel.bioType.contains(option)) {
-                                if viewModel.bioType.contains(option) {
-                                    viewModel.bioType.remove(option)
+                            RectangleOption(option: option.rawValue, isSelected: viewModel.bioType == option) {
+                                // Set the selected option, or deselect if the same option is clicked again
+                                if viewModel.bioType == option {
+                                    viewModel.bioType = nil // Deselect the option
                                 } else {
-                                    viewModel.bioType.insert(option)
+                                    viewModel.bioType = option // Select the new option
                                 }
                             }
                             .frame(height: 100) // Set height for each rectangle
@@ -120,7 +105,6 @@ struct OnboardingDetailView: View {
                         .padding()
                         .lineLimit(3, reservesSpace: true)
                 }
-
             }
         }
         .frame(maxWidth: .infinity)
