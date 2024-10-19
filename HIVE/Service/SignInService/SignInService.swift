@@ -32,9 +32,7 @@ class SignInService: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
-                    self.token = response.message.token
-                    self.userId = response.message.user._id
-                    print("Sign-in successful. Token: \(response.message.token), User ID: \(response.message.user._id)")
+                    TokenManager.share.saveTokens(token: response.message.token)
                 case .failure(let error):
                     self.errorMessage = "Failed to sign in: \(error.localizedDescription)"
                 }

@@ -15,8 +15,8 @@ struct HIVEApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            CoordinatorView()
-            OnboardingView()
+            CoordinatorView()
+//            OnboardingView()
         }
     }
 }
