@@ -67,10 +67,15 @@ class GoogleAuthenticationViewModel: ObservableObject{
                 
                 //MARK: - Handling new user state during sign in
                 let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
+                let signInService = SignInService()
+                signInService.email = authResult.user.email ?? ""
+                signInService.password = authResult.user.uid
+                
                 if isNewUser{
                     completion(nil, true)
                     UserDefaults.standard.set(false, forKey: "appState")
                 } else{
+                    signInService.signIn()
                     completion(nil, false)
                     UserDefaults.standard.set(true, forKey: "appState")
                 }
@@ -83,6 +88,7 @@ class GoogleAuthenticationViewModel: ObservableObject{
     func signOutWithGoogle() {
         do {
             try FirebaseManager.shared.auth.signOut()
+            TokenManager.share.deleteToken()
             DispatchQueue.main.async {
                 UserDefaults.standard.set(false, forKey: "appState")
             }

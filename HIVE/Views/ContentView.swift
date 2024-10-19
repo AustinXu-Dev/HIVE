@@ -20,6 +20,9 @@ struct ContentView: View {
             
             Button {
 //                appCoordinator.push(.signIn)
+                if let token = TokenManager.share.getToken() {
+                    print("\(token)")
+                }
             } label: {
                 Text("test")
             }
