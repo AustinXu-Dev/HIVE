@@ -12,8 +12,6 @@ class SignInService: ObservableObject {
     @Published var email: String
     @Published var password: String
     @Published var errorMessage: String? = nil
-    @Published var token: String? = nil
-    @Published var userId: String? = nil
 
     init(email: String = "", password: String = "") {
         self.email = email
@@ -21,7 +19,7 @@ class SignInService: ObservableObject {
     }
     
     func signIn() {
-        let credential = SignInModel(
+        let credential = SignInSchema(
             email: email,
             password: password
         )
@@ -32,9 +30,11 @@ class SignInService: ObservableObject {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print(response)
                     TokenManager.share.saveTokens(token: response.message.token)
                 case .failure(let error):
                     self.errorMessage = "Failed to sign in: \(error.localizedDescription)"
+                    print("Error")
                 }
             }
         }
