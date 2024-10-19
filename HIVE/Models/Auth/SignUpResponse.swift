@@ -1,5 +1,5 @@
 //
-//  SignInResponse.swift
+//  SignUpResponse.swift
 //  HIVE
 //
 //  Created by Akito Daiki on 19/10/2024.
@@ -7,17 +7,17 @@
 
 import Foundation
 
-struct SignInResponse: Codable {
+struct SignUpResponse: Codable {
     let success: Bool
-    let message: Message
+    let message: SignUpMessage
 }
 
-struct Message: Codable {
+struct SignUpMessage: Codable {
     let token: String
-    let user: User
+    let user: SignUpUser
 }
 
-struct User: Codable {
+struct SignUpUser: Codable {
     let _id: String
     let name: String
     let email: String

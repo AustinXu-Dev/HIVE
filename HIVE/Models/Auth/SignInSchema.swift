@@ -5,7 +5,7 @@
 //  Created by Akito Daiki on 19/10/2024.
 //
 
-struct SignInModel: Codable {
+struct SignInSchema: Codable {
     let email: String
     let password: String
 }
