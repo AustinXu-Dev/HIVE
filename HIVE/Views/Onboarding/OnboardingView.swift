@@ -6,13 +6,20 @@
 //
 
 import SwiftUI
+import Firebase
+import GoogleSignIn
+import FirebaseAuth
 
 struct OnboardingView: View {
     
     @StateObject var viewModel = OnboardingViewModel()
+    @StateObject var googleVM = GoogleAuthenticationViewModel()
     @State var currentStep: Int = 0
     @State var showHome: Bool = false
     @State var showInsta: Bool = false
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
     
     let onboardingSteps: [OnboardingStep] = [
         OnboardingStep(title: "Let's get started!", description: "Please enter your first name", type: .Name),
@@ -30,43 +37,79 @@ struct OnboardingView: View {
                     
             } else if showInsta{
                 ShareSocialView(showHome: $showHome)
-                    .onAppear {
-                        print("Image", viewModel.profileImageURL!)
-                    }
             } else {
                 VStack{
                     BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
                     OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel)
                     Spacer()
                     ContinueButton(currentStep: $currentStep) {
-                        
-                        if currentStep == onboardingSteps.firstIndex(where: { $0.type == .Pfp }) {
-                            if viewModel.profileImageURL == nil {
-                                // Show an alert or prevent the user from continuing if the image is not uploaded
-                                print("Please upload a profile picture before proceeding.")
-                            } else {
-                                // Proceed to the next step
-                                if currentStep < onboardingSteps.count - 1 {
-                                    currentStep += 1
-                                } else {
-                                    withAnimation(.linear.delay(0.5)) {
-                                        showInsta = true
-                                    }
-                                }
-                            }
-                        } else {
-                            if currentStep < onboardingSteps.count - 1{
-                                currentStep += 1
-                            } else {
-                                withAnimation(.linear.delay(0.5)){
-                                    showInsta = true
-                                }
-                            }
-                        }
+                        handleStepCompletion()
+                    }
+                    .disabled(viewModel.isUploading)
+                    .alert(isPresented: $showAlert) {
+                        Alert(title: Text("Input Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
                 }.padding()
             }
         }
+    }
+    
+    func handleStepCompletion() {
+        if validateCurrentStep() {
+            if onboardingSteps[currentStep].type == .Pfp {
+                // Upload the image in the profile picture step
+                if viewModel.profileImage != nil && viewModel.profileImageURL == nil{
+                    viewModel.uploadProfileImage(uid: Auth.auth().currentUser?.uid ?? "", email: Auth.auth().currentUser?.email ?? "")
+                }
+                if viewModel.profileImageURL != nil{
+                    if currentStep < onboardingSteps.count - 1 {
+                        currentStep += 1
+                    } else {
+                        withAnimation(.linear.delay(0.5)) {
+                            showInsta = true
+                        }
+                    }
+                }
+            } else {
+                // For non-image steps, simply proceed to the next step
+                if currentStep < onboardingSteps.count - 1 {
+                    currentStep += 1
+                } else {
+                    withAnimation(.linear.delay(0.5)) {
+                        showInsta = true
+                    }
+                }
+            }
+        }
+    }
+    
+    func validateCurrentStep() -> Bool {
+        switch onboardingSteps[currentStep].type {
+        case .Name:
+            if viewModel.name.isEmpty {
+                alertMessage = "Please enter your name."
+                showAlert = true
+                return false
+            }
+        case .Birthday:
+            // You can add more specific validation here if needed
+            return true
+        case .Gender:
+            return true
+        case .Pfp:
+            if viewModel.profileImage == nil {
+                alertMessage = "Please select a profile picture."
+                showAlert = true
+                return false
+            }
+        case .SelfInfo:
+            if viewModel.bio.isEmpty || viewModel.bioType.isEmpty {
+                alertMessage = "Please complete your bio information."
+                showAlert = true
+                return false
+            }
+        }
+        return true
     }
 }
 

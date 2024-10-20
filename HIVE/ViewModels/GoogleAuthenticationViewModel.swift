@@ -14,6 +14,8 @@ import FirebaseAuth
 class GoogleAuthenticationViewModel: ObservableObject{
     
     @Published var errorMessage = ""
+    @Published var uid = ""
+    @Published var email = ""
     
     func signInWithGoogle(presenting: UIViewController, completion: @escaping (Error?, Bool) -> Void) {
         
@@ -70,6 +72,9 @@ class GoogleAuthenticationViewModel: ObservableObject{
                 let signInService = SignInService()
                 signInService.email = authResult.user.email ?? ""
                 signInService.password = authResult.user.uid
+                
+                self.email = authResult.user.email ?? ""
+                self.uid = authResult.user.uid
                 
                 if isNewUser{
                     completion(nil, true)
