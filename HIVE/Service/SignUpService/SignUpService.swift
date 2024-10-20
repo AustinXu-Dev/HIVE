@@ -37,16 +37,19 @@ class SignUpService: ObservableObject {
             isSuspened: isSuspened,
             password: password
         )
+        print("in signup function")
         
         let signUpManager = SignUpUseCase()
         
-        signUpManager.execute(data: newUser, getMethod: "POST", token: nil) { [weak self] result in
+        signUpManager.execute(data: newUser, getMethod: "POST", token: nil) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print("got singup response")
                     TokenManager.share.saveTokens(token: response.message.token)
+                    UserDefaults.standard.set(true, forKey: "appState")
                 case .failure(let error):
-                    self?.errorMessage = "Failed to sign up: \(error.localizedDescription)"
+                    self.errorMessage = "Failed to sign up: \(error.localizedDescription)"
                 }
             }
         }
