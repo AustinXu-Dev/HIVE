@@ -6,13 +6,14 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct ShareSocialView: View {
     
     @State private var isValid: Bool? = nil
     @EnvironmentObject var viewModel: OnboardingViewModel
     @EnvironmentObject var googleVM: GoogleAuthenticationViewModel
-    @ObservedObject var signupVM: SignUpService = SignUpService()
+    @ObservedObject var signupVM = SignUpService()
     
     var body: some View {
         VStack{
@@ -69,6 +70,8 @@ struct ShareSocialView: View {
                         signupVM.bio = viewModel.bio
                         signupVM.about = viewModel.bioType?.rawValue ?? ""
                         signupVM.instagramLink = viewModel.instagramHandle
+                        signupVM.email = Auth.auth().currentUser?.email ?? ""
+                        signupVM.password = Auth.auth().currentUser?.uid ?? ""
                         
                         print("In View Model", viewModel.name,viewModel.instagramHandle)
                         print("In signup view model", signupVM.name, signupVM.dateOfBirth)
