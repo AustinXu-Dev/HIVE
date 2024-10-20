@@ -15,7 +15,7 @@ struct OnboardingView: View {
     @StateObject var viewModel = OnboardingViewModel()
     @StateObject var googleVM = GoogleAuthenticationViewModel()
     @State var currentStep: Int = 0
-    @State var showHome: Bool = false
+//    @State var showHome: Bool = false
     @State var showInsta: Bool = false
     
     @State private var showAlert = false
@@ -32,11 +32,10 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack{
-            if showHome{
-                ContentView()
-                    
-            } else if showInsta{
-                ShareSocialView(showHome: $showHome)
+            if showInsta{
+                ShareSocialView()
+                    .environmentObject(viewModel)
+                    .environmentObject(googleVM)
             } else {
                 VStack{
                     BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
@@ -103,7 +102,7 @@ struct OnboardingView: View {
                 return false
             }
         case .SelfInfo:
-            if viewModel.bio.isEmpty || viewModel.bioType.isEmpty {
+            if viewModel.bio.isEmpty || viewModel.bioType == nil {
                 alertMessage = "Please complete your bio information."
                 showAlert = true
                 return false
