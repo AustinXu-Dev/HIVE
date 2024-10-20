@@ -24,6 +24,7 @@ class SignUpService: ObservableObject {
     @Published var errorMessage: String? = nil
 
     func signUp() {
+        
         let newUser = SignUpSchema(
             name: name,
             email: email,
@@ -37,7 +38,6 @@ class SignUpService: ObservableObject {
             isSuspened: isSuspened,
             password: password
         )
-        print("in signup function")
         
         let signUpManager = SignUpUseCase()
         
