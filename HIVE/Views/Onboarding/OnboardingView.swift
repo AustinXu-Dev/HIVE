@@ -26,7 +26,8 @@ struct OnboardingView: View {
     var body: some View {
         ZStack{
             if showHome{
-                ContentView()
+//                ContentView()
+                EventCreationView()
                     
             } else if showInsta{
                 ShareSocialView(showHome: $showHome)

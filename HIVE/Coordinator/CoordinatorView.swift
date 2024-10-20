@@ -15,7 +15,8 @@ struct CoordinatorView: View {
     var body: some View {
         NavigationStack(path: $appCoordinator.path) {
             if isSingIn{
-                appCoordinator.build(.home)
+//                appCoordinator.build(.home)
+                appCoordinator.build(.eventCreationForm)
                     .navigationDestination(for: Screen.self) { screen in
                         appCoordinator.build(screen)
                     }

@@ -51,7 +51,9 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
         case .onBoarding:
             OnboardingView()
         case .home:
-            ContentView()
+            HomeView()
+        case .eventCreationForm:
+            EventCreationView()
         }
     }
     
