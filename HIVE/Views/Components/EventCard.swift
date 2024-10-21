@@ -13,7 +13,7 @@ struct EventCard: View {
         NavigationStack {
             VStack {
             ZStack(alignment:.topLeading) {
-                Image(event.eventImageUrl)
+                Image("event")
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(maxWidth: .infinity)
@@ -41,7 +41,7 @@ struct EventCard: View {
                                 .foregroundStyle(Color.black)
                                 .font(.system(.caption))
                                 .multilineTextAlignment(.center)
-                                .padding(.horizontal,4)
+                                .padding(.horizontal,8)
                         }
                     }
                     .frame(width:42,height: 42)
@@ -75,6 +75,7 @@ struct EventCard: View {
                                         .foregroundStyle(Color.black)
                                         .bold()
                                         .font(.title2)
+                                        .lineLimit(2)
                                 }
                                 HStack {
                                     Text(event.location)

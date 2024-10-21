@@ -13,39 +13,34 @@ struct ParticipantView: View {
         HStack {
             
         
-        HStack(spacing:-12) {
-            
-            ForEach(event.participants.prefix(5),id: \._id){ event in
-                Image(event.profileImageUrl ?? "")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:28,height: 28)
-                    .clipShape(Circle())
-                    .overlay(
-                        Circle()
-                            .stroke(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [   Color("topColor"), Color("bottomColor")  ]),
-                                    
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                ),
-                                lineWidth: 1
+            HStack(spacing:-12) {
+                if let eventParticipants = event.participants {
+                    ForEach(eventParticipants.prefix(5),id: \._id){ event in
+                        Image(event.profileImageUrl ?? "")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:28,height: 28)
+                            .clipShape(Circle())
+                            .overlay(
+                                Circle()
+                                    .stroke(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [   Color("topColor"), Color("bottomColor")  ]),
+                                            
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        ),
+                                        lineWidth: 1
+                                    )
                             )
-                    )
-                
-                
-                
-                
-                
+                        
+                        
+                    }
+                    
+                    
+                    Text("\(eventParticipants.count) / \(event.maxParticipants)")
+                }
             }
-            
-            
-            
-        }
-            Text("\(event.participants.count) / \(event.maxParticipants)")
-                
-            
     }
         
     }

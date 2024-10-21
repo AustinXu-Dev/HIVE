@@ -7,6 +7,14 @@
 
 import Foundation
 
+
+struct EventResponse : Codable {
+    let success : Bool
+    let message : [EventModel]
+}
+
+
+
 struct EventModel : Codable {
 
     let  _id,eventImageUrl,name,location: String
@@ -15,7 +23,7 @@ struct EventModel : Codable {
     let isLimited : Bool
     let category : [String]
     let additionalInfo : String
-    let participants : [UserModel]
+    let participants : [UserModel]?
     let organizer : String
 
     
