@@ -44,6 +44,7 @@ class UserCreateEventViewModel: ObservableObject {
             self.additionalInfo = additionalInfo
         }
     
+    
     func createEvent(token: String) {
         let newEvent = CreateEventDTO(
             eventImageUrl: eventImageUrl,
@@ -68,9 +69,12 @@ class UserCreateEventViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(_):
+                    print("url is \(self.eventImageUrl)")
+                    print("Success")
                     break;
                 case .failure(let error):
                     self.errorMessage = "Failed to create event: \(error.localizedDescription)"
+                    print(error.localizedDescription)
                 }
             }
         }

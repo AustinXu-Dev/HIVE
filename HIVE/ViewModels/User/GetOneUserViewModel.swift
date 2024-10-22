@@ -9,7 +9,7 @@ import Foundation
 
 class GetOneUserByIdViewModel: ObservableObject {
     
-    @Published var userDetail: UserDetails? = nil
+    @Published var userDetail: UserModel? = nil
     @Published var errorMessage: String? = nil
     
     func getOneUserById(id: String) {

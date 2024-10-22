@@ -11,6 +11,7 @@ enum Screen: Identifiable, Hashable {
     case signIn
     case onBoarding
     case home
+    case eventCreationForm
     
     var id: Self { return self }
 }

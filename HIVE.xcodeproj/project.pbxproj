@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B7B4E3062CC6EA92001E4399 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = B7B4E3052CC6EA92001E4399 /* Kingfisher */; };
 		BC71B5242CC1579C00F516C2 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5232CC1579C00F516C2 /* GoogleSignIn */; };
 		BC71B5262CC1579C00F516C2 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5252CC1579C00F516C2 /* GoogleSignInSwift */; };
 		BC71B5292CC157DF00F516C2 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5282CC157DF00F516C2 /* FirebaseAnalytics */; };
@@ -50,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7B4E3062CC6EA92001E4399 /* Kingfisher in Frameworks */,
 				BC71B5312CC157DF00F516C2 /* FirebaseAppDistribution-Beta in Frameworks */,
 				BC71B5242CC1579C00F516C2 /* GoogleSignIn in Frameworks */,
 				BC71B52D2CC157DF00F516C2 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
@@ -122,6 +124,7 @@
 				BC71B5342CC157DF00F516C2 /* FirebaseFirestore */,
 				BC71B5362CC157DF00F516C2 /* FirebaseStorage */,
 				BC71B5532CC3AC0100F516C2 /* KeychainSwift */,
+				B7B4E3052CC6EA92001E4399 /* Kingfisher */,
 			);
 			productName = HIVE;
 			productReference = BC71B4F02CBE7F0000F516C2 /* HIVE.app */;
@@ -155,6 +158,7 @@
 				BC71B5212CC1577F00F516C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				BC71B5222CC1579C00F516C2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
 				BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */,
+				B7B4E3042CC6EA92001E4399 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BC71B4F12CBE7F0000F516C2 /* Products */;
@@ -318,6 +322,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HIVE/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to select images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -351,6 +356,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = HIVE/Info.plist;
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "We need access to your photo library to select images";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -396,6 +402,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B7B4E3042CC6EA92001E4399 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.1.0;
+			};
+		};
 		BC71B5212CC1577F00F516C2 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
@@ -423,6 +437,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B7B4E3052CC6EA92001E4399 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7B4E3042CC6EA92001E4399 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		BC71B5232CC1579C00F516C2 /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BC71B5222CC1579C00F516C2 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;

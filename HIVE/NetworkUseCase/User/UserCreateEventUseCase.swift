@@ -9,7 +9,7 @@ import Foundation
 
 class UserCreateEventUseCase: APIManager {
     
-    typealias ModelType = EventResponse
+    typealias ModelType = OneEventResponse
     var methodPath: String {
         return "/event/create"
     }
