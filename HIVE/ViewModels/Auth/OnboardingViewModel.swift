@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import FirebaseStorage
+import FirebaseFirestore
 
 class OnboardingViewModel: ObservableObject {
     // Published properties for each data point to be filled in the onboarding flow
@@ -15,18 +16,23 @@ class OnboardingViewModel: ObservableObject {
     @Published var birthday: Date = Date()
     @Published var gender: Gender = .diverse
     @Published var profileImage: UIImage?
-    @Published var profileImageURL: URL?
-    @Published var bioType: Set<BioType> = []
+    @Published var profileImageURL: String?
+    @Published var bioType: BioType?
     @Published var bio: String = ""
     @Published var instagramHandle: String = ""
     @Published var isUploading: Bool = false
     @Published var isPickerPresented = false
     
-    func uploadProfileImage() {
-        guard let imageData = profileImage?.jpegData(compressionQuality: 0.8) else { return }
+    func uploadProfileImage(uid: String, email: String) {
+        guard let profileImage = profileImage, let imageData = profileImage.jpegData(compressionQuality: 0.8) else {
+            print("Profile image data not available.")
+            return
+        }
 
         isUploading = true
         let storageRef = Storage.storage().reference().child("images/\(UUID().uuidString).jpg")
+
+        // Upload image to Firebase Storage
         storageRef.putData(imageData, metadata: nil) { metadata, error in
             if let error = error {
                 print("Error uploading image: \(error.localizedDescription)")
@@ -34,14 +40,40 @@ class OnboardingViewModel: ObservableObject {
                 return
             }
 
+            // Retrieve the download URL after successful upload
             storageRef.downloadURL { url, error in
                 if let error = error {
                     print("Error getting download URL: \(error.localizedDescription)")
-                } else if let url = url {
-                    self.profileImageURL = url
+                    self.isUploading = false
+                    return
                 }
-                self.isUploading = false
+
+                guard let downloadURL = url?.absoluteString else {
+                    print("Failed to get the download URL.")
+                    self.isUploading = false
+                    return
+                }
+
+                // Store the download URL and email in Firestore
+                let db = Firestore.firestore()
+                let userRef = db.collection("users").document(uid)
+                userRef.setData([
+                    "imageUrl": downloadURL,
+                    "email": email
+                ], merge: true) { error in
+                    if let error = error {
+                        print("Error storing image URL in Firestore: \(error.localizedDescription)")
+                    } else {
+                        print("Image URL successfully stored in Firestore.")
+                        self.profileImageURL = downloadURL
+
+                    }
+                    self.isUploading = false
+                }
             }
         }
     }
+
+
+
 }

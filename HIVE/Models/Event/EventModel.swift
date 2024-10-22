@@ -13,6 +13,10 @@ struct EventResponse : Codable {
     let message : [EventModel]
 }
 
+struct OneEventResponse : Codable {
+    let success : Bool
+    let message : EventModel
+}
 
 
 struct EventModel : Codable {

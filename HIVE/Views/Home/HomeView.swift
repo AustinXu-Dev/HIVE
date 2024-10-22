@@ -6,13 +6,15 @@
 //
 
 import SwiftUI
-
-import SwiftUI
+import Kingfisher
 
 struct HomeView: View {
+    
     @StateObject private var eventsVM = GetEventsViewModel()
     @State private var searchText: String = ""
     @State private var selectedTimeFilter: TimeFilter = .all
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+
 
 
     var body: some View {
@@ -143,9 +145,8 @@ extension HomeView {
         VStack {
             Text("Ready to Connect?")
                 .bold()
-                
             Button {
-                // Action for creating an account
+                appCoordinator.push(.signIn)
             } label: {
                 Text("Create an Account")
                     .foregroundStyle(.white)

@@ -13,6 +13,7 @@ struct SignInView: View {
     @State var isNew = false
     
     var body: some View {
+        
         if isNew{
             OnboardingView()
         } else {
@@ -47,8 +48,11 @@ struct SignInView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
+            .navigationBarBackButtonHidden(true) 
         }
+            
     }
+       
         
 }
 

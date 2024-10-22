@@ -12,15 +12,20 @@ import PhotosUI
 struct EventCreationView: View {
     @State private var selectedItem: PhotosPickerItem? // Holds the selected item
     @State private var selectedImage: UIImage? // Holds the selected image
+
     @State private var eventTitle: String = ""
     @State private var eventLocation: String = ""
-    @State private var startDate : Date? = nil
-    @State private var endDate : Date? = nil
+    @State private var startDate : Date = Date()
+    @State private var endDate : Date = Date()
     @State private var additionalInfo: String = ""
     @State private var selectedCategories: [String] = []
     @State private var isCategoryExpanded: Bool = false
     @State private var invalidFields: Set<String> = []
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+    @StateObject var eventCreationVM = UserCreateEventViewModel()
+    @StateObject var profileVM = GetOneUserByIdViewModel()
+    @State private var eventPhoto: UIImage?
+
 
     
     let categories = ["Bar", "Outdoor", "Music", "Sport", "Food", "Art", "Business", "Tech"]
@@ -70,7 +75,8 @@ struct EventCreationView: View {
                     Button(action: {
                         validateForm()
                       if invalidFields.isEmpty {
-                          appCoordinator.push(.onBoarding)
+                         print("Form is valid")
+                          createEvent()
                       } else {
                           print("Form is not valid")
                       }
@@ -82,6 +88,11 @@ struct EventCreationView: View {
                 }
             }
             
+        }
+        .onAppear {
+            if let userId = KeychainManager.shared.keychain.get(""){
+                profileVM.getOneUserById(id: userId)
+            }
         }
     }
     // Function to toggle category selection
@@ -95,6 +106,7 @@ struct EventCreationView: View {
     
     // Function to validate the form
      private func validateForm() {
+             
          invalidFields.removeAll()
          if eventTitle.isEmpty {
              invalidFields.insert("title")
@@ -109,25 +121,101 @@ struct EventCreationView: View {
              invalidFields.insert("categories")
          }
          
-        
-           if startDate == nil {
-               invalidFields.insert("startDate")
-           }
-           
-       
-           if endDate == nil {
-               invalidFields.insert("endDate")
-           } else if let start = startDate, let end = endDate, end <= start {
-               invalidFields.insert("invalidDateRange")
-           }
+         let start = startDate
+         let end = endDate
+
+         if end <= start {
+             invalidFields.insert("invalidDateRange")
+         }
      }
+    
+    func createEvent(){
+        print("Create event func enterred")
+        let eventStartDate = startDate.formatDateToString()
+        let eventEndDate = endDate.formatDateToString()
+        let eventStartTime = startDate.formatTimeToString()
+        let eventEndTime = endDate.formatTimeToString()
+        
+        
+        
+        
+        eventCreationVM.name = eventTitle
+        eventCreationVM.location = eventLocation
+        eventCreationVM.startDate = eventStartDate
+        eventCreationVM.endDate = eventEndDate
+        eventCreationVM.startTime = eventStartTime
+        eventCreationVM.endTime = eventEndTime
+        eventCreationVM.maxParticipants = 100
+        eventCreationVM.isLimited = false
+        eventCreationVM.category = selectedCategories
+        eventCreationVM.additionalInfo = additionalInfo
+    
+        
+
+
+
+        print("event creation request initiated")
+        
+        guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else { return }
+        
+        eventCreationVM.uploadImage(selectedImage ?? UIImage(named:"event")!) { result in
+//            guard let strongSelf = self else { return }
+            switch result {
+            case .success(let imageURL):
+                print(imageURL)
+                self.storeImageUrlAndRetrieveImage(uid: uid, email: email, imageUrl: imageURL)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+        
+        
+        if !eventCreationVM.eventImageUrl.isEmpty, let userToken = TokenManager.share.getToken()  {
+            eventCreationVM.createEvent(token:userToken)
+            print("event creation request sent")
+        }
+//        }
+      
+        
+        
+      
+        
+
+
+    }
+    
+    private func storeImageUrlAndRetrieveImage(uid: String, email: String, imageUrl: String) {
+        eventCreationVM.storeImageUrl(imageUrl: imageUrl, uid: uid, email: email) { result in
+            switch result {
+            case .success(_):
+                self.retrieveImageURL(uid: uid)
+                
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+            
+        }
+    }
+    
+    private func retrieveImageURL(uid: String){
+        eventCreationVM.retrieveImageUrl(uid: uid) { result in
+            switch result {
+            case .success(let storedImageUrl):
+                print("stored image url \(storedImageUrl)")
+                eventCreationVM.eventImageUrl = storedImageUrl
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
      
 }
 
 struct EventCreationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            EventCreationView()
+            EventCreationView(eventCreationVM: UserCreateEventViewModel())
         }
     }
 }
@@ -141,8 +229,8 @@ extension EventCreationView {
                     matching: .images,
                     photoLibrary: .shared()) {
                         // Display selected image or placeholder
-                        if let selectedImage = selectedImage {
-                            Image(uiImage: selectedImage)
+                        if let eventPhoto = selectedImage {
+                            Image(uiImage: eventPhoto)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(height: 180)
@@ -248,16 +336,13 @@ extension EventCreationView {
                 Text("Start:")
                 Spacer()
                 DatePicker("",
-                           selection: Binding(
-                                            get: { startDate ?? Date() },
-                                            set: { startDate = $0 }
-                                        ),
+                           selection: $startDate,
                            in: Date()...,
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
                 .datePickerStyle(.compact)
                 .overlay(
-                        invalidFields.contains("startDate") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
+                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
                         alignment: .bottom
                     )
             }
@@ -265,16 +350,13 @@ extension EventCreationView {
                 Text("End:")
                 Spacer()
                 DatePicker("",
-                           selection: Binding(
-                            get: { endDate ?? Date() },
-                            set: { endDate = $0 }
-                                        ),
+                           selection: $endDate,
                            in: Date()...,
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
                 .datePickerStyle(CompactDatePickerStyle())
                 .overlay(
-                        invalidFields.contains("endDate") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
+                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
                         alignment: .bottom
                     )
             }
@@ -362,8 +444,6 @@ extension EventCreationView {
     }
     
     private var isFormValid: Bool {
-           !eventTitle.isEmpty && !eventLocation.isEmpty && !additionalInfo.isEmpty && selectedCategories.count >= 3 &&    startDate != nil &&
-        endDate != nil &&
-        (endDate ?? Date()) > (startDate ?? Date())
+           !eventTitle.isEmpty && !eventLocation.isEmpty && !additionalInfo.isEmpty && selectedCategories.count >= 3 && (endDate > startDate)
        }
 }

@@ -24,6 +24,7 @@ class SignUpService: ObservableObject {
     @Published var errorMessage: String? = nil
 
     func signUp() {
+        
         let newUser = SignUpSchema(
             name: name,
             email: email,
@@ -40,13 +41,15 @@ class SignUpService: ObservableObject {
         
         let signUpManager = SignUpUseCase()
         
-        signUpManager.execute(data: newUser, getMethod: "POST", token: nil) { [weak self] result in
+        signUpManager.execute(data: newUser, getMethod: "POST", token: nil) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let response):
+                    print("got singup response")
                     TokenManager.share.saveTokens(token: response.message.token)
+                    UserDefaults.standard.set(true, forKey: "appState")
                 case .failure(let error):
-                    self?.errorMessage = "Failed to sign up: \(error.localizedDescription)"
+                    self.errorMessage = "Failed to sign up: \(error.localizedDescription)"
                 }
             }
         }

@@ -24,4 +24,16 @@ extension Date {
             return dateFormatter.date(from: dateString)
         }
     
+     func formatDateToString() -> String {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        return dateFormatter.string(from: self)
+    }
+    
+     func formatTimeToString() -> String {
+          let timeFormatter = DateFormatter()
+          timeFormatter.dateFormat = "HH:mm" // Change to "hh:mm a" for 12-hour format with AM/PM
+          return timeFormatter.string(from: self)
+      }
+    
 }
