@@ -18,7 +18,6 @@ struct HomeView: View {
 
 
     var body: some View {
-        NavigationStack {
             VStack {
                 VStack(alignment: .center) {
                     headerRow
@@ -45,7 +44,7 @@ struct HomeView: View {
             .refreshable {
                 eventsVM.fetchEvents()
             }
-        }
+        
     }
 
     private var eventsScrollView: some View {
@@ -57,6 +56,10 @@ struct HomeView: View {
                 VStack(spacing: 30) {
                     ForEach(filteredEvents, id: \._id) { event in
                         EventCard(event: event)
+                            
+                            .onTapGesture {
+                                appCoordinator.push(.eventDetailView(named: event))
+                            }
                     }
                 }
             }

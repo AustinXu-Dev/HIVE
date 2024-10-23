@@ -8,19 +8,19 @@
 import Foundation
 
 // Top-level response model
-struct UserResponse: Codable {
+struct UserResponse: Codable,Hashable {
     let success: Bool?
     let message: UserModel?
 }
 
 // Top-level response model
-struct UsersResponse: Codable {
+struct UsersResponse: Codable, Hashable {
     let success: Bool?
     let message: [UserModel]?
 }
 
 // User details model
-struct UserModel: Codable {
+struct UserModel: Codable, Hashable {
     let _id: String?
     let name: String?
     let email: String?

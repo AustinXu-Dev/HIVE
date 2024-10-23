@@ -19,4 +19,23 @@ extension String {
           }
           return nil
       }
+    
+    func formatDateString(toFormat format: String = "MMM d") -> String? {
+            let dateFormatter = DateFormatter()
+            
+            // Specify the date format of the input string
+            dateFormatter.dateFormat = "yyyy-MM-dd" // Adjust this to the format of your input string
+            
+            // Convert the string to a Date object
+            guard let date = dateFormatter.date(from: self) else {
+                return nil // Return nil if the string is not a valid date
+            }
+            
+            // Specify the desired output format
+            dateFormatter.dateFormat = format
+            
+            // Convert the Date object back to the formatted string
+            return dateFormatter.string(from: date)
+        }
+
 }

@@ -52,8 +52,14 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             OnboardingView()
         case .home:
             HomeView()
+        case .eventDetailView(named: let event):
+            EventDetailView(event: event)
         case .eventCreationForm:
             EventCreationView()
+        case .eventJoinSuccess:
+            EventJoinSuccessView()
+        case .eventAttendeeView(named: let event):
+            EventAttendeeView(event: event)
         }
     }
     
