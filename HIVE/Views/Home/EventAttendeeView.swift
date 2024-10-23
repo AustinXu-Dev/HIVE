@@ -11,7 +11,8 @@ import Kingfisher
 
 struct EventAttendeeView: View {
     let event : EventModel
-    
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+
     var body: some View {
         VStack {
             HStack {
@@ -56,6 +57,12 @@ struct EventAttendeeView: View {
             .scrollIndicators(.hidden)
         }
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Text("Back")
+                    .onTapGesture {
+                        appCoordinator.pop()
+                    }
+            }
             ToolbarItem(placement: .principal) {
                 Text("See who's going")
                     .font(.headline)
@@ -73,6 +80,7 @@ struct EventAttendeeView: View {
                   
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

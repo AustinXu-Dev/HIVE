@@ -140,7 +140,15 @@ struct EventDetailView: View {
             }
         }
         .scrollIndicators(.hidden)
-        .navigationBarTitle("Back", displayMode: .inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Text("< Back")
+                    .onTapGesture {
+                        appCoordinator.pop()
+                    }
+            }
+        }
     }
 }
 
