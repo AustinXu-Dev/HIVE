@@ -8,18 +8,18 @@
 import Foundation
 
 
-struct EventResponse : Codable {
+struct EventResponse : Codable, Hashable {
     let success : Bool
     let message : [EventModel]
 }
 
-struct OneEventResponse : Codable {
+struct OneEventResponse : Codable, Hashable{
     let success : Bool
     let message : EventModel
 }
 
 
-struct EventModel : Codable {
+struct EventModel : Codable, Hashable {
 
     let  _id,eventImageUrl,name,location: String
     let startDate,endDate,startTime,endTime : String

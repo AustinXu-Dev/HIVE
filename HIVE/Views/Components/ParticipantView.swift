@@ -38,8 +38,11 @@ struct ParticipantView: View {
                     }
                     
                     
-                    Text("\(eventParticipants.count) / \(event.maxParticipants)")
+                 
                 }
+            }
+            if let eventParticipants = event.participants {
+                Text("\(eventParticipants.count) / \(event.maxParticipants)")
             }
     }
         
