@@ -29,10 +29,12 @@ struct EventModel : Codable, Hashable {
     let additionalInfo : String
     let participants : [UserModel]?
     let organizer : String
-
-    
 }
 
+struct JoinEventResponse : Codable, Hashable{
+    let success : Bool
+    let message : String
+}
 
 /*
  // Event Schema
