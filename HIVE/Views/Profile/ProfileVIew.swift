@@ -11,6 +11,7 @@ import PhotosUI
 struct ProfileView: View {
     @State private var profileImage: UIImage? = UIImage(named: "profile")
     @State private var isPickerPresented = false
+    @ObservedObject var googleVM = GoogleAuthenticationViewModel()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -75,14 +76,20 @@ struct ProfileView: View {
 
             Spacer()
 
-            HStack {
-                TabBarItem(icon: "house.fill")
-                TabBarItem(icon: "magnifyingglass")
-                TabBarItem(icon: "plus.circle.fill", isCentral: true)
-                TabBarItem(icon: "message.fill")
-                TabBarItem(icon: "person.fill")
+            Button {
+                googleVM.signOutWithGoogle()
+            } label: {
+                Text("Sign out")
             }
-            .padding(.bottom, 10)
+
+//            HStack {
+//                TabBarItem(icon: "house.fill")
+//                TabBarItem(icon: "magnifyingglass")
+//                TabBarItem(icon: "plus.circle.fill", isCentral: true)
+//                TabBarItem(icon: "message.fill")
+//                TabBarItem(icon: "person.fill")
+//            }
+//            .padding(.bottom, 10)
         }
         .navigationBarBackButtonHidden(true)
         .sheet(isPresented: $isPickerPresented) {

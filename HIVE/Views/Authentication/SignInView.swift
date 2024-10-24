@@ -26,7 +26,6 @@ struct SignInView: View {
                     .font(.title3)
                 Button {
                     googleVM.signInWithGoogle(presenting: Application_utility.rootViewController) { error, isNewUser in
-                        print(isNewUser)
                         isNew = isNewUser
                     }
                 } label: {

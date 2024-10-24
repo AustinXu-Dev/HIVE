@@ -10,13 +10,24 @@ import UIKit
 import GoogleSignIn
 import Firebase
 import FirebaseAuth
+import SwiftUI
+import Combine
 
-class GoogleAuthenticationViewModel: ObservableObject{
+class GoogleAuthenticationViewModel: ObservableObject {
     
     @Published var errorMessage = ""
     @Published var uid = ""
     @Published var email = ""
+    @ObservedObject var getAllUserVM = GetAllUsersViewModel()
+    var signInService = SignInService()
+    var isNew: Bool?
     
+    private var cancellables = Set<AnyCancellable>()
+
+    init() {
+        // Initialize any necessary state here if needed
+    }
+
     func signInWithGoogle(presenting: UIViewController, completion: @escaping (Error?, Bool) -> Void) {
         
         guard let clientID = FirebaseManager.shared.firebaseApp?.options.clientID else {
@@ -49,7 +60,6 @@ class GoogleAuthenticationViewModel: ObservableObject{
             let accessToken = user.accessToken
             let credential = GoogleAuthProvider.credential(withIDToken: idToken.tokenString, accessToken: accessToken.tokenString)
             
-            //MARK: - Trigerring SignIn Function from Firebase Auth
             FirebaseManager.shared.auth.signIn(with: credential) { authResult, error in
                 if let error = error {
                     self.errorMessage = "Failed to Sign In with credentials: \(error)"
@@ -67,29 +77,46 @@ class GoogleAuthenticationViewModel: ObservableObject{
                     return
                 }
                 
-                //MARK: - Handling new user state during sign in
-                let isNewUser = authResult.additionalUserInfo?.isNewUser ?? false
-                let signInService = SignInService()
-                signInService.email = authResult.user.email ?? ""
-                signInService.password = authResult.user.uid
-                
+                self.signInService.email = authResult.user.email ?? ""
+                self.signInService.password = authResult.user.uid
+                // Get the user details
                 self.email = authResult.user.email ?? ""
                 self.uid = authResult.user.uid
                 
-                if isNewUser{
-                    completion(nil, true)
-                    UserDefaults.standard.set(false, forKey: "appState")
-                } else{
-                    signInService.signIn()
-                    completion(nil, false)
-                    UserDefaults.standard.set(true, forKey: "appState")
-                }
-                //MARK: - Condition with Token Valid and Login successful with google auth
+                // Fetch all users asynchronously
+                self.getAllUserVM.getAllUsers()
+                
+                // Observe userData updates to check if the user exists
+                self.getAllUserVM.$userData
+                    .sink { [weak self] userData in
+                        guard let self = self, let users = userData else { return }
+                        self.checkIfUserExists(in: users, completion: completion)
+                    }
+                    .store(in: &self.cancellables)
             }
         }
     }
-    
-    //MARK: - Goolge Sign Out Function
+
+    // Function to check if a user with the same email exists
+    private func checkIfUserExists(in users: [UserModel], completion: @escaping (Error?, Bool) -> Void) {
+        if let existingUser = users.first(where: { $0.email == self.email }) {
+            // Existing user found
+            DispatchQueue.main.async {
+                self.signInService.signIn()
+                UserDefaults.standard.set(true, forKey: "appState")
+                completion(nil, false) // Returning true for existing user
+            }
+        } else {
+            // New user detected
+            print("New user detected, email: \(self.email)")
+            DispatchQueue.main.async {
+                UserDefaults.standard.set(false, forKey: "appState")
+                completion(nil, true) // Returning false for new user
+            }
+        }
+    }
+
+    // Google Sign Out Function
     func signOutWithGoogle() {
         do {
             try FirebaseManager.shared.auth.signOut()
