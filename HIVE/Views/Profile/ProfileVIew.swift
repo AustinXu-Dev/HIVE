@@ -10,41 +10,89 @@ import PhotosUI
 
 struct ProfileView: View {
     @State private var profileImage: UIImage? = UIImage(named: "profile")
-    @State private var isPickerPresented = false
+    @State private var isEditingDescription = false
+    @State private var isEditingProfileImage = false
+    @State private var descriptionText = "Outgoing expat who loves nightlife 🌃"
+    @State private var editedDescriptionText = ""
+    @State private var showImagePicker = false
+    @State private var isEditable = true  // NEW: Control overall edit state
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
 
     var body: some View {
         VStack(spacing: 20) {
+            // Top Bar
             HStack {
                 Button(action: {
+                    // Navigation back action
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .foregroundColor(.black)
                 }
                 Spacer()
-                Button(action: {
-                    isPickerPresented = true
-                }) {
-                    Image(systemName: "pencil")
-                        .font(.title2)
-                        .foregroundColor(.black)
+
+                if isEditingDescription {
+                    Button(action: {
+                        // Save description and disable editing
+                        descriptionText = editedDescriptionText
+                        isEditingDescription = false
+                        isEditable = false  // Disable further editing
+                    }) {
+                        Text("Done")
+                            .font(.callout)
+                            .foregroundColor(.black)
+                    }
+                } else if isEditable {
+                    Button(action: {
+                        // Enable description editing
+                        editedDescriptionText = descriptionText
+                        isEditingDescription = true
+                    }) {
+                        Image(systemName: "pencil")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                    }
                 }
             }
             .padding(.horizontal)
             .padding(.top, 10)
-            
+
             Divider()
 
-            if let image = profileImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 120, height: 120)
-                    .clipShape(Circle())
-                    .shadow(radius: 5)
+            // Profile Image Section
+            ZStack {
+                if let image = profileImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 120)
+                        .clipShape(Circle())
+                        .shadow(radius: 5)
+                        .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                }
+
+                if isEditable && isEditingProfileImage {
+                    Button(action: {
+                        showImagePicker = true
+                    }) {
+                        Image(systemName: "pencil")
+                            .font(.title)
+                            .foregroundColor(.white)
+                            .background(Circle().fill(Color.black.opacity(0.7)))
+                            .frame(width: 50, height: 50)
+                    }
+                }
+            }
+            .onTapGesture {
+                if isEditable {
+                    isEditingProfileImage.toggle()
+                }
+            }
+            .sheet(isPresented: $showImagePicker) {
+                ImagePicker(selectedImage: $profileImage)
             }
 
+            // User Info Section
             Text("Harley")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -52,13 +100,21 @@ struct ProfileView: View {
             Text("(Expat)")
                 .foregroundColor(.gray)
 
-            Text("Outgoing expat who loves nightlife 🌃")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 40)
+            if isEditingDescription {
+                TextField("Enter description", text: $editedDescriptionText)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .padding(.horizontal, 40)
+            } else {
+                Text(descriptionText)
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 40)
+            }
 
+            // Connect Me Button
             Button(action: {
+                // Handle connect action
             }) {
                 HStack {
                     Image(systemName: "camera")
@@ -76,80 +132,17 @@ struct ProfileView: View {
 
             Spacer()
 
+            // Logout Button
             Button {
                 googleVM.signOutWithGoogle()
             } label: {
-                Text("Sign out")
+                Text("Logout")
             }
-
-//            HStack {
-//                TabBarItem(icon: "house.fill")
-//                TabBarItem(icon: "magnifyingglass")
-//                TabBarItem(icon: "plus.circle.fill", isCentral: true)
-//                TabBarItem(icon: "message.fill")
-//                TabBarItem(icon: "person.fill")
-//            }
-//            .padding(.bottom, 10)
         }
         .navigationBarBackButtonHidden(true)
-        .sheet(isPresented: $isPickerPresented) {
-            ImagePicker(image: $profileImage)
-        }
     }
-}
-
-struct TabBarItem: View {
-    var icon: String
-    var isCentral: Bool = false
-
-    var body: some View {
-        Button(action: {
-            // Tab item action
-        }) {
-            Image(systemName: icon)
-                .font(isCentral ? .largeTitle : .title2)
-                .foregroundColor(isCentral ? .black : .gray)
-                .frame(maxWidth: .infinity)
-        }
-    }
-}
-
-struct ImagePicker: UIViewControllerRepresentable {
-    @Binding var image: UIImage?
-
-    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
-        let parent: ImagePicker
-
-        init(parent: ImagePicker) {
-            self.parent = parent
-        }
-
-        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
-            if let selectedImage = info[.originalImage] as? UIImage {
-                parent.image = selectedImage
-            }
-            picker.dismiss(animated: true)
-        }
-
-        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-            picker.dismiss(animated: true)
-        }
-    }
-
-    func makeCoordinator() -> Coordinator {
-        Coordinator(parent: self)
-    }
-
-    func makeUIViewController(context: Context) -> UIImagePickerController {
-        let picker = UIImagePickerController()
-        picker.delegate = context.coordinator
-        return picker
-    }
-
-    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
 }
 
 #Preview {
     ProfileView()
 }
-
