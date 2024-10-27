@@ -15,15 +15,13 @@ struct ProfileView: View {
     @State private var descriptionText = "Outgoing expat who loves nightlife 🌃"
     @State private var editedDescriptionText = ""
     @State private var showImagePicker = false
-    @State private var isEditable = true  // NEW: Control overall edit state
+    @State private var isEditable = true
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
 
     var body: some View {
         VStack(spacing: 20) {
-            // Top Bar
             HStack {
                 Button(action: {
-                    // Navigation back action
                 }) {
                     Image(systemName: "chevron.left")
                         .font(.title2)
@@ -33,10 +31,9 @@ struct ProfileView: View {
 
                 if isEditingDescription {
                     Button(action: {
-                        // Save description and disable editing
                         descriptionText = editedDescriptionText
                         isEditingDescription = false
-                        isEditable = false  // Disable further editing
+                        isEditable = false
                     }) {
                         Text("Done")
                             .font(.callout)
@@ -44,7 +41,6 @@ struct ProfileView: View {
                     }
                 } else if isEditable {
                     Button(action: {
-                        // Enable description editing
                         editedDescriptionText = descriptionText
                         isEditingDescription = true
                     }) {
@@ -59,7 +55,6 @@ struct ProfileView: View {
 
             Divider()
 
-            // Profile Image Section
             ZStack {
                 if let image = profileImage {
                     Image(uiImage: image)
@@ -92,7 +87,6 @@ struct ProfileView: View {
                 ImagePicker(selectedImage: $profileImage)
             }
 
-            // User Info Section
             Text("Harley")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -112,9 +106,7 @@ struct ProfileView: View {
                     .padding(.horizontal, 40)
             }
 
-            // Connect Me Button
             Button(action: {
-                // Handle connect action
             }) {
                 HStack {
                     Image(systemName: "camera")
