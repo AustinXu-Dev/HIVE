@@ -80,7 +80,7 @@ struct EventCard: View {
                                             .foregroundStyle(Color.black)
                                             .font(.system(.headline))
                                         Spacer()
-                                        ParticipantView()
+                                        ParticipantView(event: event)
                                     }
                                 }
                                 .padding(.horizontal,40)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ParticipantView: View {
-    let event = EventMock.instance.eventA
+    let event : EventModel
     var body: some View {
         HStack {
             
@@ -50,7 +50,7 @@ struct ParticipantView: View {
 }
 
 #Preview {
-    ParticipantView()
+    ParticipantView(event: EventMock.instance.eventA)
 }
 
 

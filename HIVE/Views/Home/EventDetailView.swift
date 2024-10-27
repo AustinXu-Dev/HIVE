@@ -50,7 +50,7 @@ struct EventDetailView: View {
                         
                         HStack(spacing: 20) {
                             //                    ZStack {
-                            ParticipantView()
+                            ParticipantView(event: event)
                                 .onTapGesture {
                                         appCoordinator.push(.eventAttendeeView(named: event))
                                     
@@ -68,7 +68,7 @@ struct EventDetailView: View {
                                 .font(.headline)
                             HStack {
                                 if let eventOrganizer = event.organizer {
-                                    Image("profile")
+                                    KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
                                         .resizable()
                                         .frame(width: 40, height: 40)
                                         .clipShape(Circle())
