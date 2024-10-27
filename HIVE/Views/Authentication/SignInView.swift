@@ -33,7 +33,6 @@ struct SignInView: View {
                 }.padding(.top, 40)
                 
                 Spacer()
-                
                 Button {
                     appCoordinator.push(.home)
                 } label: {

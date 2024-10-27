@@ -33,6 +33,9 @@ struct HomeView: View {
                         .padding()
                 } else {
                     eventsScrollView
+                        .refreshable {
+                            eventsVM.fetchEvents()
+                        }
                 }
             }
             .padding(.horizontal)
@@ -41,9 +44,7 @@ struct HomeView: View {
             }
             // Move the search bar out of the toolbar
             .searchable(text: $searchText, placement: .automatic, prompt: "Search events")
-            .refreshable {
-                eventsVM.fetchEvents()
-            }
+          
         
     }
 

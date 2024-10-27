@@ -28,7 +28,7 @@ struct TabScreenView: View {
                     Label(selectedIndex == 2 ? "---" : "", image: "plus")
                 }
                 .tag(2)
-            Text("Messenger")
+            EmptyView()
                 .tabItem {
                     Label(selectedIndex == 3 ? "---" : "", image: "messenger")
                 }

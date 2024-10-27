@@ -20,3 +20,23 @@ struct CreateEventDTO: Codable {
     let category: [String]
     let additionalInfo: String
 }
+
+
+struct CreateEventResponse : Codable, Hashable{
+    let success : Bool
+    let message : CreatedEventModel
+}
+
+
+
+struct CreatedEventModel : Codable, Hashable {
+
+    let  _id,eventImageUrl,name,location: String
+    let startDate,endDate,startTime,endTime : String
+    let maxParticipants : Int
+    let isLimited : Bool
+    let category : [String]
+    let additionalInfo : String
+    let participants : [ParticipantModel]?
+    let organizer : String?
+}

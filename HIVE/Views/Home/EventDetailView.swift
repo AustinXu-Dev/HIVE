@@ -12,144 +12,185 @@ struct EventDetailView: View {
     let event : EventModel
     @State private var isCategoryExpanded: Bool = false
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
-
+    @StateObject private var joinEventVM = JoinEventViewModel()
+    @State private var eventAlreadyJoined : Bool = false
     var body: some View {
         
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                
-                KFImage(URL(string: event.eventImageUrl))
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .cornerRadius(10)
-                    .padding(.horizontal)
-                
-                Text(event.name)
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.horizontal)
-                
-                HStack {
-                    eventCategories
-//                    TagView(text: "drink")
-//                    TagView(text: "Bar")
-//                    TagView(text: "indoor")
-                }
-                .padding(.horizontal)
-                
-                HStack(spacing: 20) {
-//                    ZStack {
-                        ParticipantView()
-                        .onTapGesture {
-                            if let participants = event.participants {
-                                appCoordinator.push(.eventAttendeeView(named: event))
-                            }
-                        }
-//                        Image("profile")
-//                            .resizable()
-//                            .frame(width: 30, height: 30)
-//                            .clipShape(Circle())
-//                            .offset(x: 10)
-//                        Image("profile")
-//                            .resizable()
-//                            .frame(width: 30, height: 30)
-//                            .clipShape(Circle())
-//                            .offset(x: -10)
-//                    }
-//                    
-//                    Text("18/20")
-//                        .font(.subheadline)
-                }
-                .frame(maxWidth: .infinity, alignment: .trailing)
-                .padding(.horizontal)
-                
-                Text(event.additionalInfo)
-                    .font(.body)
-                    .padding(.horizontal)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Host")
-                        .font(.headline)
-                    HStack {
-                        Image("profile")
+            VStack {
+                if joinEventVM.isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
+                    }
+                } else {
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        KFImage(URL(string: event.eventImageUrl))
                             .resizable()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                        VStack(alignment: .leading) {
-                            Text(event.organizer)
-                                .fontWeight(.bold)
-                            Text("Outgoing expat who loves nightlife 🌃")
-                                .font(.subheadline)
+                            .aspectRatio(contentMode: .fill)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 270)
+                            .cornerRadius(10)
+                            .padding(.horizontal)
+                        
+                        Text(event.name)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.horizontal)
+                        
+                        HStack {
+                            eventCategories
+                            //                    TagView(text: "drink")
+                            //                    TagView(text: "Bar")
+                            //                    TagView(text: "indoor")
                         }
-                    }
-                }
-                .padding(.horizontal)
-                
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Details")
-                        .font(.headline)
-                    HStack {
-                        Image(systemName: "mappin.circle")
-                        Text(event.location)
-                    }
-                    HStack {
-                        Image(systemName: "calendar")
-                        if let eventStartDate = event.startDate.formatDateString(), let startTime = event.startTime.to12HourFormat(), let endTime = event.endTime.to12HourFormat() {
-                            Text("\(eventStartDate), \(startTime) - \(endTime)")
-                        }
-                    }
-                    HStack {
-                        Image(systemName: "person.3")
-                        Text("Anyone")
-                    }
-                }
-                .padding(.horizontal)
-                
-                VStack {
-                    Spacer()
-                    
-
-                    Button(action: {
-                        /// TO DO
-                        //MARK: POST Event Join and custom Animation to be added
-                        print("Join button tapped!")
-                        appCoordinator.push(.eventJoinSuccess)
-                    }) {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 25)
-                                .stroke(Color.purple, lineWidth: 5)
-                                .shadow(color: Color.purple.opacity(0.4), radius: 20, x: 0, y: 0)
-                                .shadow(color: Color.purple.opacity(0.4), radius: 40, x: 0, y: 0)
-                                .frame(width: 300, height: 60)
-                                .overlay {
-                                    Text("Join")
-                                        .font(.system(size: 24, weight: .bold))
-                                        .foregroundColor(.black)
-                                        .frame(width: 300, height: 60)
-                                        .background(Color.white)
-                                        .cornerRadius(25)
+                        .padding(.horizontal)
+                        
+                        HStack(spacing: 20) {
+                            //                    ZStack {
+                            ParticipantView()
+                                .onTapGesture {
+                                        appCoordinator.push(.eventAttendeeView(named: event))
+                                    
                                 }
                         }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .padding(.horizontal)
+                        
+                        Text(event.additionalInfo)
+                            .font(.body)
+                            .padding(.horizontal)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Host")
+                                .font(.headline)
+                            HStack {
+                                if let eventOrganizer = event.organizer {
+                                    Image("profile")
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                    VStack(alignment: .leading) {
+                                        Text(eventOrganizer.name ?? "Organizer")
+                                            .fontWeight(.bold)
+                                        Text(eventOrganizer.bio ?? "")
+                                            .font(.subheadline)
+                                    }
+                                }
+                            }
+                        }
+                        .padding(.horizontal)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Details")
+                                .font(.headline)
+                            HStack {
+                                Image(systemName: "mappin.circle")
+                                Text(event.location)
+                            }
+                            HStack {
+                                Image(systemName: "calendar")
+                                if let eventStartDate = event.startDate.formatDateString(), let startTime = event.startTime.to12HourFormat(), let endTime = event.endTime.to12HourFormat() {
+                                    Text("\(eventStartDate), \(startTime) - \(endTime)")
+                                }
+                            }
+                            HStack {
+                                Image(systemName: "person.3")
+                                Text("Anyone")
+                            }
+                        }
+                        .padding(.horizontal)
+                        if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
+                           currentUserId != event.organizer?.userid {
+                            
+                            VStack {
+                                Spacer()
+                                
+                                
+                                Button(action: {
+                                    if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
+                                        joinEventVM.joinEvent(eventId: event._id, token: userToken)
+                                    }
+                                    
+                                    
+                                }) {
+                                    ZStack {
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .stroke(Color.purple, lineWidth: 5)
+                                            .shadow(color: Color.purple.opacity(0.4), radius: 20, x: 0, y: 0)
+                                            .shadow(color: Color.purple.opacity(0.4), radius: 40, x: 0, y: 0)
+                                            .frame(width: 300, height: 60)
+                                            .overlay {
+                                                Text(eventAlreadyJoined ? "Joined" :"Join")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(.black)
+                                                    .frame(width: 300, height: 60)
+                                                    .background(Color.white)
+                                                    .cornerRadius(25)
+                                                
+                                            }
+                                    }
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .frame(maxWidth: .infinity)
+                            }
+                            Spacer()
+                            
+                                .padding()
+                        }
                     }
-                    .buttonStyle(PlainButtonStyle())
-                    .frame(maxWidth: .infinity)
-                    
-                    Spacer()
                 }
-                .padding()
             }
-        }
-        .scrollIndicators(.hidden)
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Text("< Back")
-                    .onTapGesture {
-                        appCoordinator.pop()
-                    }
+            .scrollIndicators(.hidden)
+            .navigationBarBackButtonHidden()
+//            .onChange(of: joinEventVM.joinSuccess) { _,success in
+//                if success {
+//                    eventAlreadyJoined = true
+//                    appCoordinator.push(.eventJoinSuccess)
+//                }
+//            }
+            .onAppear {
+                eventAlreadyJoinedOrNot()
+            }
+            .onReceive(joinEventVM.$joinSuccess) { success in
+                if success {
+                    eventAlreadyJoined = true // Update after joining successfully
+                    appCoordinator.push(.eventJoinSuccess)
+                }
+            }
+            
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Text("< Back")
+                        .onTapGesture {
+                            appCoordinator.pop()
+                        }
+                }
             }
         }
     }
+    
+    func eventAlreadyJoinedOrNot()  {
+        guard let currentUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
+        eventAlreadyJoined = event.participants?.contains(where: {$0.userid == currentUserId}) ?? false
+        
+//        event.participants?.forEach({ user in
+//            if user.userid == currentUserId {
+//                eventAlreadyJoined = true
+//
+//            } else {
+//                eventAlreadyJoined = false
+//            }
+//            
+//        })
+//        eventAlreadyJoined = event.participants?.contains { $0._id == currentUserId } ?? false
+
+    }
+
+    
+    
 }
 
 struct TagView: View {
@@ -172,22 +213,35 @@ struct TagView: View {
 
 extension EventDetailView {
     private var eventCategories : some View {
-        HStack {
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
-                ForEach(event.category, id: \.self) { category in
-                    
+        HStack(spacing:8) {
+            ForEach(event.category, id: \.self) { category in
+          
+          
+                Text(category)
+                    .foregroundColor(.white)
+                    .font(.subheadline)
+                    .padding(.vertical, 6)
+                    .padding(.horizontal, 2)
+                    .background(Color.gray.opacity(1))
+                    .cornerRadius(8)
+                    .fixedSize(horizontal: true, vertical: false)
                 
-                    Text(category)
-                        .foregroundColor(.white)
-                        .font(.subheadline)
-                        .padding(.vertical, 6)
-                        .padding(.horizontal, 2)
-                        .background(Color.gray.opacity(1))
-                        .cornerRadius(8)
-                        .fixedSize(horizontal: true, vertical: false)
-                    
-                }
-            }
+                          }
+//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
+//                ForEach(event.category, id: \.self) { category in
+//                    
+//                
+//                    Text(category)
+//                        .foregroundColor(.white)
+//                        .font(.subheadline)
+//                        .padding(.vertical, 6)
+//                        .padding(.horizontal, 2)
+//                        .background(Color.gray.opacity(1))
+//                        .cornerRadius(8)
+//                        .fixedSize(horizontal: true, vertical: false)
+//                    
+//                }
+//            }
 //            .frame(maxWidth:350)
             
             

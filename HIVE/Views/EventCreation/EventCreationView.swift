@@ -26,14 +26,20 @@ struct EventCreationView: View {
     @StateObject var profileVM = GetOneUserByIdViewModel()
     @State private var eventPhoto: UIImage?
 
-
     
-    let categories = ["Bar", "Outdoor", "Music", "Sport", "Food", "Art", "Business", "Tech"]
+    let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill","Outdoor","Bar","Dance","Quiet","Games","Exclusive","Networking"]
     
     var body: some View {
-        NavigationStack {
+        if eventCreationVM.isLoading {
+            VStack {
+                Spacer()
+                ProgressView()
+                Spacer()
+            }
+        } else {
             ScrollView {
                 VStack(spacing: 20) {
+                    customToolBar
                     eventImage
                     eventName
                     
@@ -54,44 +60,18 @@ struct EventCreationView: View {
                 }
                 .padding()
             }
-            .toolbar {
-                
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button(action: {
-                        print("Left button tapped")
-                    }) {
-                        HStack(spacing:2) {
-                            Image(systemName: "chevron.left")
-                            
-                            Text("Save")
-                            
-                        }
-                        .foregroundStyle(Color.black)
-                    }
-                }
-                
-                
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: {
-                        validateForm()
-                      if invalidFields.isEmpty {
-                         print("Form is valid")
-                          createEvent()
-                      } else {
-                          print("Form is not valid")
-                      }
-                    
-                    }) {
-                        Text("Finish")
-                            .foregroundStyle(Color.black)
-                    }
+            
+            
+            
+            .onAppear {
+                if let userId = KeychainManager.shared.keychain.get("appUserId"){
+                    profileVM.getOneUserById(id: userId)
                 }
             }
-            
-        }
-        .onAppear {
-            if let userId = KeychainManager.shared.keychain.get(""){
-                profileVM.getOneUserById(id: userId)
+            .onReceive(eventCreationVM.$eventCreationSuccess) { success in
+                if success {
+                    appCoordinator.push(.eventCreationSuccess)
+                }
             }
         }
     }
@@ -108,6 +88,12 @@ struct EventCreationView: View {
      private func validateForm() {
              
          invalidFields.removeAll()
+
+         
+         if selectedImage == nil {
+             invalidFields.insert("photo")
+         }
+         
          if eventTitle.isEmpty {
              invalidFields.insert("title")
          }
@@ -117,19 +103,36 @@ struct EventCreationView: View {
          if additionalInfo.isEmpty {
              invalidFields.insert("additionalInfo")
          }
-         if selectedCategories.count < 3 {
-             invalidFields.insert("categories")
-         }
+         validateCategory()
+         validateDate()
          
-         let start = startDate
-         let end = endDate
+         invalidFields.forEach { print("invalid fields" ,$0) }
 
-         if end <= start {
-             invalidFields.insert("invalidDateRange")
-         }
      }
     
+    private func validateDate(){
+        invalidFields.remove("invalidDateRange")
+        let start = startDate
+        let end = endDate
+        print("Start: \(start)")
+       print("End \(end)")
+
+        if end <= start {
+            invalidFields.insert("invalidDateRange")
+        }
+    }
+    
+    private func validateCategory(){
+        invalidFields.remove("categories")
+
+        if selectedCategories.count < 1 || selectedCategories.count > 3 {
+            invalidFields.insert("categories")
+        }
+        
+    }
+    
     func createEvent(){
+        eventCreationVM.isLoading = true
         print("Create event func enterred")
         let eventStartDate = startDate.formatDateToString()
         let eventEndDate = endDate.formatDateToString()
@@ -156,9 +159,17 @@ struct EventCreationView: View {
 
         print("event creation request initiated")
         
-        guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else { return }
+        guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else {
+            let uuid = profileVM.userDetail?._id
+            let usermail = profileVM.userDetail?.email
+            print("UID \(uuid) & email \(usermail)")
+        return
+        }
+        
+        print("UID \(uid) & email \(email)")
         
         eventCreationVM.uploadImage(selectedImage ?? UIImage(named:"event")!) { result in
+            print("Uploading image...")
 //            guard let strongSelf = self else { return }
             switch result {
             case .success(let imageURL):
@@ -168,12 +179,7 @@ struct EventCreationView: View {
                 print(error.localizedDescription)
             }
         }
-        
-        
-        if !eventCreationVM.eventImageUrl.isEmpty, let userToken = TokenManager.share.getToken()  {
-            eventCreationVM.createEvent(token:userToken)
-            print("event creation request sent")
-        }
+     
 //        }
       
         
@@ -185,6 +191,7 @@ struct EventCreationView: View {
     }
     
     private func storeImageUrlAndRetrieveImage(uid: String, email: String, imageUrl: String) {
+        print("storing...")
         eventCreationVM.storeImageUrl(imageUrl: imageUrl, uid: uid, email: email) { result in
             switch result {
             case .success(_):
@@ -198,11 +205,19 @@ struct EventCreationView: View {
     }
     
     private func retrieveImageURL(uid: String){
+        print("reteriving...")
         eventCreationVM.retrieveImageUrl(uid: uid) { result in
             switch result {
             case .success(let storedImageUrl):
                 print("stored image url \(storedImageUrl)")
                 eventCreationVM.eventImageUrl = storedImageUrl
+                
+                   if !eventCreationVM.eventImageUrl.isEmpty, let userToken = TokenManager.share.getToken()  {
+                      
+                       eventCreationVM.createEvent(token:userToken)
+                       print("event creation request sent")
+                       resetFields()
+                   }
             case .failure(let error):
                 print(error.localizedDescription)
             }
@@ -222,6 +237,43 @@ struct EventCreationView_Previews: PreviewProvider {
 
 
 extension EventCreationView {
+ 
+    private var customToolBar : some View {
+        HStack {
+            
+            Button(action: {
+               
+            }) {
+                HStack(spacing:2) {
+                    Image(systemName: "chevron.left")
+                    
+                    Text("Save")
+                    
+                }
+                .foregroundStyle(Color.black)
+            }
+            
+            Spacer()
+            Text("Create event")
+            Spacer()
+            Button(action: {
+                validateForm()
+              if invalidFields.isEmpty {
+                 print("Form is valid")
+                  createEvent()
+              } else {
+                  print("Form is not valid")
+              }
+            
+            }) {
+                Text("Finish")
+                    .foregroundStyle(Color.black)
+            }
+            
+        }
+    }
+    
+    
     private var eventImage: some View {
             VStack {
                 PhotosPicker(
@@ -238,7 +290,9 @@ extension EventCreationView {
                         } else {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 10)
+                                    .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
                                     .fill(Color.gray.opacity(0.3))
+                                    .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
                                     .frame(height: 200)
                                 Circle()
                                     .frame(height: 40)
@@ -284,11 +338,17 @@ extension EventCreationView {
                     .frame(maxHeight:20)
                     .cornerRadius(8)
                     .textFieldStyle(.plain)
+                    .onChange(of: eventTitle) { _,newEventName in
+                        if !newEventName.isEmpty {
+                            invalidFields.remove("title")
+                        }
+                    }
             }
             Rectangle()
                 .frame(width:200,height:2)
                 .foregroundStyle(invalidFields.contains("title") ? Color.red.opacity(0.5) : Color.black)
                 .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+
 
             
         }
@@ -304,36 +364,44 @@ extension EventCreationView {
                     Text("Event Location")
                         .foregroundStyle(invalidFields.contains("location") ? Color.red : Color.gray)
                         .animation(.linear(duration: 0.001), value: invalidFields.contains("location"))
-
                         .padding(.horizontal)
                        
                 }
                 TextField("", text: $eventLocation)
                 
                     .padding()
-                //                .background(Color.clear)
                     .frame(maxWidth:200)
                     .frame(maxHeight:20)
                     .cornerRadius(8)
                     .textFieldStyle(.plain)
+                    .onChange(of: eventLocation) { _,newEventLocation in
+                        if !newEventLocation.isEmpty {
+                            invalidFields.remove("location")
+                        }
+                    }
                 
             }
             Rectangle()
                 .frame(width:200,height:2)
                 .foregroundStyle(invalidFields.contains("location") ? Color.red.opacity(0.5) : Color.black)
                 .animation(.linear(duration: 0.001), value: invalidFields.contains("location"))
-             
-            
-
-            
-            
         }
+        
+   
     }
     
     private var eventDateTime : some View {
-        VStack(spacing: 10) {
+        VStack(alignment:.leading,spacing: 10) {
+            if invalidFields.contains("invalidDateRange") {
+                Text("End Date&Time should be \nbeyond Start Date&Time.")
+                    .multilineTextAlignment(.leading)
+                    .foregroundStyle(invalidFields.contains("invalidDateRange") ? Color.red : Color.black)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidDateRange"))
+            }
             HStack {
                 Text("Start:")
+                    .foregroundStyle(invalidFields.contains("invalidDateRange") ? Color.red : Color.black)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidDateRange"))
                 Spacer()
                 DatePicker("",
                            selection: $startDate,
@@ -341,13 +409,18 @@ extension EventCreationView {
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
                 .datePickerStyle(.compact)
-                .overlay(
-                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
-                        alignment: .bottom
-                    )
+                .onChange(of: startDate) { _,_ in
+                    validateDate()
+                               }
+//                .overlay(
+//                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
+//                        alignment: .bottom
+//                    )
             }
             HStack {
                 Text("End:")
+                    .foregroundStyle(invalidFields.contains("invalidDateRange") ? Color.red : Color.black)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidDateRange"))
                 Spacer()
                 DatePicker("",
                            selection: $endDate,
@@ -355,10 +428,13 @@ extension EventCreationView {
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
                 .datePickerStyle(CompactDatePickerStyle())
-                .overlay(
-                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
-                        alignment: .bottom
-                    )
+                .onChange(of: endDate) { _,_ in
+                    validateDate()
+                               }
+//                .overlay(
+//                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
+//                        alignment: .bottom
+//                    )
             }
         }
     }
@@ -367,24 +443,28 @@ extension EventCreationView {
         VStack(alignment: .leading, spacing: 10) {
             Text("Category")
                 .font(.headline)
-            Text("Please select at least 3 categories")
+            Text("Select between 1 and 3 categories")
                 .font(.subheadline)
                 .foregroundStyle(invalidFields.contains("categories") ? Color.red : Color.gray)
                 .animation(.linear, value: invalidFields.contains("categories"))
 
             
             HStack {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 10) {
                     ForEach(categories.prefix(isCategoryExpanded ? categories.count : 3), id: \.self) { category in
                         Button(action: {
                             toggleCategory(category)
                         }) {
                             
                             Text(category)
+                                .lineLimit(1)
                                 .foregroundStyle(Color.black)
-                                .padding(.horizontal)
+                                .padding(.horizontal,8)
                                 .background(selectedCategories.contains(category) ? Color.blue.opacity(0.65) : Color.gray.opacity(0.2))
                                 .cornerRadius(30)
+                                .onChange(of: selectedCategories) { _,_ in
+                                    validateCategory()
+                                               }
                         }
                     }
                 }
@@ -423,7 +503,6 @@ extension EventCreationView {
                 // Placeholder text
                 if additionalInfo.isEmpty {
                     Text("Share the details here...")
-                        .foregroundColor(.gray)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 12)
                 }
@@ -435,9 +514,15 @@ extension EventCreationView {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color.gray, lineWidth: 1)
+                            .stroke(invalidFields.contains("additionalInfo") ? Color.red : Color.gray, lineWidth: 1)
+                            .animation(.linear(duration: 0.001), value: invalidFields.contains("additionalInfo"))
                     )
-                    .background(additionalInfo.isEmpty ? Color.red.opacity(0.3) : Color.clear)
+//                    .background(additionalInfo.isEmpty ? Color.red.opacity(0.3) : Color.clear)
+                    .onChange(of: additionalInfo) { _,newAdditionalInfo in
+                        if !newAdditionalInfo.isEmpty {
+                            invalidFields.remove("additionalInfo")
+                        }
+                    }
 
             }
         }
@@ -446,4 +531,16 @@ extension EventCreationView {
     private var isFormValid: Bool {
            !eventTitle.isEmpty && !eventLocation.isEmpty && !additionalInfo.isEmpty && selectedCategories.count >= 3 && (endDate > startDate)
        }
+    
+    private func resetFields() {
+        selectedItem = nil
+        selectedImage = nil
+        eventTitle = ""
+        eventLocation = ""
+        startDate = Date()
+        endDate = Date()
+        additionalInfo = ""
+        selectedCategories = []
+        invalidFields.removeAll()
+    }
 }

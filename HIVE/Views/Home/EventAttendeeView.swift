@@ -33,7 +33,7 @@ struct EventAttendeeView: View {
 
             Divider()
             
-            List(event.participants ?? [],id: \._id) { user in
+            List(event.participants ?? [],id: \.userid) { user in
                 HStack {
                     KFImage(URL(string: user.profileImageUrl ?? ""))
                         .resizable()

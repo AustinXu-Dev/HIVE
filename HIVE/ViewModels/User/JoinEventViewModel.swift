@@ -12,6 +12,7 @@ class JoinEventViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var successMessage: String? = nil
+    @Published var joinSuccess : Bool = false
 
     func joinEvent(eventId: String, token: String) {
         let joinEvent = JoinEvent(eventId: eventId)
@@ -26,11 +27,16 @@ class JoinEventViewModel: ObservableObject {
                 case .success(let response):
                     if response.success {
                         self?.successMessage = "Successfully joined the event!"
+                        self?.joinSuccess = true
+                        print("Successfully joined")
                     } else {
                         self?.errorMessage = response.message
+                       
                     }
                 case .failure(let error):
                     self?.errorMessage = "Failed to join event: \(error.localizedDescription)"
+                  
+                    print(error.localizedDescription)
                 }
             }
         }

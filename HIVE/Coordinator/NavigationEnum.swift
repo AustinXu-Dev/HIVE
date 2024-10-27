@@ -15,10 +15,13 @@ enum Screen: Identifiable, Hashable {
     case signIn
     case onBoarding
     case home
+    case tab
     case eventDetailView(named : EventModel)
     case eventCreationForm
+    case eventCreationSuccess
     case eventJoinSuccess
     case eventAttendeeView(named : EventModel)
+    
     
     var id: Self { return self }
 }

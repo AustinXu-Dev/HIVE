@@ -19,6 +19,7 @@ struct OneEventResponse : Codable, Hashable{
 }
 
 
+
 struct EventModel : Codable, Hashable {
 
     let  _id,eventImageUrl,name,location: String
@@ -27,8 +28,8 @@ struct EventModel : Codable, Hashable {
     let isLimited : Bool
     let category : [String]
     let additionalInfo : String
-    let participants : [UserModel]?
-    let organizer : String
+    let participants : [ParticipantModel]?
+    let organizer : OrganizerModel?
 }
 
 struct JoinEventResponse : Codable, Hashable{

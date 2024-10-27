@@ -60,6 +60,10 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             EventJoinSuccessView()
         case .eventAttendeeView(named: let event):
             EventAttendeeView(event: event)
+        case .tab:
+            TabScreenView()
+        case .eventCreationSuccess:
+            EventCreationSuccessView()
         }
     }
     

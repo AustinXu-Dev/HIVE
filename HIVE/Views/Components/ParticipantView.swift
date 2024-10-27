@@ -15,7 +15,7 @@ struct ParticipantView: View {
         
             HStack(spacing:-12) {
                 if let eventParticipants = event.participants {
-                    ForEach(eventParticipants.prefix(5),id: \._id){ event in
+                    ForEach(eventParticipants.prefix(5),id: \.userid){ event in
                         Image(event.profileImageUrl ?? "")
                             .resizable()
                             .aspectRatio(contentMode: .fit)

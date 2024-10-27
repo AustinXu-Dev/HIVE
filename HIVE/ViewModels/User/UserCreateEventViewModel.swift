@@ -25,6 +25,7 @@ class UserCreateEventViewModel: ObservableObject {
     @Published var category: [String]
     @Published var additionalInfo: String
     
+    @Published var eventCreationSuccess : Bool = false
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
 
@@ -61,7 +62,7 @@ class UserCreateEventViewModel: ObservableObject {
         )
         
         let createEventManager = UserCreateEventUseCase()
-        isLoading = true
+//        isLoading = true //already set it in the view for another async task
         errorMessage = nil
         
         createEventManager.execute(data: newEvent, getMethod: "POST", token: token) { result in
@@ -69,9 +70,7 @@ class UserCreateEventViewModel: ObservableObject {
                 self.isLoading = false
                 switch result {
                 case .success(_):
-                    print("url is \(self.eventImageUrl)")
-                    print("Success")
-                    break;
+                    self.eventCreationSuccess = true
                 case .failure(let error):
                     self.errorMessage = "Failed to create event: \(error.localizedDescription)"
                     print(error.localizedDescription)

@@ -31,6 +31,7 @@ class SignInService: ObservableObject {
                 switch result {
                 case .success(let response):
                     TokenManager.share.saveTokens(token: response.message.token)
+                    KeychainManager.shared.keychain.set(response.message.user._id, forKey: "appUserId")
                 case .failure(let error):
                     self.errorMessage = "Failed to sign in: \(error.localizedDescription)"
                     print("Error")

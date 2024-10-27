@@ -34,6 +34,7 @@ class GetEventsViewModel : ObservableObject {
                    DispatchQueue.main.async {
                        self?.isLoading = false
                        self?.errorMessage = "Failed to get all the events: \(error.localizedDescription)"
+                       print(error.localizedDescription)
                    }
                }
            }
