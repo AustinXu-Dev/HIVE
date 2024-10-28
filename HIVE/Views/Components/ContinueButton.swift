@@ -14,7 +14,7 @@ struct ContinueButton: View {
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .frame(width: 250, height: 50)
-            .background(color)
+            .foregroundStyle(color)
             .overlay {
                 Text("Continue")
                     .foregroundStyle(.white)
