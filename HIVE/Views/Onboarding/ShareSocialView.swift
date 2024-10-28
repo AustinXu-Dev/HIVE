@@ -89,7 +89,9 @@ struct ShareSocialView: View {
                         signupVM.profileImageUrl = viewModel.profileImageURL ?? ""
                         signupVM.bio = viewModel.bio
                         signupVM.about = viewModel.bioType?.rawValue ?? ""
-                        
+                        signupVM.instagramLink = ""
+                        signupVM.email = Auth.auth().currentUser?.email ?? ""
+                        signupVM.password = Auth.auth().currentUser?.uid ?? ""
                         signupVM.signUp()
                     }
                 }

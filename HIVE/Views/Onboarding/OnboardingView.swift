@@ -41,7 +41,7 @@ struct OnboardingView: View {
                     BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
                     OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel)
                     Spacer()
-                    ContinueButton(currentStep: $currentStep) {
+                    ContinueButton(currentStep: $currentStep, color: viewModel.isUploading ? .constant(.gray) : .constant(.black)) {
                         handleStepCompletion()
                     }
                     .disabled(viewModel.isUploading)

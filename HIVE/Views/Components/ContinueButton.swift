@@ -9,10 +9,12 @@ import SwiftUI
 
 struct ContinueButton: View {
     @Binding var currentStep: Int
+    @Binding var color: Color
     var action:() -> Void
     var body: some View {
         RoundedRectangle(cornerRadius: 20)
             .frame(width: 250, height: 50)
+            .background(color)
             .overlay {
                 Text("Continue")
                     .foregroundStyle(.white)
@@ -26,5 +28,5 @@ struct ContinueButton: View {
 }
 
 #Preview {
-    ContinueButton(currentStep: .constant(0), action: {})
+    ContinueButton(currentStep: .constant(0), color: .constant(.gray), action: {})
 }
