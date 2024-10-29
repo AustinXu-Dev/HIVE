@@ -6,34 +6,38 @@
 //
 
 import SwiftUI
-import PhotosUI
+import Kingfisher
 
 struct ProfileView: View {
-    @State private var profileImage: UIImage? = UIImage(named: "profile")
+    @State private var profileImage: UIImage? = nil
     @State private var isEditingDescription = false
     @State private var isEditingProfileImage = false
-    @State private var descriptionText = "Outgoing expat who loves nightlife 🌃"
+    @State private var descriptionText = ""
     @State private var editedDescriptionText = ""
     @State private var showImagePicker = false
     @State private var isEditable = true
+    @State private var showLogoutAlert = false
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
-
+    @StateObject var profileVM = GetOneUserByIdViewModel()
+    @StateObject var updateProfileVM = UpdateUserViewModel()
+    
     var body: some View {
         VStack(spacing: 20) {
+            // Header with Back Button and Edit Options
             HStack {
-                Button(action: {
-                }) {
+                Button(action: {}) {
                     Image(systemName: "chevron.left")
                         .font(.title2)
                         .foregroundColor(.black)
                 }
                 Spacer()
-
+                
                 if isEditingDescription {
                     Button(action: {
                         descriptionText = editedDescriptionText
+                        updateProfile()
                         isEditingDescription = false
-                        isEditable = false
+                        isEditingProfileImage = false
                     }) {
                         Text("Done")
                             .font(.callout)
@@ -42,6 +46,7 @@ struct ProfileView: View {
                 } else if isEditable {
                     Button(action: {
                         editedDescriptionText = descriptionText
+                        isEditingProfileImage = true
                         isEditingDescription = true
                     }) {
                         Image(systemName: "pencil")
@@ -52,12 +57,22 @@ struct ProfileView: View {
             }
             .padding(.horizontal)
             .padding(.top, 10)
-
+            
             Divider()
-
+            
+            // Profile Image Section
             ZStack {
-                if let image = profileImage {
-                    Image(uiImage: image)
+                if let selectedImage = profileImage {
+                    // Show the selected image immediately
+                    Image(uiImage: selectedImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 120, height: 120)
+                        .clipShape(Circle())
+                        .shadow(radius: 5)
+                        .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                } else {
+                    KFImage(URL(string: profileVM.userDetail?.profileImageUrl ?? ""))
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(width: 120, height: 120)
@@ -65,7 +80,7 @@ struct ProfileView: View {
                         .shadow(radius: 5)
                         .opacity(isEditingProfileImage ? 0.5 : 1.0)
                 }
-
+                
                 if isEditable && isEditingProfileImage {
                     Button(action: {
                         showImagePicker = true
@@ -78,35 +93,39 @@ struct ProfileView: View {
                     }
                 }
             }
-            .onTapGesture {
-                if isEditable {
-                    isEditingProfileImage.toggle()
-                }
-            }
             .sheet(isPresented: $showImagePicker) {
                 ImagePicker(selectedImage: $profileImage)
             }
-
-            Text("Harley")
+            
+            // Profile Name and Description
+            Text(profileVM.userDetail?.name ?? "Unknown")
                 .font(.title2)
                 .fontWeight(.bold)
-
-            Text("(Expat)")
-                .foregroundColor(.gray)
-
+            if let about = profileVM.userDetail?.about {
+                Text("(\(about))")
+                    .foregroundColor(.gray)
+            }
+            
             if isEditingDescription {
-                TextField("Enter description", text: $editedDescriptionText)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding(.horizontal, 40)
+                TextField("Enter description", text: Binding(
+                    get: { profileVM.userDetail?.bio ?? "" },
+                    set: { profileVM.userDetail?.bio = $0 }
+                ))
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding(.horizontal, 40)
             } else {
-                Text(descriptionText)
+                Text(profileVM.userDetail?.bio ?? "No bio available")
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 40)
             }
-
+            
+            // Connect Button
             Button(action: {
+                if let url = URL(string: profileVM.userDetail?.instagramLink ?? "") {
+                    UIApplication.shared.open(url)
+                }
             }) {
                 HStack {
                     Image(systemName: "camera")
@@ -121,19 +140,87 @@ struct ProfileView: View {
                 .cornerRadius(25)
                 .padding(.horizontal, 40)
             }
-
+            
             Spacer()
-
+            
             // Logout Button
             Button {
-                googleVM.signOutWithGoogle()
+                showLogoutAlert = true
             } label: {
                 Text("Logout")
+                    .font(.headline)
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(12)
+                    .padding(.horizontal, 40)
             }
+        }
+        .onAppear {
+            if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                profileVM.getOneUserById(id: userId)
+            }
+        }
+        .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
+            Button("Cancel", role: .cancel) {}
+            Button("Logout", role: .destructive) {
+                googleVM.signOutWithGoogle()
+            }
+        }
+        .refreshable {
+            refreshProfile()
         }
         .navigationBarBackButtonHidden(true)
     }
+    
+    // MARK: - Private Methods
+    
+    private func updateProfile() {
+        guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else { return }
+        
+        updateProfileVM.uploadImage(profileImage ?? UIImage(named: "profile")!) { result in
+            switch result {
+            case .success(let imageURL):
+                storeImageUrlAndRetrieveImage(uid: uid, email: email, imageUrl: imageURL)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func storeImageUrlAndRetrieveImage(uid: String, email: String, imageUrl: String) {
+        updateProfileVM.storeImageUrl(imageUrl: imageUrl, uid: uid, email: email) { result in
+            switch result {
+            case .success(_):
+                retrieveImageURL(uid: uid)
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func retrieveImageURL(uid: String) {
+        updateProfileVM.retrieveImageUrl(uid: uid) { result in
+            switch result {
+            case .success(let storedImageUrl):
+                updateProfileVM.profileImageUrl = storedImageUrl
+                if let userToken = TokenManager.share.getToken() {
+                    updateProfileVM.updateUser(id: uid, token: userToken)
+                }
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
+    private func refreshProfile() {
+        if let userId = KeychainManager.shared.keychain.get("appUserId") {
+            profileVM.getOneUserById(id: userId)
+        }
+    }
 }
+
 
 #Preview {
     ProfileView()

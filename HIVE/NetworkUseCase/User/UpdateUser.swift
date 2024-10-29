@@ -9,7 +9,7 @@ import Foundation
 
 class UpdateUser: APIManager {
     
-    typealias ModelType = UserResponse
+    typealias ModelType = UpdatedUserResponse
     var id: String
     
     init(id: String){

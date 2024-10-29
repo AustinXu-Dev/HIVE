@@ -6,6 +6,9 @@
 //
 
 import Foundation
+import FirebaseFirestore
+import FirebaseStorage
+
 
 class UpdateUserViewModel: ObservableObject {
 
@@ -74,11 +77,77 @@ class UpdateUserViewModel: ObservableObject {
                 self?.isLoading = false
                 switch result {
                 case .success(_):
-                    break
+                    print("Successfully updated user profile")
                 case .failure(let error):
                     self?.errorMessage = "Failed to update user: \(error.localizedDescription)"
+                    print(error.localizedDescription)
                 }
             }
         }
     }
+    
+    func storeImageUrl(imageUrl: String, uid: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("profiles").document(uid)
+        
+        userRef.setData([
+            "imageUrl": imageUrl,
+            "email": email
+        ], merge: true) { error in
+            if let error = error {
+                completion(.failure(error))
+            } else {
+                completion(.success(()))
+            }
+        }
+    }
+    
+    func retrieveImageUrl(uid: String, completion: @escaping (Result<String, Error>) -> Void) {
+        let db = Firestore.firestore()
+        let userRef = db.collection("profiles").document(uid)
+        
+        userRef.getDocument { document, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let document = document, document.exists {
+                if let imageUrl = document.data()?["imageUrl"] as? String {
+                    completion(.success(imageUrl))
+                } else {
+                    completion(.failure(NSError(domain: "Firestore", code: 0, userInfo: [NSLocalizedDescriptionKey: "Image URL not found"])))
+                }
+            } else {
+                completion(.failure(NSError(domain: "Firestore", code: 0, userInfo: [NSLocalizedDescriptionKey: "Document does not exist"])))
+            }
+        }
+    }
+    
+    func uploadImage(_ image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
+        let storageRef = Storage.storage().reference().child("images/\(UUID().uuidString).jpg")
+        guard let imageData = image.jpegData(compressionQuality: 0.75) else {
+            completion(.failure(NSError(domain: "ImageError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image data"])))
+            return
+        }
+        
+        storageRef.putData(imageData, metadata: nil) { metadata, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            storageRef.downloadURL { url, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let downloadURL = url?.absoluteString else {
+                    completion(.failure(NSError(domain: "ImageError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get download URL"])))
+                    return
+                }
+                
+                completion(.success(downloadURL))
+            }
+        }
+    }
+
 }

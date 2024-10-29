@@ -19,6 +19,13 @@ struct UsersResponse: Codable, Hashable {
     let message: [UserModel]?
 }
 
+struct UpdatedUserResponse : Codable, Hashable {
+    let success : Bool
+    let message : String
+    let user : UserModel
+}
+
+
 // User details model
 struct UserModel: Codable, Hashable {
     let _id: String?
@@ -28,7 +35,7 @@ struct UserModel: Codable, Hashable {
     let gender: String?
     let profileImageUrl: String?
     let about: String?
-    let bio: String?
+    var bio: String?
     let instagramLink: String?
     let isOrganizer: Bool?
     let isSuspended: Bool?
