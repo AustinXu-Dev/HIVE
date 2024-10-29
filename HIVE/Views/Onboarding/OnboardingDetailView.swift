@@ -36,9 +36,11 @@ struct OnboardingDetailView: View {
             
             switch onboardingSteps[currentStep].type{
             case .Name:
-                TextField("Name", text: $viewModel.name)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
+                Spacer()
+                VStack{
+                    TextEditorWithPlaceholder(text: $viewModel.name)
+                }.frame(maxWidth: .infinity, maxHeight: 50)
+                Spacer()
             case .Birthday:
                 DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
                     .datePickerStyle(.wheel)
@@ -111,6 +113,10 @@ struct OnboardingDetailView: View {
         .id(currentStep)
         .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
         .animation(.linear, value: currentStep)
+        .onTapGesture {
+            self.hideKeyboard()
+            print("keyboard hide")
+        }
         
     }
 }
