@@ -108,8 +108,8 @@ struct ShareSocialView: View {
     
     // Function to validate Instagram profile link
     private func validateLink() {
-        // Regular expression for Instagram profile URL
-        let profileRegex = #"^https://(www\.)?instagram\.com/([a-zA-Z0-9._]+)(/)?$"#
+        // Regular expression for Instagram profile URL (web and mobile)
+        let profileRegex = #"^https?://(www\.)?instagram\.com/([a-zA-Z0-9._]+)(/?)(\?.*)?$"#
         
         // Check if the URL matches the regular expression
         if let _ = viewModel.instagramHandle.range(of: profileRegex, options: .regularExpression) {
@@ -118,6 +118,7 @@ struct ShareSocialView: View {
             isValid = false
         }
     }
+
 }
 
 #Preview {
