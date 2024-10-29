@@ -113,6 +113,10 @@ struct OnboardingDetailView: View {
         .id(currentStep)
         .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .leading)))
         .animation(.linear, value: currentStep)
+        .onTapGesture {
+            self.hideKeyboard()
+            print("keyboard hide")
+        }
         
     }
 }

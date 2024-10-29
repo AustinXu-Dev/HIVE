@@ -86,43 +86,41 @@ class GoogleAuthenticationViewModel: ObservableObject {
                 // Fetch all users asynchronously
                 self.getAllUserVM.getAllUsers()
                 
-                // Observe userData updates to check if the user exists
-                self.getAllUserVM.$userData
-                    .sink { [weak self] userData in
-                        guard let self = self, let users = userData else { return }
-                        self.checkIfUserExists(in: users, result: authResult, completion: completion)
-                    }
-                    .store(in: &self.cancellables)
+                let isNewInFirebase = authResult.additionalUserInfo?.isNewUser ?? false
+                if isNewInFirebase{
+                    print("New user in firebase")
+                    UserDefaults.standard.set(false, forKey: "appState")
+                    completion(nil, true)
+                } else {
+                    // Observe userData updates to check if the user exists
+                    self.getAllUserVM.$userData
+                        .sink { [weak self] userData in
+                            guard let self = self, let users = userData else { return }
+                            self.checkIfUserExists(in: users, result: authResult, completion: completion)
+                        }
+                        .store(in: &self.cancellables)
+                }
             }
         }
     }
 
     // Function to check if a user with the same email exists
     private func checkIfUserExists(in users: [UserModel], result: AuthDataResult, completion: @escaping (Error?, Bool) -> Void) {
-        
-        let isNewInFirebase = result.additionalUserInfo?.isNewUser ?? false
-        if isNewInFirebase{
-            print("New user in firebase")
-            UserDefaults.standard.set(false, forKey: "appState")
-            completion(nil, true)
-        } else {
-            users.forEach { user in
-                // Existing User
-                if user.email == result.user.email{
-                    DispatchQueue.main.async {
-                        print("Exisiting User")
-                        self.signInService.signIn()
-                        UserDefaults.standard.set(true, forKey: "appState")
-                        completion(nil, false) // Returning true for existing user
-                    }
-                } else {
-                    DispatchQueue.main.async {
-                        print("New User But not yet stored in backend")
-                        UserDefaults.standard.set(false, forKey: "appState")
-                        completion(nil, true)
-                    }
+        users.forEach { user in
+            // Existing User
+            if user.email == result.user.email{
+                DispatchQueue.main.async {
+                    print("Exisiting User")
+                    self.signInService.signIn()
+                    UserDefaults.standard.set(true, forKey: "appState")
+                    completion(nil, false) // Returning true for existing user
                 }
-                
+            } else {
+                DispatchQueue.main.async {
+                    print("New User But not yet stored in backend")
+                    UserDefaults.standard.set(false, forKey: "appState")
+                    completion(nil, true)
+                }
             }
         }
         
