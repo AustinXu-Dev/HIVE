@@ -105,33 +105,37 @@ class GoogleAuthenticationViewModel: ObservableObject {
     }
 
     // Function to check if a user with the same email exists
+  
+        
     private func checkIfUserExists(in users: [UserModel], result: AuthDataResult, completion: @escaping (Error?, Bool) -> Void) {
-        var isUserExisting = false
-        
-        // Loop through users to check if any user's email matches the result user email
-        for user in users {
-            if user.email == result.user.email {
-                isUserExisting = true
-                DispatchQueue.main.async {
-                    print("Existing User")
-                    self.signInService.signIn()
-                    UserDefaults.standard.set(true, forKey: "appState")
-                    completion(nil, false) // Returning false for existing user
+                var isUserExisting = false
+                
+                // Loop through users to check if any user's email matches the result user email
+                for user in users {
+                    if user.email == result.user.email {
+                        isUserExisting = true
+                        DispatchQueue.main.async {
+                            print("Existing User")
+                            self.signInService.signIn()
+                            UserDefaults.standard.set(true, forKey: "appState")
+                            completion(nil, false) // Returning false for existing user
+                        }
+                        break
+                    }
                 }
-                break
+                
+                // If no existing user was found, handle as a new user
+                if !isUserExisting {
+                    DispatchQueue.main.async {
+                        print("New User But not yet stored in backend")
+                        UserDefaults.standard.set(false, forKey: "appState")
+                        completion(nil, true) // Returning true for new user
+                    }
+                }
             }
+
         }
         
-        // If no existing user was found, handle as a new user
-        if !isUserExisting {
-            DispatchQueue.main.async {
-                print("New User But not yet stored in backend")
-                UserDefaults.standard.set(false, forKey: "appState")
-                completion(nil, true) // Returning true for new user
-            }
-        }
-    }
-
 
     // Google Sign Out Function
     func signOutWithGoogle() {

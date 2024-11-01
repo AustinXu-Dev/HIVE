@@ -97,12 +97,28 @@ struct EventCreationView: View {
          if eventTitle.isEmpty {
              invalidFields.insert("title")
          }
+         
+         if eventTitle.count > 50 {
+             invalidFields.insert("invalidTitle")
+         }
+         
          if eventLocation.isEmpty {
              invalidFields.insert("location")
          }
+         
+         if eventLocation.count > 30 {
+             invalidFields.insert("invalidLocation")
+         }
+         
          if additionalInfo.isEmpty {
              invalidFields.insert("additionalInfo")
          }
+         
+         if additionalInfo.count > 200 {
+             invalidFields.insert("invalidAdditionalInfo")
+
+         }
+         
          validateCategory()
          validateDate()
          
@@ -160,9 +176,6 @@ struct EventCreationView: View {
         print("event creation request initiated")
         
         guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else {
-            let uuid = profileVM.userDetail?._id
-            let usermail = profileVM.userDetail?.email
-            print("UID \(uuid) & email \(usermail)")
         return
         }
         
@@ -324,11 +337,11 @@ extension EventCreationView {
             Text("Choose a Catchy Title!")
                 .font(.headline)
             ZStack(alignment: .leading) {
-                // Placeholder text
+                // validating if (1) title contains value and (2) character limit
                 if eventTitle.isEmpty {
                     Text("Event Title")
-                        .foregroundStyle(invalidFields.contains("title") ? Color.red : Color.gray)
-                        .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+                        .foregroundStyle(invalidFields.contains("title") || invalidFields.contains("invalidTitle") ? Color.red : Color.gray)
+                        .animation(.linear(duration: 0.001), value: invalidFields.contains("title") || invalidFields.contains("invalidTitle"))
                         .padding(.horizontal)
                 }
                 TextField("", text: $eventTitle)
@@ -342,13 +355,26 @@ extension EventCreationView {
                         if !newEventName.isEmpty {
                             invalidFields.remove("title")
                         }
+                        
+                        if newEventName.count > 50 {
+                            invalidFields.insert("invalidTitle")
+                        } else {
+                            invalidFields.remove("invalidTitle")
+                        }
+                        
                     }
             }
             Rectangle()
                 .frame(width:200,height:2)
-                .foregroundStyle(invalidFields.contains("title") ? Color.red.opacity(0.5) : Color.black)
-                .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-
+                .foregroundStyle(invalidFields.contains("title") || invalidFields.contains("invalidTitle") ? Color.red.opacity(0.5) : Color.black)
+                .animation(.linear(duration: 0.001), value: invalidFields.contains("title") || invalidFields.contains("invalidTitle") )
+            
+            if invalidFields.contains("invalidTitle") {
+                Text("Char Limit - Only Up to 50")
+                    .font(.system(size:12))
+                    .foregroundStyle(Color.red)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidTitle"))
+            }
 
             
         }
@@ -362,8 +388,8 @@ extension EventCreationView {
                 // Placeholder text
                 if eventLocation.isEmpty {
                     Text("Event Location")
-                        .foregroundStyle(invalidFields.contains("location") ? Color.red : Color.gray)
-                        .animation(.linear(duration: 0.001), value: invalidFields.contains("location"))
+                        .foregroundStyle(invalidFields.contains("location") || invalidFields.contains("invalidLocation") ? Color.red : Color.gray)
+                        .animation(.linear(duration: 0.001), value: invalidFields.contains("location") || invalidFields.contains("invalidLocation"))
                         .padding(.horizontal)
                        
                 }
@@ -378,13 +404,27 @@ extension EventCreationView {
                         if !newEventLocation.isEmpty {
                             invalidFields.remove("location")
                         }
+                        
+                        if newEventLocation.count > 30 {
+                            invalidFields.insert("invalidLocation")
+                        } else {
+                            invalidFields.remove("invalidLocation")
+                        }
                     }
                 
             }
             Rectangle()
                 .frame(width:200,height:2)
-                .foregroundStyle(invalidFields.contains("location") ? Color.red.opacity(0.5) : Color.black)
-                .animation(.linear(duration: 0.001), value: invalidFields.contains("location"))
+                .foregroundStyle(invalidFields.contains("location") || invalidFields.contains("invalidLocation") ? Color.red.opacity(0.5) : Color.black)
+                .animation(.linear(duration: 0.001), value: invalidFields.contains("location") || invalidFields.contains("invalidLocation"))
+            
+            if invalidFields.contains("invalidLocation") {
+                Text("Char Limit - Only Up to 30")
+                    .font(.system(size:12))
+                    .foregroundStyle(Color.red)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidLocation"))
+            }
+            
         }
         
    
@@ -499,6 +539,13 @@ extension EventCreationView {
             Text("Additional info")
                 .font(.headline)
             
+            if invalidFields.contains("invalidAdditionalInfo") {
+                Text("Char Limit - Only Up to 200")
+                    .font(.system(size:12))
+                    .foregroundStyle(Color.red)
+                    .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidAdditionalInfo"))
+            }
+            
             ZStack(alignment: .topLeading) {
                 // Placeholder text
                 if additionalInfo.isEmpty {
@@ -507,6 +554,9 @@ extension EventCreationView {
                         .padding(.vertical, 12)
                 }
                 
+                
+
+                
                 TextEditor(text: $additionalInfo)
                     .frame(height: 150)
                     .padding(4)
@@ -514,13 +564,21 @@ extension EventCreationView {
                     .cornerRadius(8)
                     .overlay(
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(invalidFields.contains("additionalInfo") ? Color.red : Color.gray, lineWidth: 1)
-                            .animation(.linear(duration: 0.001), value: invalidFields.contains("additionalInfo"))
+                            .stroke(invalidFields.contains("additionalInfo") || invalidFields.contains("invalidAdditionalInfo")  ? Color.red : Color.gray, lineWidth: 1)
+                            .animation(.linear(duration: 0.001), value: invalidFields.contains("additionalInfo") || invalidFields.contains("invalidAdditionalInfo"))
                     )
-//                    .background(additionalInfo.isEmpty ? Color.red.opacity(0.3) : Color.clear)
+
+                
                     .onChange(of: additionalInfo) { _,newAdditionalInfo in
                         if !newAdditionalInfo.isEmpty {
                             invalidFields.remove("additionalInfo")
+                        }
+                        
+                        if newAdditionalInfo.count > 200 {
+                            invalidFields.insert("invalidAdditionalInfo")
+                        } else {
+                            invalidFields.remove("invalidAdditionalInfo")
+
                         }
                     }
 
