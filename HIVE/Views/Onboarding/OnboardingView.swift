@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Firebase
-import GoogleSignIn
 import FirebaseAuth
 
 struct OnboardingView: View {
