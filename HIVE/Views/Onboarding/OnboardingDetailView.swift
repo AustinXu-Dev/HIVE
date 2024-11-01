@@ -24,6 +24,7 @@ struct OnboardingDetailView: View {
     
     @State private var isPickerPresented = false
     @State private var isUploading = false
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack(alignment: .leading){
@@ -38,7 +39,8 @@ struct OnboardingDetailView: View {
             case .Name:
                 Spacer()
                 VStack{
-                    TextEditorWithPlaceholder(text: $viewModel.name)
+                    TextEditorWithPlaceholder(text: $viewModel.name, isFocused: $isFocused)
+                        .lineLimit(1)
                 }.frame(maxWidth: .infinity, maxHeight: 50)
                 Spacer()
             case .Birthday:
@@ -64,8 +66,9 @@ struct OnboardingDetailView: View {
                             if let profileImage = viewModel.profileImage {
                                 Image(uiImage: profileImage)
                                     .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 200)
+                                    .frame(width: 300, height: 300)
+                                    .aspectRatio(contentMode: .fill)
+                                    .clipShape(RoundedRectangle(cornerRadius: 30))
                             } else {
                                 Text("Select an image")
                                     .foregroundColor(.gray)
@@ -105,7 +108,10 @@ struct OnboardingDetailView: View {
                     TextField("Tell others a bit about yourself...", text: $viewModel.bio, axis: .vertical)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
-                        .lineLimit(3, reservesSpace: true)
+                        .lineLimit(4, reservesSpace: true)
+                        .limitInputLength(value: $viewModel.bio, length: 60)
+                        .focused($isFocused)
+
                 }
             }
         }
@@ -116,6 +122,7 @@ struct OnboardingDetailView: View {
         .onTapGesture {
             self.hideKeyboard()
             print("keyboard hide")
+            isFocused = false
         }
         
     }
