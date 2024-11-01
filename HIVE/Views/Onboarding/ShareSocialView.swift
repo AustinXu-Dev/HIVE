@@ -14,6 +14,7 @@ struct ShareSocialView: View {
     @EnvironmentObject var viewModel: OnboardingViewModel
     @EnvironmentObject var googleVM: GoogleAuthenticationViewModel
     @ObservedObject var signupVM = SignUpService()
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack{
@@ -37,6 +38,7 @@ struct ShareSocialView: View {
                     )
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                    .focused($isFocused)
                 
                 if isValid == false {
                     Text("Invalid link! Please enter a valid Instagram profile link.")
@@ -97,7 +99,9 @@ struct ShareSocialView: View {
                 }
             }
         }
-        
+        .onTapGesture {
+            isFocused = false
+        }
     }
     
     func formatDate(_ date: Date, format: String = "yyyy-MM-dd") -> String {

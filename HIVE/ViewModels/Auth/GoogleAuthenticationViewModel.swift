@@ -107,7 +107,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
     // Function to check if a user with the same email exists
   
         
-        private func checkIfUserExists(in users: [UserModel], result: AuthDataResult, completion: @escaping (Error?, Bool) -> Void) {
+    private func checkIfUserExists(in users: [UserModel], result: AuthDataResult, completion: @escaping (Error?, Bool) -> Void) {
                 var isUserExisting = false
                 
                 // Loop through users to check if any user's email matches the result user email
@@ -133,23 +133,10 @@ class GoogleAuthenticationViewModel: ObservableObject {
                     }
                 }
             }
-    
-//        if let existingUser = users.first(where: { $0.email == self.email }) {
-//            // Existing user found
-//            DispatchQueue.main.async {
-//                self.signInService.signIn()
-//                UserDefaults.standard.set(true, forKey: "appState")
-//                completion(nil, false) // Returning true for existing user
-//            }
-//        } else {
-//            // New user detected
-//            print("New user detected, email: \(self.email)")
-//            DispatchQueue.main.async {
-//                UserDefaults.standard.set(false, forKey: "appState")
-//                completion(nil, true) // Returning false for new user
-//            }
-//        }
-    
+
+        }
+        
+
     // Google Sign Out Function
     func signOutWithGoogle() {
         do {

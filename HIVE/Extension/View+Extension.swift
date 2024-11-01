@@ -13,3 +13,10 @@ extension View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
+// For textfield input limit
+extension View {
+    func limitInputLength(value: Binding<String>, length: Int) -> some View {
+        self.modifier(TextFieldLimitModifer(value: value, length: length))
+    }
+}
