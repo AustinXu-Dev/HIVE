@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ParticipantView: View {
     let event : EventModel
@@ -16,9 +17,9 @@ struct ParticipantView: View {
             HStack(spacing:-12) {
                 if let eventParticipants = event.participants {
                     ForEach(eventParticipants.prefix(5),id: \.userid){ event in
-                        Image(event.profileImageUrl ?? "")
+                        KFImage(URL(string: event.profileImageUrl ?? ""))
                             .resizable()
-                            .aspectRatio(contentMode: .fit)
+                            .aspectRatio(contentMode: .fill)
                             .frame(width:28,height: 28)
                             .clipShape(Circle())
                             .overlay(

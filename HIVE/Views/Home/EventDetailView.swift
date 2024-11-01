@@ -31,25 +31,20 @@ struct EventDetailView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(maxWidth: .infinity)
-                            .frame(height: 270)
+                            .frame(height: 230)
                             .cornerRadius(10)
-                            .padding(.horizontal)
+                          
                         
                         Text(event.name)
                             .font(.title)
                             .fontWeight(.bold)
-                            .padding(.horizontal)
-                        
+                         
                         HStack {
                             eventCategories
-                            //                    TagView(text: "drink")
-                            //                    TagView(text: "Bar")
-                            //                    TagView(text: "indoor")
                         }
-                        .padding(.horizontal)
+                      
                         
                         HStack(spacing: 20) {
-                            //                    ZStack {
                             ParticipantView(event: event)
                                 .onTapGesture {
                                         appCoordinator.push(.eventAttendeeView(named: event))
@@ -57,11 +52,10 @@ struct EventDetailView: View {
                                 }
                         }
                         .frame(maxWidth: .infinity, alignment: .trailing)
-                        .padding(.horizontal)
+                    
                         
                         Text(event.additionalInfo)
                             .font(.body)
-                            .padding(.horizontal)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Host")
@@ -81,27 +75,34 @@ struct EventDetailView: View {
                                 }
                             }
                         }
-                        .padding(.horizontal)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
                                 .font(.headline)
                             HStack {
-                                Image(systemName: "mappin.circle")
+                                Image("location")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:22,height:22)
                                 Text(event.location)
                             }
                             HStack {
-                                Image(systemName: "calendar")
+                                Image("duration")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:22,height:22)
                                 if let eventStartDate = event.startDate.formatDateString(), let startTime = event.startTime.to12HourFormat(), let endTime = event.endTime.to12HourFormat() {
                                     Text("\(eventStartDate), \(startTime) - \(endTime)")
                                 }
                             }
                             HStack {
-                                Image(systemName: "person.3")
+                                Image("profile")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:22,height:22)
                                 Text("Anyone")
                             }
                         }
-                        .padding(.horizontal)
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
                            currentUserId != event.organizer?.userid {
                             
@@ -138,19 +139,14 @@ struct EventDetailView: View {
                             }
                             Spacer()
                             
-                                .padding()
+                              
                         }
                     }
+                    .padding(.horizontal,20)
                 }
             }
             .scrollIndicators(.hidden)
             .navigationBarBackButtonHidden()
-//            .onChange(of: joinEventVM.joinSuccess) { _,success in
-//                if success {
-//                    eventAlreadyJoined = true
-//                    appCoordinator.push(.eventJoinSuccess)
-//                }
-//            }
             .onAppear {
                 eventAlreadyJoinedOrNot()
             }
@@ -221,47 +217,12 @@ extension EventDetailView {
                     .foregroundColor(.white)
                     .font(.subheadline)
                     .padding(.vertical, 6)
-                    .padding(.horizontal, 2)
+                    .padding(.horizontal, 6)
                     .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .fixedSize(horizontal: true, vertical: false)
                 
                           }
-//            LazyVGrid(columns: [GridItem(.adaptive(minimum: 80))], spacing: 10) {
-//                ForEach(event.category, id: \.self) { category in
-//                    
-//                
-//                    Text(category)
-//                        .foregroundColor(.white)
-//                        .font(.subheadline)
-//                        .padding(.vertical, 6)
-//                        .padding(.horizontal, 2)
-//                        .background(Color.gray.opacity(1))
-//                        .cornerRadius(8)
-//                        .fixedSize(horizontal: true, vertical: false)
-//                    
-//                }
-//            }
-//            .frame(maxWidth:350)
-            
-            
-            // Expand/Collapse Button
-//            Button(action: {
-//                withAnimation(.linear(duration: 0.35)){
-//                    isCategoryExpanded.toggle()
-//                }
-//            }) {
-//                Circle()
-//                    .frame(height:27)
-//                    .foregroundStyle(Color.black)
-//                    .overlay (
-//                        Image(systemName: "chevron.down")
-//                            .rotationEffect(.degrees(isCategoryExpanded ? 180 : 0))
-//                            .foregroundStyle(.white)
-//                    )
-//                
-//            }
-          
         }
         
     }

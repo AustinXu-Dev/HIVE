@@ -18,7 +18,7 @@ struct ProfileView: View {
     @State private var isEditable = true
     @State private var showLogoutAlert = false
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
-    @StateObject var profileVM = GetOneUserByIdViewModel()
+    @EnvironmentObject var profileVM : GetOneUserByIdViewModel
     @StateObject var updateProfileVM = UpdateUserViewModel()
     
     var body: some View {
@@ -155,13 +155,11 @@ struct ProfileView: View {
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(12)
                     .padding(.horizontal, 40)
+                    .padding(.bottom,20)
             }
         }
-        .onAppear {
-            if let userId = KeychainManager.shared.keychain.get("appUserId") {
-                profileVM.getOneUserById(id: userId)
-            }
-        }
+         
+        
         .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Logout", role: .destructive) {

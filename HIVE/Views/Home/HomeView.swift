@@ -10,40 +10,42 @@ import Kingfisher
 
 struct HomeView: View {
     
-    @StateObject private var eventsVM = GetEventsViewModel()
-    @State private var searchText: String = ""
+    @EnvironmentObject private var eventsVM : GetEventsViewModel
     @State private var selectedTimeFilter: TimeFilter = .all
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
 
 
     var body: some View {
-            VStack {
-                VStack(alignment: .center) {
+            ScrollView(.vertical,showsIndicators: false) {
+            if eventsVM.isLoading {
+                VStack {
+                    EmptyView()
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                    EmptyView()
+                    
+                }
+            } else {
+                VStack(alignment: .center,spacing:14) {
                     headerRow
+                        .padding(.horizontal)
                     if TokenManager.share.getToken() == nil {
                         accountCreationButton
                     }
-                }
-                Spacer()
-                if eventsVM.isLoading {
-                    ProgressView()
-                } else if filteredEvents.isEmpty {
-                    Text("No events found")
-                        .padding()
-                } else {
                     eventsScrollView
-                        .refreshable {
-                            eventsVM.fetchEvents()
-                        }
                 }
+                .padding(.horizontal)
+                
             }
-            .padding(.horizontal)
-            .onAppear {
+        }
+         
+            .navigationBarBackButtonHidden()
+            .refreshable {
                 eventsVM.fetchEvents()
             }
-            // Move the search bar out of the toolbar
-            .searchable(text: $searchText, placement: .automatic, prompt: "Search events")
+        
           
         
     }
@@ -53,9 +55,9 @@ struct HomeView: View {
             Text("Explore")
                 .padding(.horizontal)
 
-            ScrollView(.vertical, showsIndicators: false) {
+          //  ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 30) {
-                    ForEach(filteredEvents, id: \._id) { event in
+                    ForEach(eventsVM.events, id: \._id) { event in
                         EventCard(event: event)
                             
                             .onTapGesture {
@@ -63,10 +65,10 @@ struct HomeView: View {
                             }
                     }
                 }
-            }
+          //  }
         }
     }
-    
+   /*
     private var filteredEvents: [EventModel] {
         // First, filter by search text
         let filteredBySearch = searchText.isEmpty ? eventsVM.events : eventsVM.events.filter { event in
@@ -77,6 +79,7 @@ struct HomeView: View {
             matchesTimeFilter(event: event)
         }
     }
+    */
     
     
        private func matchesTimeFilter(event: EventModel) -> Bool {
@@ -123,9 +126,6 @@ extension HomeView {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 78, height: 34)
             Spacer()
-//            RoundedRectangle(cornerRadius: 10)
-//                .frame(width: 133, height: 34)
-//                .foregroundStyle(.gray)
             Menu {
                 ForEach(TimeFilter.allCases, id: \.self) { filter in
                     Button(action: {

@@ -9,7 +9,9 @@ import SwiftUI
 struct SearchView: View {
     @State private var searchText = ""
     @State private var hasResults = true
-    let demoData = ["Apple", "Banana", "Orange", "Mango", "Peach"]
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+    @EnvironmentObject var eventsVM : GetEventsViewModel
+
 
     var body: some View {
         VStack {
@@ -50,6 +52,7 @@ struct SearchView: View {
                 Spacer()
 
                 Button(action: {
+                    appCoordinator.push(.eventCreationForm)
                 }) {
                     Text("Be the first to host one! 🎉")
                         .padding()
@@ -64,23 +67,59 @@ struct SearchView: View {
 
                 Spacer()
             } else {
-                List {
-                    ForEach(demoData.filter { $0.localizedCaseInsensitiveContains(searchText) }, id: \.self) { item in
-                        Text(item)
+                ScrollView(.vertical, showsIndicators: false) {
+                    VStack {
+                        ForEach(eventsVM.events.filter { event in
+                            event.name.contains(searchText) || (event.organizer?.name?.contains(searchText) ?? false)
+                        }, id: \.self) { event in
+                            EventCard(event: event)
+                                .onTapGesture {
+                                    appCoordinator.push(.eventDetailView(named: event))
+                                }
+                        }
                     }
                 }
+
+            
             }
 
             Spacer()
         }
+      
     }
 
+  
     func performSearch(for query: String) -> Bool {
-        return !demoData.filter { $0.localizedCaseInsensitiveContains(query) }.isEmpty
-    }
+            return eventsVM.events.contains { event in
+                event.name.contains(query) || (event.organizer?.name?.contains(query) ?? false)
+            }
+        }
 }
 
 #Preview {
     SearchView()
 }
 
+
+extension SearchView {
+    
+    
+   
+    private var eventsScrollView: some View {
+        VStack(alignment: .leading) {
+            Text("Explore")
+                .padding(.horizontal)
+
+                VStack(spacing: 30) {
+                    ForEach(eventsVM.events, id: \._id) { event in
+                        EventCard(event: event)
+                            
+                            .onTapGesture {
+                                appCoordinator.push(.eventDetailView(named: event))
+                            }
+                    }
+                }
+          //  }
+        }
+    }
+}

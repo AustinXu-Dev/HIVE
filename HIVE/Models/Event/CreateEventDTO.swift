@@ -31,12 +31,13 @@ struct CreateEventResponse : Codable, Hashable{
 
 struct CreatedEventModel : Codable, Hashable {
 
-    let  _id,eventImageUrl,name,location: String
-    let startDate,endDate,startTime,endTime : String
-    let maxParticipants : Int
-    let isLimited : Bool
-    let category : [String]
-    let additionalInfo : String
-    let participants : [ParticipantModel]?
+    let  _id,eventImageUrl,name,location: String?
+    let startDate,endDate,startTime,endTime : String?
+    let maxParticipants : Int?
+    let isLimited : Bool?
+    let category : [String]?
+    let additionalInfo : String?
+//    let participants : [ParticipantModel]?
+    let participants : [String]?
     let organizer : String?
 }
