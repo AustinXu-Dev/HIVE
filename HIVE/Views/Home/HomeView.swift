@@ -15,17 +15,12 @@ struct HomeView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
 
-
     var body: some View {
+        
             ScrollView(.vertical,showsIndicators: false) {
             if eventsVM.isLoading {
                 VStack {
-                    EmptyView()
-                    Spacer()
                     ProgressView()
-                    Spacer()
-                    EmptyView()
-                    
                 }
             } else {
                 VStack(alignment: .center,spacing:14) {
@@ -40,7 +35,7 @@ struct HomeView: View {
                 
             }
         }
-         
+            .navigationBarHidden(true)
             .navigationBarBackButtonHidden()
             .refreshable {
                 eventsVM.fetchEvents()
@@ -57,7 +52,7 @@ struct HomeView: View {
 
           //  ScrollView(.vertical, showsIndicators: false) {
                 VStack(spacing: 30) {
-                    ForEach(eventsVM.events, id: \._id) { event in
+                    ForEach(filteredEvents, id: \._id) { event in
                         EventCard(event: event)
                             
                             .onTapGesture {
@@ -68,18 +63,14 @@ struct HomeView: View {
           //  }
         }
     }
-   /*
+   
     private var filteredEvents: [EventModel] {
-        // First, filter by search text
-        let filteredBySearch = searchText.isEmpty ? eventsVM.events : eventsVM.events.filter { event in
-            event.name.localizedCaseInsensitiveContains(searchText)
-        }
         // Apply the time filter
-        return filteredBySearch.filter { event in
+        return eventsVM.events.filter { event in
             matchesTimeFilter(event: event)
         }
     }
-    */
+    
     
     
        private func matchesTimeFilter(event: EventModel) -> Bool {

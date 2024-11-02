@@ -134,7 +134,8 @@ class GoogleAuthenticationViewModel: ObservableObject {
                 }
             }
 
-        }
+        
+
         
 
     // Google Sign Out Function

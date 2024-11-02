@@ -61,7 +61,7 @@ struct EventCreationView: View {
                 .padding()
             }
             
-            
+            .navigationBarBackButtonHidden()
             
             .onAppear {
                 if let userId = KeychainManager.shared.keychain.get("appUserId"){
