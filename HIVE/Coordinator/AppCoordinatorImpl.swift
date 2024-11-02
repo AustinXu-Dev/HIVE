@@ -64,6 +64,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             TabScreenView()
         case .eventCreationSuccess:
             EventCreationSuccessView()
+        case .participantProfile(named: let participant):
+            ProfileView(profile : participant)
         }
     }
     

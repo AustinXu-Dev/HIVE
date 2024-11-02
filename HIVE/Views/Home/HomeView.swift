@@ -17,12 +17,12 @@ struct HomeView: View {
 
     var body: some View {
         
-            ScrollView(.vertical,showsIndicators: false) {
             if eventsVM.isLoading {
                 VStack {
                     ProgressView()
                 }
             } else {
+                ScrollView(.vertical,showsIndicators: false) {
                 VStack(alignment: .center,spacing:14) {
                     headerRow
                         .padding(.horizontal)
@@ -34,12 +34,13 @@ struct HomeView: View {
                 .padding(.horizontal)
                 
             }
+                .navigationBarHidden(true)
+                .navigationBarBackButtonHidden()
+                .refreshable {
+                    eventsVM.fetchEvents()
+                }
         }
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden()
-            .refreshable {
-                eventsVM.fetchEvents()
-            }
+           
         
           
         
