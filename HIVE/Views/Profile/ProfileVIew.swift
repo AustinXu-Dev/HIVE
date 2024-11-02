@@ -26,10 +26,8 @@ struct ProfileView: View {
     @StateObject var updateProfileVM = UpdateUserViewModel()
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
-    
     var body: some View {
         VStack(spacing: 20) {
-            // Header with Back Button and Edit Options
             HStack {
                 if !isCurrentUserProfile {
                     Button(action: {
@@ -70,10 +68,8 @@ struct ProfileView: View {
             
             Divider()
             
-            // Profile Image Section
             ZStack {
                 if let selectedImage = profileImage {
-                    // Show the selected image immediately
                     Image(uiImage: selectedImage)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -108,9 +104,8 @@ struct ProfileView: View {
                         Image(systemName: "pencil")
                             .font(.title)
                             .foregroundColor(.white)
-                            .padding(4)
+                            .padding(50)
                             .background(Circle().fill(Color.black.opacity(0.7)))
-                            .frame(width: 50, height: 50)
                     }
                 }
             }
@@ -118,7 +113,6 @@ struct ProfileView: View {
                 ImagePicker(selectedImage: $profileImage)
             }
             
-            // Profile Name and Description
             Text(isCurrentUserProfile ? profileVM.userDetail?.name ?? "Unknown" : profile?.name ?? "Unknown")
                 .font(.title2)
                 .fontWeight(.bold)
@@ -127,7 +121,6 @@ struct ProfileView: View {
                     .foregroundColor(.gray)
             } else {
             
-//            if !isCurrentUserProfile {
                 Text("(\(profile?.bio ?? ""))")
                     .foregroundColor(.gray)
             }
@@ -147,15 +140,15 @@ struct ProfileView: View {
                     .padding(.horizontal, 40)
             }
             
-            // Connect Button
             Button(action: {
                 if let url = URL(string: profileVM.userDetail?.instagramLink ?? "") {
                     UIApplication.shared.open(url)
                 }
             }) {
                 HStack {
-                    Image(systemName: "camera")
-                        .foregroundColor(.pink)
+                    Image("instagram")
+                        .aspectRatio(contentMode: .fill)
+                        .frame(width: 27, height: 27)
                     Text("Connect me")
                         .font(.callout)
                         .foregroundColor(.black)

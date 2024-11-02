@@ -20,3 +20,9 @@ extension View {
         self.modifier(TextFieldLimitModifer(value: value, length: length))
     }
 }
+
+extension UIApplication {
+    func endEditing() {
+        sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+    }
+}
