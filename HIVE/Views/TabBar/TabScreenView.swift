@@ -11,7 +11,6 @@ struct TabScreenView: View {
     
     @State var selectedIndex: Int = 0
     @StateObject private var eventsVM = GetEventsViewModel()
-    @StateObject var profileVM = GetOneUserByIdViewModel()
 
     var body: some View {
         TabView(selection: $selectedIndex) {
@@ -40,7 +39,6 @@ struct TabScreenView: View {
                 }
                 .tag(3)
             ProfileView()
-                .environmentObject(profileVM)
                 .tabItem {
                     Label(selectedIndex == 4 ? "---" : "", image: "user")
                 }
@@ -48,9 +46,6 @@ struct TabScreenView: View {
         }
         .onAppear {
             eventsVM.fetchEvents()
-            if let userId = KeychainManager.shared.keychain.get("appUserId") {
-                profileVM.getOneUserById(id: userId)
-            }
         }
     }
 }

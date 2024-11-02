@@ -13,8 +13,8 @@ struct SignInView: View {
     @State var isNew = false
     
     var body: some View {
-        
-        if isNew{
+
+        if isNew {
             OnboardingView()
         } else {
             VStack(alignment: .center){
@@ -33,8 +33,11 @@ struct SignInView: View {
                 }.padding(.top, 40)
                 
                 Spacer()
+                
+
+                
                 Button {
-                    appCoordinator.push(.home)
+                    appCoordinator.push(.tab)
                 } label: {
                     Text("Browse First")
                         .underline(true, color: .black)

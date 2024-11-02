@@ -18,7 +18,7 @@ struct ProfileView: View {
     @State private var isEditable = true
     @State private var showLogoutAlert = false
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
-    @EnvironmentObject var profileVM : GetOneUserByIdViewModel
+    @StateObject var profileVM = GetOneUserByIdViewModel()
     @StateObject var updateProfileVM = UpdateUserViewModel()
     
     var body: some View {
@@ -88,6 +88,7 @@ struct ProfileView: View {
                         Image(systemName: "pencil")
                             .font(.title)
                             .foregroundColor(.white)
+                            .padding(4)
                             .background(Circle().fill(Color.black.opacity(0.7)))
                             .frame(width: 50, height: 50)
                     }
@@ -107,7 +108,7 @@ struct ProfileView: View {
             }
             
             if isEditingDescription {
-                TextField("Enter description", text: Binding(
+                TextField("Enter New Bio", text: Binding(
                     get: { profileVM.userDetail?.bio ?? "" },
                     set: { profileVM.userDetail?.bio = $0 }
                 ))
@@ -157,8 +158,21 @@ struct ProfileView: View {
                     .padding(.horizontal, 40)
                     .padding(.bottom,20)
             }
+            .padding(.top,30)
         }
-         
+        
+        .onAppear(perform: {
+            print(profileVM.userDetail?._id ?? "")
+            print(profileVM.userDetail?.name ?? "")
+            if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                print("User id from key chain is \(userId)")
+                profileVM.getOneUserById(id: userId)
+
+            }
+
+
+        })
+    
         
         .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
             Button("Cancel", role: .cancel) {}
@@ -175,7 +189,8 @@ struct ProfileView: View {
     // MARK: - Private Methods
     
     private func updateProfile() {
-        guard let uid = profileVM.userDetail?._id, let email = profileVM.userDetail?.email else { return }
+        
+        guard let uid = KeychainManager.shared.keychain.get("appUserId"), let email = profileVM.userDetail?.email else { return }
         
         updateProfileVM.uploadImage(profileImage ?? UIImage(named: "profile")!) { result in
             switch result {
@@ -202,8 +217,11 @@ struct ProfileView: View {
         updateProfileVM.retrieveImageUrl(uid: uid) { result in
             switch result {
             case .success(let storedImageUrl):
+                guard let userBio = profileVM.userDetail?.bio else { return }
                 updateProfileVM.profileImageUrl = storedImageUrl
+                updateProfileVM.bio = userBio
                 if let userToken = TokenManager.share.getToken() {
+                    print("Token is \(userToken)")
                     updateProfileVM.updateUser(id: uid, token: userToken)
                 }
             case .failure(let error):
