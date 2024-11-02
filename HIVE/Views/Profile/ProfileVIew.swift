@@ -140,30 +140,30 @@ struct ProfileView: View {
                     .padding(.horizontal, 40)
             }
             
-            Button(action: {
-                if let url = URL(string: profileVM.userDetail?.instagramLink ?? "") {
-                    UIApplication.shared.open(url)
+            if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
+                Button(action: {
+                    if let url = URL(string: instagramLink) {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    HStack {
+                        Image("instagram")
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 27, height: 27)
+                        Text("Connect me")
+                            .font(.callout)
+                            .foregroundColor(.black)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.gray.opacity(0.2))
+                    .cornerRadius(25)
+                    .padding(.horizontal, 40)
                 }
-            }) {
-                HStack {
-                    Image("instagram")
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 27, height: 27)
-                    Text("Connect me")
-                        .font(.callout)
-                        .foregroundColor(.black)
-                }
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color.gray.opacity(0.2))
-                .cornerRadius(25)
-                .padding(.horizontal, 40)
             }
             
             Spacer()
-            
-            // Logout Button
-            
+                        
             if isCurrentUserProfile {
             Button {
                 showLogoutAlert = true
@@ -184,8 +184,6 @@ struct ProfileView: View {
         }
         
         .onAppear(perform: {
-           
-           
             guard let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
             //by default,if userid is nil (meaning the partipant view is not initalized,assign profile userId as current User id
             if profile?.userid != nil {
@@ -201,10 +199,6 @@ struct ProfileView: View {
 
 
         })
-        
-        
-    
-        
         .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
             Button("Cancel", role: .cancel) {}
             Button("Logout", role: .destructive) {
