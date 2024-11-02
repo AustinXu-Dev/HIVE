@@ -217,7 +217,7 @@ extension EventDetailView {
                     .foregroundColor(.white)
                     .font(.subheadline)
                     .padding(.vertical, 6)
-                    .padding(.horizontal, 6)
+                    .padding(.horizontal, 10)
                     .background(Color.gray.opacity(1))
                     .cornerRadius(8)
                     .fixedSize(horizontal: true, vertical: false)

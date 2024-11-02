@@ -49,9 +49,17 @@ struct EventAttendeeView: View {
                             .font(.subheadline)
                             .foregroundColor(.gray)
                     }
-                    .padding(.leading, 8)
+                  
+                    Spacer()
                 }
+                .padding(.horizontal)
+                .frame(maxWidth:.infinity)
                 .padding(.vertical, 8)
+                .background(Color.white.opacity(0.000001))
+                .onTapGesture {
+                    appCoordinator.push(.participantProfile(named: user))
+                }
+              
             }
             .listStyle(PlainListStyle())
             .scrollIndicators(.hidden)

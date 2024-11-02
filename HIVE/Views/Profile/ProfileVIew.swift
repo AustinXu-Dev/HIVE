@@ -9,6 +9,9 @@ import SwiftUI
 import Kingfisher
 
 struct ProfileView: View {
+    
+    var profile : ParticipantModel? = nil
+    
     @State private var profileImage: UIImage? = nil
     @State private var isEditingDescription = false
     @State private var isEditingProfileImage = false
@@ -17,22 +20,29 @@ struct ProfileView: View {
     @State private var showImagePicker = false
     @State private var isEditable = true
     @State private var showLogoutAlert = false
+    @State private var isCurrentUserProfile : Bool = true
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     @StateObject var profileVM = GetOneUserByIdViewModel()
     @StateObject var updateProfileVM = UpdateUserViewModel()
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+
     
     var body: some View {
         VStack(spacing: 20) {
             // Header with Back Button and Edit Options
             HStack {
-                Button(action: {}) {
-                    Image(systemName: "chevron.left")
-                        .font(.title2)
-                        .foregroundColor(.black)
+                if !isCurrentUserProfile {
+                    Button(action: {
+                        appCoordinator.pop()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                    }
                 }
-                Spacer()
+                                Spacer()
                 
-                if isEditingDescription {
+                if isEditingDescription && isCurrentUserProfile {
                     Button(action: {
                         descriptionText = editedDescriptionText
                         updateProfile()
@@ -72,16 +82,26 @@ struct ProfileView: View {
                         .shadow(radius: 5)
                         .opacity(isEditingProfileImage ? 0.5 : 1.0)
                 } else {
-                    KFImage(URL(string: profileVM.userDetail?.profileImageUrl ?? ""))
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(width: 120, height: 120)
-                        .clipShape(Circle())
-                        .shadow(radius: 5)
-                        .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                    if isCurrentUserProfile {
+                        KFImage(URL(string: profileVM.userDetail?.profileImageUrl ?? ""))
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                            .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                    } else {
+                        KFImage(URL(string: profile?.profileImageUrl ?? ""))
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: 120, height: 120)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                            .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                    }
                 }
                 
-                if isEditable && isEditingProfileImage {
+                if isEditable && isEditingProfileImage && isCurrentUserProfile {
                     Button(action: {
                         showImagePicker = true
                     }) {
@@ -99,11 +119,16 @@ struct ProfileView: View {
             }
             
             // Profile Name and Description
-            Text(profileVM.userDetail?.name ?? "Unknown")
+            Text(isCurrentUserProfile ? profileVM.userDetail?.name ?? "Unknown" : profile?.name ?? "Unknown")
                 .font(.title2)
                 .fontWeight(.bold)
-            if let about = profileVM.userDetail?.about {
+            if let about = profileVM.userDetail?.about, isCurrentUserProfile {
                 Text("(\(about))")
+                    .foregroundColor(.gray)
+            } else {
+            
+//            if !isCurrentUserProfile {
+                Text("(\(profile?.bio ?? ""))")
                     .foregroundColor(.gray)
             }
             
@@ -115,7 +140,7 @@ struct ProfileView: View {
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 40)
             } else {
-                Text(profileVM.userDetail?.bio ?? "No bio available")
+                Text(isCurrentUserProfile ? profileVM.userDetail?.bio ?? "No bio available" : "")
                     .font(.body)
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)
@@ -145,6 +170,8 @@ struct ProfileView: View {
             Spacer()
             
             // Logout Button
+            
+            if isCurrentUserProfile {
             Button {
                 showLogoutAlert = true
             } label: {
@@ -159,19 +186,30 @@ struct ProfileView: View {
                     .padding(.bottom,20)
             }
             .padding(.top,30)
+            
+        }
         }
         
         .onAppear(perform: {
-            print(profileVM.userDetail?._id ?? "")
-            print(profileVM.userDetail?.name ?? "")
-            if let userId = KeychainManager.shared.keychain.get("appUserId") {
-                print("User id from key chain is \(userId)")
-                profileVM.getOneUserById(id: userId)
-
+           
+           
+            guard let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
+            //by default,if userid is nil (meaning the partipant view is not initalized,assign profile userId as current User id
+            if profile?.userid != nil {
+                isCurrentUserProfile = false
+            }
+            //but the value will be the passed data if its pass from event participants view
+            if profile?.userid != reterivedUserId {
+                print("profile userId: \(profile?.userid)")
+                print("reterived userID: \(reterivedUserId)")
+                profileVM.getOneUserById(id: reterivedUserId)
+                    
             }
 
 
         })
+        
+        
     
         
         .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
