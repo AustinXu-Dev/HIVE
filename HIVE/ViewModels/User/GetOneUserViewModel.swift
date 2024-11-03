@@ -19,11 +19,12 @@ class GetOneUserByIdViewModel: ObservableObject {
         let getOneUser = GetUserById(id: id)
         getOneUser.execute(getMethod: "GET", token: nil) { [weak self] result in
             DispatchQueue.main.async {
-                self?.isLoading = false
                 switch result {
                 case .success(let userDetailData):
+                    self?.isLoading = false
                     self?.userDetail = userDetailData.message
                 case .failure(let error):
+                    self?.isLoading = false
                     self?.errorMessage = "Failed to get user detail by id: \(error.localizedDescription)"
                 }
             }

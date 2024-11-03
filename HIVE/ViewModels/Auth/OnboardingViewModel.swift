@@ -56,7 +56,7 @@ class OnboardingViewModel: ObservableObject {
 
                 // Store the download URL and email in Firestore
                 let db = Firestore.firestore()
-                let userRef = db.collection("users").document(uid)
+                let userRef = db.collection("profiles").document(uid)
                 userRef.setData([
                     "imageUrl": downloadURL,
                     "email": email
