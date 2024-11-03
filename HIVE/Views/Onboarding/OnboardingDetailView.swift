@@ -44,9 +44,15 @@ struct OnboardingDetailView: View {
                 }.frame(maxWidth: .infinity, maxHeight: 50)
                 Spacer()
             case .Birthday:
-                DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
-                    .datePickerStyle(.wheel)
-                    .padding()
+                VStack {
+                    DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
+                        .datePickerStyle(.wheel)
+                        .labelsHidden() // Hides label to avoid blank space
+                        .environment(\.locale, Locale(identifier: "en_US")) // Sets to US format
+                        .padding()
+                }
+                .frame(maxWidth: .infinity)
+                .multilineTextAlignment(.center)
                 
             case .Gender:
                 Picker("Gender", selection: $viewModel.gender) {
@@ -59,9 +65,12 @@ struct OnboardingDetailView: View {
                 
             case .Pfp:
                 VStack(alignment: .center) {
+                    Spacer()
+                        .frame(height: 100)
                     // Display the selected image or prompt the user to select an image
                     RoundedRectangle(cornerRadius: 30)
-                        .frame(width: 300, height: 300)
+                        .frame(width: 200, height: 200)
+                        .foregroundStyle(Color("hive_gray"))
                         .overlay {
                             if let profileImage = viewModel.profileImage {
                                 Image(uiImage: profileImage)
@@ -70,9 +79,10 @@ struct OnboardingDetailView: View {
                                     .aspectRatio(contentMode: .fill)
                                     .clipShape(RoundedRectangle(cornerRadius: 30))
                             } else {
-                                Text("Select an image")
-                                    .foregroundColor(.gray)
-                                    .frame(height: 200)
+                                Image("image_placeholder")
+                                    .resizable()
+                                    .frame(width: 100, height: 100)
+                                    .aspectRatio(contentMode: .fit)
                             }
                         }
                         .onTapGesture {
@@ -105,12 +115,31 @@ struct OnboardingDetailView: View {
                         }
                     }
                     .padding(.top)
-                    TextField("Tell others a bit about yourself...", text: $viewModel.bio, axis: .vertical)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                    Spacer()
+                        .frame(height: 80)
+                    VStack{
+                        ZStack(alignment: .topLeading) {
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color("hive_gray"))
+                                .overlay(
+                                    GeometryReader { geometry in
+                                        Color.clear
+                                            .frame(height: geometry.size.height) // Match the background to TextField's height
+                                    }
+                                )
+                            
+                            TextField("Tell others a bit about yourself...", text: $viewModel.bio, axis: .vertical)
+                                .textFieldStyle(PlainTextFieldStyle()) // Use Plain style to avoid white background
+                                .padding(16) // Add padding within the TextField
+                                .foregroundColor(.black) // Text color
+                                .lineLimit(4, reservesSpace: true)
+                                .background(Color.clear)
+                                .limitInputLength(value: $viewModel.bio, length: 60)
+                                .focused($isFocused)
+                        }
                         .padding()
-                        .lineLimit(4, reservesSpace: true)
-                        .limitInputLength(value: $viewModel.bio, length: 60)
-                        .focused($isFocused)
+                        .frame(maxWidth: .infinity)
+                    }.frame(maxHeight: 100)
 
                 }
             }
@@ -138,7 +167,7 @@ struct RectangleOption: View {
             Text(option)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(isSelected ? Color.black : Color.gray.opacity(0.2))
+                .background(isSelected ? Color.black : Color("hive_gray"))
                 .foregroundColor(isSelected ? .white : .black)
                 .cornerRadius(8)
                 .overlay(
