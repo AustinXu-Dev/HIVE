@@ -24,6 +24,11 @@
 			</array>
 		</dict>
 	</array>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lato-Bold.ttf</string>
+		<string>Lato-SemiBold.ttf</string>
+	</array>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIImageName</key>

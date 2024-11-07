@@ -30,12 +30,21 @@ struct OnboardingDetailView: View {
         VStack(alignment: .leading){
             Text(onboardingSteps[currentStep].title)
                 .frame(maxWidth: .infinity, alignment: .leading)
+<<<<<<< HEAD
                 .font(CustomFont.onBoardingSubtitle)
             Text(onboardingSteps[currentStep].description)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .font(CustomFont.onBoardingDescription)
             
             switch onboardingSteps[currentStep].type{
+=======
+                .applySecondaryHeadingFont()
+            Text(onboardingSteps[currentStep].description)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .applySecondaryBodyFont()
+          
+            switch onboardingSteps[currentStep].type {
+>>>>>>> 5edf502 (add: logic for sign in, guest, sign out state)
             case .Name:
                 Spacer()
                 VStack{

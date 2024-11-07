@@ -97,7 +97,7 @@ struct SearchView: View {
     
     func performSearch(for query: String) -> Bool {
         return eventsVM.events.contains { event in
-            event.name.contains(query) || (event.organizer?.name?.contains(query) ?? false)
+          event.name.lowercased().contains(query) || (event.organizer?.name?.lowercased().contains(query) ?? false)
         }
     }
     

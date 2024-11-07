@@ -13,6 +13,8 @@ struct HomeView: View {
     @EnvironmentObject private var eventsVM : GetEventsViewModel
     @State private var selectedTimeFilter: TimeFilter = .all
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+  @Environment(\.isGuest) private var isGuest: Bool
+  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
 
 
     var body: some View {
@@ -26,7 +28,8 @@ struct HomeView: View {
                 VStack(alignment: .center,spacing:14) {
                     headerRow
                         .padding(.horizontal)
-                    if TokenManager.share.getToken() == nil {
+                //    if TokenManager.share.getToken() == nil {
+                  if isGuest {
                         accountCreationButton
                     }
                     eventsScrollView
@@ -38,6 +41,9 @@ struct HomeView: View {
                 .navigationBarBackButtonHidden()
                 .refreshable {
                     eventsVM.fetchEvents()
+                }
+                .onAppear {
+                  print("user app State \(userAppState)")
                 }
         }
            
@@ -52,9 +58,9 @@ struct HomeView: View {
                 .font(CustomFont.profileTitle)
                 .fontWeight(.bold)
                 .padding(.horizontal)
-
+                .frame(alignment: .leading)
           //  ScrollView(.vertical, showsIndicators: false) {
-                VStack(spacing: 30) {
+          VStack(alignment:.leading,spacing: 30) {
                     ForEach(filteredEvents, id: \._id) { event in
                         EventCard(event: event)
                             
@@ -144,13 +150,9 @@ extension HomeView {
             Text("Ready to Connect?")
                 .bold()
             Button {
-                appCoordinator.push(.signIn)
+              userAppState =  AppState.notSignedIn.rawValue
             } label: {
-                Text("Create an Account")
-                    .foregroundStyle(.white)
-                    .padding(10)
-                    .background(Color.black)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
+              ReusableAccountCreationButton()
             }
            
             Text("To join or host your own!")

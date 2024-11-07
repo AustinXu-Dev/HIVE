@@ -14,6 +14,8 @@ struct EventDetailView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject private var joinEventVM = JoinEventViewModel()
     @State private var eventAlreadyJoined : Bool = false
+  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+
     var body: some View {
         
         ScrollView {
@@ -76,7 +78,11 @@ struct EventDetailView: View {
                                 }
                             }
                         }
-                        
+                        .background(Color.white.opacity(0.00001))
+                        .onTapGesture {
+                          //MARK: - not working
+                         // appCoordinator.push(.participantProfile(named: event.organizer))
+                        }
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
                                 .font(CustomFont.eventSubtitleStyle)
@@ -108,44 +114,57 @@ struct EventDetailView: View {
                                     .font(CustomFont.detail)
                             }
                         }
+                      
+                      
+                      if userAppState == AppState.guest.rawValue {
+                        Button {
+                          userAppState =  AppState.notSignedIn.rawValue
+                          //MARK: not sending to sign in page
+                        } label: {
+                          ReusableAccountCreationButton()
+                        }
+                      }
+                        
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
-                           currentUserId != event.organizer?.userid {
+                           currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
                             
-                            VStack {
-                                Spacer()
-                                
-                                
-                                Button(action: {
-                                    if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
-                                        joinEventVM.joinEvent(eventId: event._id, token: userToken)
-                                    }
+                          VStack {
+                            Spacer()
+                          
+                              
+                        
+                            Button(action: {
+                              if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
+                                joinEventVM.joinEvent(eventId: event._id, token: userToken)
+                              }
+                              
+                              
+                            }) {
+                              ZStack {
+                                RoundedRectangle(cornerRadius: 25)
+                                  .stroke(Color.purple, lineWidth: 5)
+                                  .shadow(color: Color.purple.opacity(0.4), radius: 20, x: 0, y: 0)
+                                  .shadow(color: Color.purple.opacity(0.4), radius: 40, x: 0, y: 0)
+                                  .frame(width: 300, height: 60)
+                                  .overlay {
+                                    Text(eventAlreadyJoined ? "Joined" :"Join")
+                                      .font(.system(size: 24, weight: .bold))
+                                      .foregroundColor(.black)
+                                      .frame(width: 300, height: 60)
+                                      .background(Color.white)
+                                      .cornerRadius(25)
                                     
-                                    
-                                }) {
-                                    ZStack {
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .stroke(Color.purple, lineWidth: 5)
-                                            .shadow(color: Color.purple.opacity(0.4), radius: 20, x: 0, y: 0)
-                                            .shadow(color: Color.purple.opacity(0.4), radius: 40, x: 0, y: 0)
-                                            .frame(width: 300, height: 60)
-                                            .overlay {
-                                                Text(eventAlreadyJoined ? "Joined" :"Join")
-                                                    .font(.system(size: 24, weight: .bold))
-                                                    .foregroundColor(.black)
-                                                    .frame(width: 300, height: 60)
-                                                    .background(Color.white)
-                                                    .cornerRadius(25)
-                                                
-                                            }
-                                    }
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                                .frame(maxWidth: .infinity)
+                                  }
+                              }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .frame(maxWidth: .infinity)
+                          }
                             }
                             Spacer()
                             
                               
-                        }
+                        
                     }
                     .padding(.horizontal,20)
                 }

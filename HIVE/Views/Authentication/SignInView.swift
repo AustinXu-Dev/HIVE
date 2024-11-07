@@ -11,11 +11,16 @@ struct SignInView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     @State var isNew = false
+  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+
     
     var body: some View {
 
         if isNew {
             OnboardingView()
+            .onAppear {
+              print("app state \(userAppState)")
+            }
         } else {
             VStack(alignment: .center){
                 Text("Welcome!")
@@ -37,7 +42,7 @@ struct SignInView: View {
 
                 
                 Button {
-                    appCoordinator.push(.tab)
+                  userAppState = AppState.guest.rawValue
                 } label: {
                     Text("Browse First")
                         .underline(true, color: .black)
@@ -50,7 +55,10 @@ struct SignInView: View {
             }
             .padding()
             .frame(maxWidth: .infinity)
-            .navigationBarBackButtonHidden(true) 
+            .navigationBarBackButtonHidden(true)
+            .onAppear {
+              print("app state \(userAppState)")
+            }
         }
             
     }

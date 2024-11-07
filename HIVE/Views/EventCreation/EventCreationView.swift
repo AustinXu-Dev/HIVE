@@ -25,12 +25,28 @@ struct EventCreationView: View {
     @StateObject var eventCreationVM = UserCreateEventViewModel()
     @StateObject var profileVM = GetOneUserByIdViewModel()
     @State private var eventPhoto: UIImage?
+  @Environment(\.isGuest) private var isGuest: Bool
+  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+
 
     
     let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill","Outdoor","Bar","Dance","Quiet","Games","Exclusive","Networking"]
     
     var body: some View {
-        if eventCreationVM.isLoading {
+      if isGuest {
+        VStack {
+            Text("Ready to Connect?")
+                .bold()
+            Button {
+              userAppState =  AppState.notSignedIn.rawValue
+            } label: {
+              ReusableAccountCreationButton()
+            }
+           
+            Text("To host your own!")
+                .bold()
+        }
+      } else if eventCreationVM.isLoading {
             VStack {
                 Spacer()
                 ProgressView()
