@@ -122,6 +122,7 @@ class UpdateUserViewModel: ObservableObject {
     }
     
     func uploadImage(_ image: UIImage, completion: @escaping (Result<String, Error>) -> Void) {
+        isLoading = true
         let storageRef = Storage.storage().reference().child("images/\(UUID().uuidString).jpg")
         guard let imageData = image.jpegData(compressionQuality: 0.75) else {
             completion(.failure(NSError(domain: "ImageError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get image data"])))

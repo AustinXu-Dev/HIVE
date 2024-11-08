@@ -143,6 +143,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
         do {
             try FirebaseManager.shared.auth.signOut()
             TokenManager.share.deleteToken()
+            KeychainManager.shared.keychain.delete("appUserId")
             DispatchQueue.main.async {
                 UserDefaults.standard.set(false, forKey: "appState")
             }

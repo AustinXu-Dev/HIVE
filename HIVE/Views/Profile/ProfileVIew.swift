@@ -25,8 +25,14 @@ struct ProfileView: View {
     @StateObject var profileVM = GetOneUserByIdViewModel()
     @StateObject var updateProfileVM = UpdateUserViewModel()
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+    @State private var hasFetchedProfile = false
 
+    
     var body: some View {
+        
+        if profileVM.isLoading || updateProfileVM.isLoading {
+            ProgressView()
+        } else {
         VStack(spacing: 20) {
             HStack {
                 if !isCurrentUserProfile {
@@ -38,7 +44,7 @@ struct ProfileView: View {
                             .foregroundColor(.black)
                     }
                 }
-                                Spacer()
+                Spacer()
                 
                 if isEditingDescription && isCurrentUserProfile {
                     Button(action: {
@@ -121,7 +127,7 @@ struct ProfileView: View {
                     .font(CustomFont.aboutStyle)
                     .foregroundColor(.gray)
             } else {
-            
+                
                 Text("(\(profile?.bio ?? ""))")
                     .font(CustomFont.bioStyle)
                     .foregroundColor(.gray)
@@ -165,7 +171,7 @@ struct ProfileView: View {
             }
             
             Spacer()
-                        
+            
             if isCurrentUserProfile {
             Button {
                 showLogoutAlert = true
@@ -180,22 +186,21 @@ struct ProfileView: View {
                     .padding(.horizontal, 40)
                     .padding(.bottom,20)
             }
-            .padding(.top,30)
-            
         }
-        }
-        
         .onAppear(perform: {
+            print("is current user profile \(isCurrentUserProfile)")
+
             guard let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
             //by default,if userid is nil (meaning the partipant view is not initalized,assign profile userId as current User id
             if profile?.userid != nil {
                 isCurrentUserProfile = false
             }
-            //but the value will be the passed data if its pass from event participants view
-            if profile?.userid != reterivedUserId {
-                print("profile userId: \(profile?.userid)")
-                print("reterived userID: \(reterivedUserId)")
+
+            //            if profile?.userid != reterivedUserId {
+            if isCurrentUserProfile && !hasFetchedProfile {
                 profileVM.getOneUserById(id: reterivedUserId)
+                hasFetchedProfile = true //without this get one user will be called infinitely causing the Progress View to loop
+
                     
             }
 
@@ -211,6 +216,8 @@ struct ProfileView: View {
             refreshProfile()
         }
         .navigationBarBackButtonHidden(true)
+    }
+   
     }
     
     // MARK: - Private Methods
