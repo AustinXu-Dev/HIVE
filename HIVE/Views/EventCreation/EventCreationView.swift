@@ -335,17 +335,19 @@ extension EventCreationView {
     private var eventName : some View {
         VStack(alignment: .center, spacing: 5) {
             Text("Choose a Catchy Title!")
-                .font(.headline)
+                .font(CustomFont.createEventTitle)
             ZStack(alignment: .leading) {
                 // validating if (1) title contains value and (2) character limit
                 if eventTitle.isEmpty {
                     Text("Event Title")
+                        .font(CustomFont.createEventBody)
                         .foregroundStyle(invalidFields.contains("title") || invalidFields.contains("invalidTitle") ? Color.red : Color.gray)
                         .animation(.linear(duration: 0.001), value: invalidFields.contains("title") || invalidFields.contains("invalidTitle"))
                         .padding(.horizontal)
                 }
                 TextField("", text: $eventTitle)
                     .padding()
+                    .font(CustomFont.createEventBody)
                     .background(Color.clear)
                     .frame(maxWidth:200)
                     .frame(maxHeight:20)
@@ -383,18 +385,19 @@ extension EventCreationView {
     private var eventVenue : some View {
         VStack(alignment: .center, spacing: 5) {
             Text("Where will it be?")
-                .font(.headline)
+                .font(CustomFont.createEventTitle)
             ZStack(alignment: .leading) {
                 // Placeholder text
                 if eventLocation.isEmpty {
                     Text("Event Location")
+                        .font(CustomFont.createEventBody)
                         .foregroundStyle(invalidFields.contains("location") || invalidFields.contains("invalidLocation") ? Color.red : Color.gray)
                         .animation(.linear(duration: 0.001), value: invalidFields.contains("location") || invalidFields.contains("invalidLocation"))
                         .padding(.horizontal)
                        
                 }
                 TextField("", text: $eventLocation)
-                
+                    .font(CustomFont.createEventBody)
                     .padding()
                     .frame(maxWidth:200)
                     .frame(maxHeight:20)
@@ -440,6 +443,7 @@ extension EventCreationView {
             }
             HStack {
                 Text("Start:")
+                    .font(CustomFont.createEventSubtitle)
                     .foregroundStyle(invalidFields.contains("invalidDateRange") ? Color.red : Color.black)
                     .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidDateRange"))
                 Spacer()
@@ -459,6 +463,7 @@ extension EventCreationView {
             }
             HStack {
                 Text("End:")
+                    .font(CustomFont.createEventSubtitle)
                     .foregroundStyle(invalidFields.contains("invalidDateRange") ? Color.red : Color.black)
                     .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidDateRange"))
                 Spacer()
@@ -482,9 +487,9 @@ extension EventCreationView {
     private var eventCategory : some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Category")
-                .font(.headline)
+                .font(CustomFont.createEventTitle)
             Text("Select between 1 and 3 categories")
-                .font(.subheadline)
+                .font(CustomFont.createEventBody)
                 .foregroundStyle(invalidFields.contains("categories") ? Color.red : Color.gray)
                 .animation(.linear, value: invalidFields.contains("categories"))
 
@@ -497,6 +502,7 @@ extension EventCreationView {
                         }) {
                             
                             Text(category)
+                                .font(CustomFont.createEventBody)
                                 .lineLimit(1)
                                 .foregroundStyle(Color.black)
                                 .padding(.horizontal,8)
@@ -537,7 +543,7 @@ extension EventCreationView {
     private var eventAdditionalInfo : some View {
         VStack(alignment: .leading) {
             Text("Additional info")
-                .font(.headline)
+                .font(CustomFont.createEventTitle)
             
             if invalidFields.contains("invalidAdditionalInfo") {
                 Text("Char Limit - Only Up to 200")
@@ -558,6 +564,7 @@ extension EventCreationView {
 
                 
                 TextEditor(text: $additionalInfo)
+                    .font(CustomFont.createEventBody)
                     .frame(height: 150)
                     .padding(4)
                     .background(Color.white)

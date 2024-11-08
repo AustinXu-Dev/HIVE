@@ -30,10 +30,10 @@ struct OnboardingDetailView: View {
         VStack(alignment: .leading){
             Text(onboardingSteps[currentStep].title)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title)
+                .font(CustomFont.onBoardingSubtitle)
             Text(onboardingSteps[currentStep].description)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title3)
+                .font(CustomFont.onBoardingDescription)
             
             switch onboardingSteps[currentStep].type{
             case .Name:

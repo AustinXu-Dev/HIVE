@@ -49,6 +49,8 @@ struct HomeView: View {
     private var eventsScrollView: some View {
         VStack(alignment: .leading) {
             Text("Explore")
+                .font(CustomFont.profileTitle)
+                .fontWeight(.bold)
                 .padding(.horizontal)
 
           //  ScrollView(.vertical, showsIndicators: false) {

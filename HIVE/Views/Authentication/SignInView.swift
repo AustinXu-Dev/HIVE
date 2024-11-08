@@ -20,10 +20,10 @@ struct SignInView: View {
             VStack(alignment: .center){
                 Text("Welcome!")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(.title)
+                    .font(CustomFont.onBoardingTitle)
                 Text("Find your next meepup tonight!")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(.title3)
+                    .font(CustomFont.onBoardingDescription)
                 Button {
                     googleVM.signInWithGoogle(presenting: Application_utility.rootViewController) { error, isNewUser in
                         isNew = isNewUser
@@ -41,11 +41,12 @@ struct SignInView: View {
                 } label: {
                     Text("Browse First")
                         .underline(true, color: .black)
+                        .font(CustomFont.onBoardingButtonFont)
                 }.foregroundStyle(.black)
                     .padding(.bottom, 20)
                 
                 Text("By signing up you agree with terms of services of Hive.")
-                    .font(.caption)
+                    .font(CustomFont.termsStyle)
             }
             .padding()
             .frame(maxWidth: .infinity)

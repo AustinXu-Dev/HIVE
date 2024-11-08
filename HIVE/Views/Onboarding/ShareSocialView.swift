@@ -21,16 +21,17 @@ struct ShareSocialView: View {
             VStack(alignment: .leading) {
                 Text("Connect easily")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(.title)
+                    .font(CustomFont.onBoardingSubtitle)
                 Text("Share your Instagram so others can reach out!")
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(.title3)
+                    .font(CustomFont.onBoardingDescription)
                     .padding(.bottom, 50)
                 
                 TextField("Paste your instagram link here", text: $viewModel.instagramHandle)
                     .onChange(of: viewModel.instagramHandle, { oldValue, newValue in
                         validateLink()
                     })
+                    .font(CustomFont.termsStyle)
                     .multilineTextAlignment(.center)
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 20)
@@ -43,7 +44,7 @@ struct ShareSocialView: View {
                 if isValid == false {
                     Text("Invalid link! Please enter a valid Instagram profile link.")
                         .foregroundColor(.red)
-                        .font(.caption)
+                        .font(CustomFont.onBoardingDescription)
                 }
                 
             }
@@ -58,7 +59,7 @@ struct ShareSocialView: View {
                     Text("Done")
                         .foregroundStyle(.white)
                         .fontWeight(.semibold)
-                        .font(.title3)
+                        .font(CustomFont.onBoardingButton)
                 }
                 .onTapGesture {
                     // MARK: - Go to Home
@@ -96,6 +97,7 @@ struct ShareSocialView: View {
                         signupVM.password = Auth.auth().currentUser?.uid ?? ""
                         signupVM.signUp()
                     }
+                    .font(CustomFont.onBoardingDescription)
                 }
             }
         }

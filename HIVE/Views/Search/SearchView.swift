@@ -23,6 +23,7 @@ struct SearchView: View {
                     hasResults = performSearch(for: searchText)
                 })
                 .padding(10)
+                .font(CustomFont.successSubtitle)
                 
                 Spacer()
             }
@@ -42,6 +43,7 @@ struct SearchView: View {
                         .frame(height: 1)
                     
                     Text("No Results")
+                        .font(CustomFont.noResultStyle)
                         .foregroundColor(.gray)
                         .padding(.vertical, 8)
                     
@@ -57,6 +59,7 @@ struct SearchView: View {
                     appCoordinator.push(.eventCreationForm)
                 }) {
                     Text("Be the first to host one! 🥳")
+                        .font(CustomFont.boxTextStyle)
                         .padding()
                         .frame(maxWidth: UIScreen.main.bounds.width / 2)
                         .background(Color.black)

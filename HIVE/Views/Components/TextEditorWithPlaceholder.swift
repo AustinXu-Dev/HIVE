@@ -17,7 +17,7 @@ struct TextEditorWithPlaceholder: View {
             if text.isEmpty {
                 Text("Name")
                     .opacity(0.6)
-                    .font(.title2)
+                    .font(CustomFont.onBoardingSubtitle)
             }
             TextEditor(text: $text)
                 .opacity(text.isEmpty ? 0.85 : 1)
