@@ -23,11 +23,11 @@ struct EventCreationSuccessView: View {
                 
                 VStack(spacing: 8) {
                     Text("All set!")
-                        .font(.title2)
+                        .font(CustomFont.successTitle)
                         .fontWeight(.bold)
                     
                     Text("Your meet up is ready for others to join.")
-                        .font(.body)
+                        .font(CustomFont.successSubtitle)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
@@ -38,7 +38,7 @@ struct EventCreationSuccessView: View {
                 appCoordinator.popToRoot()
             } label: {
                 Text("Done")
-                    .font(.system(size: 30))
+                    .font(CustomFont.onBoardingButtonFont)
                     .padding(.horizontal,24)
                     .padding(.vertical)
                     .foregroundStyle(Color.white)

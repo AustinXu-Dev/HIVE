@@ -43,10 +43,10 @@ struct EventAttendeeView: View {
                     
                     VStack(alignment: .leading) {
                         Text(user.name ?? "Unknown")
-                            .font(.headline)
+                            .font(CustomFont.attendeeTitle)
                         
                         Text(user.bio ?? "")
-                            .font(.subheadline)
+                            .font(CustomFont.attendeeDescription)
                             .foregroundColor(.gray)
                     }
                   

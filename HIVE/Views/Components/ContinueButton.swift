@@ -19,7 +19,7 @@ struct ContinueButton: View {
                 Text("Continue")
                     .foregroundStyle(.white)
                     .fontWeight(.semibold)
-                    .font(.title3)
+                    .font(CustomFont.onBoardingButton)
             }
             .onTapGesture {
                 action()

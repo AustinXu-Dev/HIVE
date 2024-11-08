@@ -36,7 +36,7 @@ struct EventDetailView: View {
                           
                         
                         Text(event.name)
-                            .font(.title)
+                            .font(CustomFont.eventTitleStyle)
                             .fontWeight(.bold)
                          
                         HStack {
@@ -55,11 +55,12 @@ struct EventDetailView: View {
                     
                         
                         Text(event.additionalInfo)
-                            .font(.body)
+                            .font(CustomFont.eventBodyStyle)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Host")
-                                .font(.headline)
+                                .font(CustomFont.eventSubtitleStyle)
+                                .fontWeight(.semibold)
                             HStack {
                                 if let eventOrganizer = event.organizer {
                                     KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
@@ -68,9 +69,9 @@ struct EventDetailView: View {
                                         .clipShape(Circle())
                                     VStack(alignment: .leading) {
                                         Text(eventOrganizer.name ?? "Organizer")
-                                            .fontWeight(.bold)
+                                            .font(CustomFont.hostTitle)
                                         Text(eventOrganizer.bio ?? "")
-                                            .font(.subheadline)
+                                            .font(CustomFont.hostDescription)
                                     }
                                 }
                             }
@@ -78,13 +79,15 @@ struct EventDetailView: View {
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
-                                .font(.headline)
+                                .font(CustomFont.eventSubtitleStyle)
+                                .fontWeight(.semibold)
                             HStack {
                                 Image("location")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
                                 Text(event.location)
+                                    .font(CustomFont.detail)
                             }
                             HStack {
                                 Image("duration")
@@ -93,6 +96,7 @@ struct EventDetailView: View {
                                     .frame(width:22,height:22)
                                 if let eventStartDate = event.startDate.formatDateString(), let startTime = event.startTime.to12HourFormat(), let endTime = event.endTime.to12HourFormat() {
                                     Text("\(eventStartDate), \(startTime) - \(endTime)")
+                                        .font(CustomFont.detail)
                                 }
                             }
                             HStack {
@@ -101,6 +105,7 @@ struct EventDetailView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
                                 Text("Anyone")
+                                    .font(CustomFont.detail)
                             }
                         }
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
@@ -215,7 +220,7 @@ extension EventDetailView {
           
                 Text(category)
                     .foregroundColor(.white)
-                    .font(.subheadline)
+                    .font(CustomFont.eventSubtitleStyle)
                     .padding(.vertical, 6)
                     .padding(.horizontal, 10)
                     .background(Color.gray.opacity(1))

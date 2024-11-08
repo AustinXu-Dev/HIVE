@@ -28,11 +28,10 @@ struct EventJoinSuccessView: View {
                 
                 VStack(spacing: 8) {
                     Text("You're in!")
-                        .font(.title2)
-                        .fontWeight(.bold)
+                        .font(CustomFont.successTitle)
                     
                     Text("Get ready for a great time.")
-                        .font(.body)
+                        .font(CustomFont.successSubtitle)
                         .foregroundColor(.secondary)
                 }
             
@@ -42,7 +41,7 @@ struct EventJoinSuccessView: View {
                 appCoordinator.popToRoot()
             } label: {
                 Text("Explore more")
-                    .font(.callout)
+                    .font(CustomFont.onBoardingButtonFont)
                     .foregroundColor(.gray)
                     .padding(.bottom, 30)
             }

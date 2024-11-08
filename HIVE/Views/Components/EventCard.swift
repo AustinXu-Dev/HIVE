@@ -71,14 +71,13 @@ struct EventCard: View {
                                     if let startTime = event.startTime.to12HourFormat() {
                                         Text("\(event.name) - \(startTime)")
                                             .foregroundStyle(Color.black)
-                                            .bold()
-                                            .font(.title2)
+                                            .font(CustomFont.eventTitleStyle)
                                             .lineLimit(2)
                                     }
                                     HStack {
                                         Text(event.location)
                                             .foregroundStyle(Color.black)
-                                            .font(.system(.headline))
+                                            .font(CustomFont.eventSubtitleStyle)
                                         Spacer()
                                         ParticipantView(event: event)
                                     }

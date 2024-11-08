@@ -114,14 +114,16 @@ struct ProfileView: View {
             }
             
             Text(isCurrentUserProfile ? profileVM.userDetail?.name ?? "Unknown" : profile?.name ?? "Unknown")
-                .font(.title2)
+                .font(CustomFont.profileTitle)
                 .fontWeight(.bold)
             if let about = profileVM.userDetail?.about, isCurrentUserProfile {
                 Text("(\(about))")
+                    .font(CustomFont.aboutStyle)
                     .foregroundColor(.gray)
             } else {
             
                 Text("(\(profile?.bio ?? ""))")
+                    .font(CustomFont.bioStyle)
                     .foregroundColor(.gray)
             }
             
@@ -169,7 +171,7 @@ struct ProfileView: View {
                 showLogoutAlert = true
             } label: {
                 Text("Logout")
-                    .font(.headline)
+                    .font(CustomFont.onBoardingButton)
                     .foregroundColor(.red)
                     .frame(maxWidth: .infinity)
                     .padding()
