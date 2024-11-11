@@ -45,7 +45,8 @@ struct SearchView: View {
                     Text("No Results")
                         .font(CustomFont.noResultStyle)
                         .foregroundColor(.gray)
-                        .padding(.vertical, 8)
+                        .padding(.vertical, 8) 
+                        .padding(.horizontal, 8)
                     
                     Rectangle()
                         .fill(Color.gray.opacity(0.5))
@@ -95,12 +96,26 @@ struct SearchView: View {
         }
     }
     
-    func performSearch(for query: String) -> Bool {
-        return eventsVM.events.contains { event in
-          event.name.lowercased().contains(query) || (event.organizer?.name?.lowercased().contains(query) ?? false)
-        }
-    }
+//    func performSearch(for query: String) -> Bool {
+//        return eventsVM.events.contains { event in
+//          event.name.lowercased().contains(query.lowercased()) || (event.organizer?.name?.lowercased().contains(query.lowercased()) ?? false)
+//        }
+//    }
     
+  func performSearch(for query: String) -> Bool {
+      let lowercasedQuery = query.lowercased()
+      
+      return eventsVM.events.contains { event in
+          let eventName = event.name.lowercased()
+          let organizerName = event.organizer?.name?.lowercased() ?? ""
+          
+          return eventName.contains(lowercasedQuery) || organizerName.contains(lowercasedQuery)
+      }
+  }
+
+  
+  
+  
     private func dismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }

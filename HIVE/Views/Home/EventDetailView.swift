@@ -15,6 +15,7 @@ struct EventDetailView: View {
     @StateObject private var joinEventVM = JoinEventViewModel()
     @State private var eventAlreadyJoined : Bool = false
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+  @State private var showCreateAccountAlert = false
 
     var body: some View {
         
@@ -27,62 +28,70 @@ struct EventDetailView: View {
                         Spacer()
                     }
                 } else {
-                    VStack(alignment: .leading, spacing: 16) {
-                        
-                        KFImage(URL(string: event.eventImageUrl))
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 230)
-                            .cornerRadius(10)
-                          
-                        
-                        Text(event.name)
-                            .font(CustomFont.eventTitleStyle)
-                            .fontWeight(.bold)
-                         
-                        HStack {
-                            eventCategories
-                        }
-                      
-                        
-                        HStack(spacing: 20) {
-                            ParticipantView(event: event)
-                                .onTapGesture {
-                                        appCoordinator.push(.eventAttendeeView(named: event))
-                                    
-                                }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                  VStack(alignment: .leading, spacing: 16) {
                     
-                        
-                        Text(event.additionalInfo)
-                            .font(CustomFont.eventBodyStyle)
-                        
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("Host")
-                                .font(CustomFont.eventSubtitleStyle)
-                                .fontWeight(.semibold)
-                            HStack {
-                                if let eventOrganizer = event.organizer {
-                                    KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                        .clipShape(Circle())
-                                    VStack(alignment: .leading) {
-                                        Text(eventOrganizer.name ?? "Organizer")
-                                            .font(CustomFont.hostTitle)
-                                        Text(eventOrganizer.bio ?? "")
-                                            .font(CustomFont.hostDescription)
-                                    }
-                                }
-                            }
-                        }
-                        .background(Color.white.opacity(0.00001))
+                    KFImage(URL(string: event.eventImageUrl))
+                      .resizable()
+                      .aspectRatio(contentMode: .fill)
+                      .frame(maxWidth: .infinity)
+                      .frame(height: 230)
+                      .cornerRadius(10)
+                    
+                    
+                    Text(event.name)
+                      .font(CustomFont.eventTitleStyle)
+                      .fontWeight(.bold)
+                    
+                    HStack {
+                      eventCategories
+                    }
+                    
+                    
+                    HStack(spacing: 20) {
+                      ParticipantView(event: event)
                         .onTapGesture {
-                          //MARK: - not working
-                         // appCoordinator.push(.participantProfile(named: event.organizer))
+                          if userAppState != AppState.guest.rawValue {
+                            appCoordinator.push(.eventAttendeeView(named: event))
+                          } else {
+                            showCreateAccountAlert = true
+                          }
                         }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    
+                    
+                    Text(event.additionalInfo)
+                      .font(CustomFont.eventBodyStyle)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                      Text("Host")
+                        .font(CustomFont.eventSubtitleStyle)
+                        .fontWeight(.semibold)
+                      HStack {
+                        if let eventOrganizer = event.organizer {
+                          KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
+                            .resizable()
+                            .frame(width: 40, height: 40)
+                            .clipShape(Circle())
+                          VStack(alignment: .leading) {
+                            Text(eventOrganizer.name ?? "Organizer")
+                              .font(CustomFont.hostTitle)
+                            Text(eventOrganizer.bio ?? "")
+                              .font(CustomFont.hostDescription)
+                          }
+                        }
+                      }
+                    }
+                    .onTapGesture {
+                    if userAppState != AppState.guest.rawValue {
+                      if let eventOrganizer = event.organizer {
+                        appCoordinator.push(.organizerProfile(named: eventOrganizer))
+                      }
+                    } else {
+                      showCreateAccountAlert = true
+
+                    }
+                  }
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
                                 .font(CustomFont.eventSubtitleStyle)
@@ -115,15 +124,20 @@ struct EventDetailView: View {
                             }
                         }
                       
-                      
-                      if userAppState == AppState.guest.rawValue {
-                        Button {
-                          userAppState =  AppState.notSignedIn.rawValue
-                          //MARK: not sending to sign in page
-                        } label: {
-                          ReusableAccountCreationButton()
+                      HStack {
+                        Spacer()
+                        if userAppState == AppState.guest.rawValue {
+                          Button {
+                            appCoordinator.popToRoot()
+                            userAppState =  AppState.notSignedIn.rawValue
+                          } label: {
+                            ReusableAccountCreationButton()
+                          }
+                          .frame(alignment:.center)
                         }
+                        Spacer()
                       }
+                      
                         
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
                            currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
@@ -180,6 +194,7 @@ struct EventDetailView: View {
                     appCoordinator.push(.eventJoinSuccess)
                 }
             }
+         
             
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -189,6 +204,18 @@ struct EventDetailView: View {
                         }
                 }
             }
+            .alert(isPresented: $showCreateAccountAlert) {
+                Alert(
+                    title: Text("You must create or log in to an account, first"),
+                    primaryButton: .default(Text("Sign Up/Sign In"), action: {
+                      appCoordinator.popToRoot()
+                      userAppState = AppState.notSignedIn.rawValue
+                    }),
+                    secondaryButton: .destructive(Text("Cancel"))
+                )
+            }
+
+         
         }
     }
     

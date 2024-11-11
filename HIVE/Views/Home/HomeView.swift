@@ -54,11 +54,14 @@ struct HomeView: View {
 
     private var eventsScrollView: some View {
         VStack(alignment: .leading) {
+          HStack {
             Text("Explore")
-                .font(CustomFont.profileTitle)
-                .fontWeight(.bold)
-                .padding(.horizontal)
-                .frame(alignment: .leading)
+              .font(CustomFont.profileTitle)
+              .fontWeight(.bold)
+              .padding(.horizontal)
+              .frame(alignment: .leading)
+            Spacer()
+          }
           //  ScrollView(.vertical, showsIndicators: false) {
           VStack(alignment:.leading,spacing: 30) {
                     ForEach(filteredEvents, id: \._id) { event in

@@ -37,7 +37,7 @@ struct CustomFont{
     
     static let profileTitle: Font = .custom(titleFont, size: 20)
     static let aboutStyle: Font = .custom(bodyFont, size: 10)
-    static let bioStyle: Font = .custom(bodyFont, size: 10)
+    static let bioStyle: Font = .custom(bodyFont, size: 14)
     
     static let noResultStyle: Font = .custom(bodyFont, size: 24)
     static let boxTextStyle: Font = .custom(bodyFont, size: 18)

@@ -22,6 +22,7 @@ enum Screen: Identifiable, Hashable {
     case eventJoinSuccess
     case eventAttendeeView(named : EventModel)
     case participantProfile(named : ParticipantModel)
+  case organizerProfile(named: OrganizerModel)
     
     var id: Self { return self }
 }

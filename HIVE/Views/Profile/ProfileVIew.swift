@@ -34,6 +34,7 @@ struct ProfileView: View {
   var body: some View {
     if isGuest {
       VStack(spacing: 20) {
+      /*
         Image(systemName: "person.circle")
           .resizable()
           .aspectRatio(contentMode: .fill)
@@ -46,11 +47,19 @@ struct ProfileView: View {
           .font(.title3)
           .fontWeight(.regular)
           .multilineTextAlignment(.center)
+        */
+      Text("Please create or log in to an existing account")
+        .font(.title)
+        .fontWeight(.bold)
+        .multilineTextAlignment(.center)
         Button {
           userAppState =  AppState.notSignedIn.rawValue
         } label: {
           ReusableAccountCreationButton()
         }
+       
+        Text("To join or host your own!")
+            .bold()
 
       }
     } else {
@@ -215,7 +224,6 @@ struct ProfileView: View {
           }
         }
         .onAppear(perform: {
-          print("is current user profile \(isCurrentUserProfile)")
           
           guard let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
           //by default,if userid is nil (meaning the partipant view is not initalized,assign profile userId as current User id
@@ -223,6 +231,9 @@ struct ProfileView: View {
             isCurrentUserProfile = false
           }
           
+          
+          print("is current user profile \(isCurrentUserProfile)")
+
           //            if profile?.userid != reterivedUserId {
           if isCurrentUserProfile && !hasFetchedProfile {
             profileVM.getOneUserById(id: reterivedUserId)
@@ -301,6 +312,7 @@ struct ProfileView: View {
 }
 
 
-#Preview {
-  ProfileView()
-}
+
+//#Preview {
+//  ProfileView(isCurrentUserProfile: true)
+//}
