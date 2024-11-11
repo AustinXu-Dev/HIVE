@@ -11,7 +11,8 @@ struct TabScreenView: View {
     
     @State var selectedIndex: Int = 0
     @StateObject private var eventsVM = GetEventsViewModel()
-    
+    @Environment(\.isGuest) var isGuest
+
 
     var body: some View {
         TabView(selection: $selectedIndex) {

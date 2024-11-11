@@ -66,6 +66,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             EventCreationSuccessView()
         case .participantProfile(named: let participant):
             ProfileView(profile : participant)
+        case .organizerProfile(named: let organizer):
+          OrganizerProfile(organizer: organizer)
         }
     }
     

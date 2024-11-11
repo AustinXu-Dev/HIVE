@@ -10,7 +10,6 @@ import Foundation
 
 class GetEventsViewModel : ObservableObject {
     
-    //MARK: - replace the mock data with data returned from server later on
     @Published var events : [EventModel] = []
     @Published var isLoading : Bool = false
     @Published var errorMessage : String? = nil

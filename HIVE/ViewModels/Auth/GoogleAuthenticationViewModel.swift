@@ -13,12 +13,15 @@ import FirebaseAuth
 import SwiftUI
 import Combine
 
+
 class GoogleAuthenticationViewModel: ObservableObject {
     
     @Published var errorMessage = ""
     @Published var uid = ""
     @Published var email = ""
     @ObservedObject var getAllUserVM = GetAllUsersViewModel()
+  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+
     var signInService = SignInService()
     var isNew: Bool?
     
@@ -89,7 +92,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
                 let isNewInFirebase = authResult.additionalUserInfo?.isNewUser ?? false
                 if isNewInFirebase{
                     print("New user in firebase")
-                    UserDefaults.standard.set(false, forKey: "appState")
+                   //MARK: -UserDefaults.standard.set(false, forKey: "appState")
                     completion(nil, true)
                 } else {
                     // Observe userData updates to check if the user exists
@@ -117,7 +120,9 @@ class GoogleAuthenticationViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             print("Existing User")
                             self.signInService.signIn()
-                            UserDefaults.standard.set(true, forKey: "appState")
+                          //MARK: - UserDefaults.standard.set(true, forKey: "appState")
+                          self.userAppState = AppState.signedIn.rawValue
+                          print("User app state is \(self.userAppState)")
                             completion(nil, false) // Returning false for existing user
                         }
                         break
@@ -128,7 +133,9 @@ class GoogleAuthenticationViewModel: ObservableObject {
                 if !isUserExisting {
                     DispatchQueue.main.async {
                         print("New User But not yet stored in backend")
-                        UserDefaults.standard.set(false, forKey: "appState")
+                      //MARK: -UserDefaults.standard.set(false, forKey: "appState")
+                      self.userAppState = AppState.signedIn.rawValue
+                      print("User app state is \(self.userAppState)")
                         completion(nil, true) // Returning true for new user
                     }
                 }
@@ -145,7 +152,9 @@ class GoogleAuthenticationViewModel: ObservableObject {
             TokenManager.share.deleteToken()
             KeychainManager.shared.keychain.delete("appUserId")
             DispatchQueue.main.async {
-                UserDefaults.standard.set(false, forKey: "appState")
+              //MARK: -UserDefaults.standard.set(false, forKey: "appState")
+              self.userAppState = AppState.notSignedIn.rawValue
+              print("User app state is \(self.userAppState)")
             }
         } catch let signOutError as NSError {
             self.errorMessage = "Failed to sign out with error: \(signOutError)"

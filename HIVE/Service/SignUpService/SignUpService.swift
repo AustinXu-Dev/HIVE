@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 class SignUpService: ObservableObject {
     
@@ -22,6 +23,7 @@ class SignUpService: ObservableObject {
     @Published var isSuspened: Bool = false
     
     @Published var errorMessage: String? = nil
+    @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
 
     func signUp() {
         
@@ -47,7 +49,9 @@ class SignUpService: ObservableObject {
                 case .success(let response):
                     print("got singup response")
                     TokenManager.share.saveTokens(token: response.message.token)
-                    UserDefaults.standard.set(true, forKey: "appState")
+                  //  UserDefaults.standard.set(true, forKey: "appState")
+                  self.userAppState = AppState.signedIn.rawValue
+                  print("user App State \(self.userAppState)")
                 case .failure(let error):
                     self.errorMessage = "Failed to sign up: \(error.localizedDescription)"
                 }
