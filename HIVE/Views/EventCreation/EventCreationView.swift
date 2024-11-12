@@ -28,6 +28,8 @@ struct EventCreationView: View {
   @Environment(\.isGuest) private var isGuest: Bool
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
   @State private var showCreateAccountAlert: Bool = false
+  @FocusState private var isFocused: Bool
+
   
   
   
@@ -62,6 +64,9 @@ struct EventCreationView: View {
             eventAdditionalInfo
             
             
+          }
+          .onTapGesture {
+              isFocused = false
           }
           .padding()
           
@@ -364,6 +369,7 @@ extension EventCreationView {
           .frame(maxHeight:20)
           .cornerRadius(8)
           .textFieldStyle(.plain)
+          .focused($isFocused)
           .onChange(of: eventTitle) { _,newEventName in
             if !newEventName.isEmpty {
               invalidFields.remove("title")
@@ -414,6 +420,7 @@ extension EventCreationView {
           .frame(maxHeight:20)
           .cornerRadius(8)
           .textFieldStyle(.plain)
+          .focused($isFocused)
           .onChange(of: eventLocation) { _,newEventLocation in
             if !newEventLocation.isEmpty {
               invalidFields.remove("location")
@@ -580,6 +587,7 @@ extension EventCreationView {
           .padding(4)
           .background(Color.white)
           .cornerRadius(8)
+          .focused($isFocused)
           .overlay(
             RoundedRectangle(cornerRadius: 8)
               .stroke(invalidFields.contains("additionalInfo") || invalidFields.contains("invalidAdditionalInfo")  ? Color.red : Color.gray, lineWidth: 1)

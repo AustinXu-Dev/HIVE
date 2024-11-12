@@ -134,7 +134,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
                     DispatchQueue.main.async {
                         print("New User But not yet stored in backend")
                       //MARK: -UserDefaults.standard.set(false, forKey: "appState")
-                      self.userAppState = AppState.signedIn.rawValue
+                        self.userAppState = AppState.notSignedIn.rawValue
                       print("User app state is \(self.userAppState)")
                         completion(nil, true) // Returning true for new user
                     }

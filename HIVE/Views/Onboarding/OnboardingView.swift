@@ -19,6 +19,7 @@ struct OnboardingView: View {
     
     @State private var showAlert = false
     @State private var alertMessage = ""
+    @FocusState private var isFocused: Bool
     
     let onboardingSteps: [OnboardingStep] = [
         OnboardingStep(title: "Let's get started!", description: "Please enter your first name", type: .Name),
@@ -38,7 +39,7 @@ struct OnboardingView: View {
             } else {
                 VStack{
                     BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
-                    OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel)
+                    OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel, isFocused: $isFocused)
                     Spacer()
                     ContinueButton(currentStep: $currentStep, color: viewModel.isUploading ? .constant(.gray) : .constant(.black)) {
                         handleStepCompletion()
@@ -48,7 +49,11 @@ struct OnboardingView: View {
                         Alert(title: Text("Input Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
                     }
                 }.padding()
+                    
             }
+        }
+        .onTapGesture {
+            isFocused = false
         }
     }
     

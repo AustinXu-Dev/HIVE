@@ -29,7 +29,7 @@ struct ProfileView: View {
   @Environment(\.isGuest) private var isGuest: Bool
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
 
-  
+    @FocusState private var isFocused: Bool
   
   var body: some View {
     if isGuest {
@@ -172,6 +172,7 @@ struct ProfileView: View {
               set: { profileVM.userDetail?.bio = $0 }
             ))
             .textFieldStyle(RoundedBorderTextFieldStyle())
+            .focused($isFocused)
             .padding(.horizontal, 40)
           } else {
             Text(isCurrentUserProfile ? profileVM.userDetail?.bio ?? "No bio available" : "")

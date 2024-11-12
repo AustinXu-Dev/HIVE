@@ -24,7 +24,7 @@ struct OnboardingDetailView: View {
   
   @State private var isPickerPresented = false
   @State private var isUploading = false
-  @FocusState private var isFocused: Bool
+  @FocusState.Binding var isFocused: Bool
   
   var body: some View {
     VStack(alignment: .leading){
@@ -154,6 +154,11 @@ struct OnboardingDetailView: View {
       self.hideKeyboard()
       print("keyboard hide")
       isFocused = false
+    }
+    .onChange(of: isFocused) { oldValue, newValue in
+        if oldValue != newValue{
+            UIApplication.shared.endEditing()
+        }
     }
     
   }

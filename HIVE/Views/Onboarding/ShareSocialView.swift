@@ -82,27 +82,30 @@ struct ShareSocialView: View {
                     }
 //                    print("instagram link not valid")
                 }
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Skip"){
-                        //MARK: - Post to backend without instagram link
-                        signupVM.name = viewModel.name
-                        signupVM.dateOfBirth = formatDate(viewModel.birthday)
-                        signupVM.gender = viewModel.gender.rawValue
-                        signupVM.profileImageUrl = viewModel.profileImageURL ?? ""
-                        signupVM.bio = viewModel.bio
-                        signupVM.about = viewModel.bioType?.rawValue ?? ""
-                        signupVM.instagramLink = ""
-                        signupVM.email = Auth.auth().currentUser?.email ?? ""
-                        signupVM.password = Auth.auth().currentUser?.uid ?? ""
-                        signupVM.signUp()
-                    }
-                    .font(CustomFont.onBoardingDescription)
-                }
-            }
+            
         }
         .onTapGesture {
+            print("On tap social view")
             isFocused = false
+            UIApplication.shared.endEditing()
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Skip"){
+                    //MARK: - Post to backend without instagram link
+                    signupVM.name = viewModel.name
+                    signupVM.dateOfBirth = formatDate(viewModel.birthday)
+                    signupVM.gender = viewModel.gender.rawValue
+                    signupVM.profileImageUrl = viewModel.profileImageURL ?? ""
+                    signupVM.bio = viewModel.bio
+                    signupVM.about = viewModel.bioType?.rawValue ?? ""
+                    signupVM.instagramLink = ""
+                    signupVM.email = Auth.auth().currentUser?.email ?? ""
+                    signupVM.password = Auth.auth().currentUser?.uid ?? ""
+                    signupVM.signUp()
+                }
+                .font(CustomFont.onBoardingDescription)
+            }
         }
     }
     
