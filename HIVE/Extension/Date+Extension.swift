@@ -34,6 +34,7 @@ extension Date {
      func formatTimeToString() -> String {
           let timeFormatter = DateFormatter()
           timeFormatter.dateFormat = "HH:mm" // Change to "hh:mm a" for 12-hour format with AM/PM
+          timeFormatter.locale = Locale(identifier: "en_GB")
           return timeFormatter.string(from: self)
       }
     
