@@ -32,7 +32,7 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack{
-            if showInsta{
+            if showInsta {
                 ShareSocialView()
                     .environmentObject(viewModel)
                     .environmentObject(googleVM)

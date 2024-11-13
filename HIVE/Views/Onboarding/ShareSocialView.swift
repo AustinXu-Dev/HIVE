@@ -16,74 +16,78 @@ struct ShareSocialView: View {
     @ObservedObject var signupVM = SignUpService()
     @FocusState private var isFocused: Bool
     
-    var body: some View {
-        VStack{
-            VStack(alignment: .leading) {
-                Text("Connect easily")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(CustomFont.onBoardingSubtitle)
-                Text("Share your Instagram so others can reach out!")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .font(CustomFont.onBoardingDescription)
-                    .padding(.bottom, 50)
-                
-                TextField("Paste your instagram link here", text: $viewModel.instagramHandle)
-                    .onChange(of: viewModel.instagramHandle, { oldValue, newValue in
-                        validateLink()
-                    })
-                    .font(CustomFont.termsStyle)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 20)
-                        .stroke(isValid == true ? Color.green : (isValid == false ? Color.red : Color.gray), lineWidth: 2)
-                    )
-                    .autocapitalization(.none)
-                    .disableAutocorrection(true)
-                    .focused($isFocused)
-                
-                if isValid == false {
-                    Text("Invalid link! Please enter a valid Instagram profile link.")
-                        .foregroundColor(.red)
-                        .font(CustomFont.onBoardingDescription)
-                }
-                
-            }
-            .frame(maxWidth: .infinity)
-            .padding()
-            
-            Spacer()
-            
-            RoundedRectangle(cornerRadius: 20)
-                .frame(width: 250, height: 50)
-                .overlay {
-                    Text("Done")
-                        .foregroundStyle(.white)
-                        .fontWeight(.semibold)
-                        .font(CustomFont.onBoardingButton)
-                }
-                .onTapGesture {
-                    // MARK: - Go to Home
-                    // if instagram link valid, post the instagram link to backend
-                    if isValid == true{
-                        print("instagram link valid")
-                        signupVM.name = viewModel.name
-                        signupVM.dateOfBirth = formatDate(viewModel.birthday)
-                        signupVM.gender = viewModel.gender.rawValue
-                        signupVM.profileImageUrl = viewModel.profileImageURL ?? ""
-                        signupVM.bio = viewModel.bio
-                        signupVM.about = viewModel.bioType?.rawValue ?? ""
-                        signupVM.instagramLink = viewModel.instagramHandle
-                        signupVM.email = Auth.auth().currentUser?.email ?? ""
-                        signupVM.password = Auth.auth().currentUser?.uid ?? ""
-                        
-                        print("In View Model", viewModel.name,viewModel.instagramHandle)
-                        print("In signup view model", signupVM.name, signupVM.dateOfBirth)
-                        signupVM.signUp()
-                    }
-//                    print("instagram link not valid")
-                }
-            
+  var body: some View {
+    ZStack {
+      Color.white
+        .ignoresSafeArea(edges: .all)
+    VStack{
+      VStack(alignment: .leading) {
+        Text("Connect easily")
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .font(CustomFont.onBoardingSubtitle)
+        Text("Share your Instagram so others can reach out!")
+          .frame(maxWidth: .infinity, alignment: .leading)
+          .font(CustomFont.onBoardingDescription)
+          .padding(.bottom, 50)
+        
+        TextField("Paste your instagram link here", text: $viewModel.instagramHandle)
+          .onChange(of: viewModel.instagramHandle, { oldValue, newValue in
+            validateLink()
+          })
+          .font(CustomFont.termsStyle)
+          .multilineTextAlignment(.center)
+          .padding()
+          .background(RoundedRectangle(cornerRadius: 20)
+            .stroke(isValid == true ? Color.green : (isValid == false ? Color.red : Color.gray), lineWidth: 2)
+          )
+          .autocapitalization(.none)
+          .disableAutocorrection(true)
+          .focused($isFocused)
+        
+        if isValid == false {
+          Text("Invalid link! Please enter a valid Instagram profile link.")
+            .foregroundColor(.red)
+            .font(CustomFont.onBoardingDescription)
         }
+        
+      }
+      .frame(maxWidth: .infinity)
+      .padding()
+      
+      Spacer(minLength: 0)
+      
+      RoundedRectangle(cornerRadius: 20)
+        .frame(width: 250, height: 50)
+        .overlay {
+          Text("Done")
+            .foregroundStyle(.white)
+            .fontWeight(.semibold)
+            .font(CustomFont.onBoardingButton)
+        }
+        .onTapGesture {
+          // MARK: - Go to Home
+          // if instagram link valid, post the instagram link to backend
+          if isValid == true{
+            print("instagram link valid")
+            signupVM.name = viewModel.name
+            signupVM.dateOfBirth = formatDate(viewModel.birthday)
+            signupVM.gender = viewModel.gender.rawValue
+            signupVM.profileImageUrl = viewModel.profileImageURL ?? ""
+            signupVM.bio = viewModel.bio
+            signupVM.about = viewModel.bioType?.rawValue ?? ""
+            signupVM.instagramLink = viewModel.instagramHandle
+            signupVM.email = Auth.auth().currentUser?.email ?? ""
+            signupVM.password = Auth.auth().currentUser?.uid ?? ""
+            
+            print("In View Model", viewModel.name,viewModel.instagramHandle)
+            print("In signup view model", signupVM.name, signupVM.dateOfBirth)
+            signupVM.signUp()
+          }
+          //                    print("instagram link not valid")
+        }
+      
+    }
+  }
         .onTapGesture {
             print("On tap social view")
             isFocused = false

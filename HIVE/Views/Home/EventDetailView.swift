@@ -197,12 +197,15 @@ struct EventDetailView: View {
          
             
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Text("< Back")
-                        .onTapGesture {
-                            appCoordinator.pop()
-                        }
+              ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                  appCoordinator.pop()
+                }) {
+                  Image(systemName: "chevron.left")
+                    .font(.title2)
+                    .foregroundColor(.black)
                 }
+              }
             }
             .alert(isPresented: $showCreateAccountAlert) {
                 Alert(

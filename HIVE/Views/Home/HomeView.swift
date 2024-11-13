@@ -66,7 +66,6 @@ struct HomeView: View {
           VStack(alignment:.leading,spacing: 30) {
                     ForEach(filteredEvents, id: \._id) { event in
                         EventCard(event: event)
-                            
                             .onTapGesture {
                                 appCoordinator.push(.eventDetailView(named: event))
                             }

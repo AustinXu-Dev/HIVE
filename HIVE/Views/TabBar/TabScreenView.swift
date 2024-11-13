@@ -13,17 +13,20 @@ struct TabScreenView: View {
     @StateObject private var eventsVM = GetEventsViewModel()
     @Environment(\.isGuest) var isGuest
 
+  @StateObject var profileVM = GetOneUserByIdViewModel()
 
     var body: some View {
         TabView(selection: $selectedIndex) {
             HomeView()
                 .environmentObject(eventsVM)
+                .environmentObject(profileVM)
                 .tabItem {
                     Label(selectedIndex == 0 ? "---" : "", image: "home")
                 }
                 .tag(0)
             SearchView()
                 .environmentObject(eventsVM)
+                .environmentObject(profileVM)
                 .tabItem {
                     Label(selectedIndex == 1 ? "---" : "", image: "search")
                 }
@@ -41,6 +44,7 @@ struct TabScreenView: View {
                 }
                 .tag(3)
             ProfileView()
+            .environmentObject(profileVM)
                 .tabItem {
                     Label(selectedIndex == 4 ? "---" : "", image: "user")
                 }
@@ -48,6 +52,16 @@ struct TabScreenView: View {
         }
         .onAppear {
             eventsVM.fetchEvents()
+              
+              if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
+              
+              
+              profileVM.getOneUserById(id: reterivedUserId)
+              
+            }
+              
+              
+              
         }
     }
 }
