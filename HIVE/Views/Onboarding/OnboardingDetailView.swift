@@ -36,34 +36,46 @@ struct OnboardingDetailView: View {
         .font(CustomFont.onBoardingDescription)
       
       switch onboardingSteps[currentStep].type{
-        
-        
       case .Name:
-        Spacer()
-        VStack{
-          TextEditorWithPlaceholder(text: $viewModel.name, isFocused: $isFocused)
-            .lineLimit(1)
-        }.frame(maxWidth: .infinity, maxHeight: 50)
-        Spacer()
+        ZStack {
+          Color.white
+            .edgesIgnoringSafeArea(.all)
+          Spacer()
+          VStack{
+            TextEditorWithPlaceholder(text: $viewModel.name, isFocused: $isFocused)
+              .lineLimit(1)
+          }.frame(maxWidth: .infinity, maxHeight: 50)
+          Spacer()
+        }
       case .Birthday:
-        VStack {
-          DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
-            .datePickerStyle(.wheel)
-            .labelsHidden() // Hides label to avoid blank space
-            .environment(\.locale, Locale(identifier: "en_US")) // Sets to US format
-            .padding()
+        ZStack {
+          Color.white
+            .edgesIgnoringSafeArea(.all)
+          VStack {
+            DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
+              .datePickerStyle(.wheel)
+              .labelsHidden() // Hides label to avoid blank space
+              .environment(\.locale, Locale(identifier: "en_US")) // Sets to US format
+              .padding()
+            
+            
+          }
+          Spacer()
+            .frame(maxWidth: .infinity)
+            .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: .infinity)
-        .multilineTextAlignment(.center)
-        
       case .Gender:
-        Picker("Gender", selection: $viewModel.gender) {
-          Text("Male").tag(Gender.male)
-          Text("Female").tag(Gender.female)
-          Text("Diverse").tag(Gender.diverse)
+        VStack {
+          Picker("Gender", selection: $viewModel.gender) {
+            Text("Male").tag(Gender.male)
+            Text("Female").tag(Gender.female)
+            Text("Diverse").tag(Gender.diverse)
+          }
+          
+          .pickerStyle(SegmentedPickerStyle())
+          .padding()
         }
-        .pickerStyle(SegmentedPickerStyle())
-        .padding()
+        Spacer(minLength: 0)
         
       case .Pfp:
         VStack(alignment: .center) {
@@ -71,7 +83,7 @@ struct OnboardingDetailView: View {
             .frame(height: 100)
           // Display the selected image or prompt the user to select an image
           RoundedRectangle(cornerRadius: 30)
-            .frame(width: 200, height: 200)
+            .frame(width: 300, height: 300)
             .foregroundStyle(Color("hive_gray"))
             .overlay {
               if let profileImage = viewModel.profileImage {
@@ -102,6 +114,9 @@ struct OnboardingDetailView: View {
         .frame(maxWidth: .infinity)
         
       case .SelfInfo:
+        ZStack {
+          Color.white
+            .ignoresSafeArea(edges: .all)
         VStack(alignment: .leading) {
           LazyVGrid(columns: columns, spacing: 10) {
             ForEach(options, id: \.self) { option in
@@ -143,22 +158,28 @@ struct OnboardingDetailView: View {
             .frame(maxWidth: .infinity)
           }.frame(maxHeight: 100)
           
+          
         }
       }
+      
+      }
     }
+  
     .frame(maxWidth: .infinity)
     .id(currentStep)
     .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
     .animation(.linear, value: currentStep)
     .onTapGesture {
-      self.hideKeyboard()
-      print("keyboard hide")
-      isFocused = false
+      if currentStep != 3 {
+        self.hideKeyboard()
+        print("keyboard hide")
+        isFocused = false
+      }
     }
-    .onChange(of: isFocused) { oldValue, newValue in
-        if oldValue != newValue{
-            UIApplication.shared.endEditing()
-        }
+    .onChange(of: isFocused) { _, _ in
+//        if oldValue != newValue{
+//            UIApplication.shared.endEditing()
+//        }
     }
     
   }

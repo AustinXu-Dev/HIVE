@@ -61,7 +61,7 @@ struct EventCard: View {
                                         )
                                         
                                     )
-                                
+                          
                                     .frame(maxWidth: .infinity)
                                     .frame(height: 200)
                                     .padding(.horizontal,15)

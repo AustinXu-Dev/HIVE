@@ -37,6 +37,8 @@ struct EventCreationView: View {
   
   var body: some View {
     ZStack {
+      Color.white
+        .ignoresSafeArea(edges: .all)
       if eventCreationVM.isLoading {
         VStack {
           Spacer()
@@ -99,6 +101,10 @@ struct EventCreationView: View {
                 secondaryButton: .destructive(Text("Cancel")))
         }
       }
+    }
+    .onTapGesture {
+      self.hideKeyboard()
+      print("keyboad hidden")
     }
    
   }
@@ -524,6 +530,7 @@ extension EventCreationView {
                 .lineLimit(1)
                 .foregroundStyle(Color.black)
                 .padding(.horizontal,8)
+                .padding(.vertical,6)
                 .background(selectedCategories.contains(category) ? Color.blue.opacity(0.65) : Color.gray.opacity(0.2))
                 .cornerRadius(30)
                 .onChange(of: selectedCategories) { _,_ in

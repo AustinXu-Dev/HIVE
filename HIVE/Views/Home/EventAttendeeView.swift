@@ -57,7 +57,7 @@ struct EventAttendeeView: View {
                 .padding(.vertical, 8)
                 .background(Color.white.opacity(0.000001))
                 .onTapGesture {
-                    appCoordinator.push(.participantProfile(named: user))
+                  appCoordinator.push(.participantProfile(named: user))
                 }
               
             }
@@ -65,12 +65,16 @@ struct EventAttendeeView: View {
             .scrollIndicators(.hidden)
         }
         .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Text("Back")
-                    .onTapGesture {
-                        appCoordinator.pop()
-                    }
+            ToolbarItem(placement: .topBarLeading) {
+              Button(action: {
+                appCoordinator.pop()
+              }) {
+                Image(systemName: "chevron.left")
+                  .font(.title2)
+                  .foregroundColor(.black)
+              }
             }
+          
             ToolbarItem(placement: .principal) {
                 Text("See who's going")
                     .font(.headline)

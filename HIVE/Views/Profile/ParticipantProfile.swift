@@ -7,15 +7,15 @@
 
 import SwiftUI
 import Kingfisher
-struct OrganizerProfile: View {
+struct ParticipantProfile: View {
   
-  let organizer: OrganizerModel
+  let participant: ParticipantModel
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
   
   var body: some View {
     VStack(spacing: 24) {
-      KFImage(URL(string: organizer.profileImageUrl ?? ""))
+      KFImage(URL(string: participant.profileImageUrl ?? ""))
         .resizable()
         .aspectRatio(contentMode: .fill)
         .frame(width: 120, height: 120)
@@ -25,12 +25,12 @@ struct OrganizerProfile: View {
       
       
       
-      Text(organizer.name ?? "Unknown Host")
+      Text(participant.name ?? "Unknown User")
         .font(CustomFont.profileTitle)
         .fontWeight(.bold)
       
-      if let organizerBio = organizer.bio {
-        Text("(\(organizerBio))")
+      if let participantBio = participant.bio {
+        Text("(\(participantBio))")
           .font(CustomFont.bioStyle)
           .foregroundColor(.gray)
       }
@@ -77,5 +77,5 @@ struct OrganizerProfile: View {
 }
 
 #Preview {
-  OrganizerProfile(organizer: OrganizerMock.instance.organizer)
+  ParticipantProfile(participant: ParticipantMock.instance.participantA)
 }
