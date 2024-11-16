@@ -11,5 +11,5 @@ struct OrganizerMock {
     static let instance = OrganizerMock()
     private init(){}
     
-    let organizer = OrganizerModel(userid: "1", name: "Si Si", profileImageUrl: "", bio: "")
+  let organizer = OrganizerModel(userid: "1", name: "Si Si", profileImageUrl: "", instagramLink: "", bio: "")
 }

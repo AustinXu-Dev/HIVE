@@ -9,5 +9,6 @@ import Foundation
 
 struct ParticipantModel : Codable, Hashable {
     var userid : String?
-    let name, profileImageUrl, bio : String?
+  let name, profileImageUrl,instagramLink, bio : String?
+  
 }

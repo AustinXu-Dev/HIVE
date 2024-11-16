@@ -35,30 +35,33 @@ struct ParticipantProfile: View {
           .foregroundColor(.gray)
       }
       
-      /*
+      
+      if let instagramLink = participant.instagramLink, !instagramLink.isEmpty {
+        Button(action: {
+        if let url = URL(string: instagramLink) {
+        UIApplication.shared.open(url)
+        }
+        }) {
+        HStack {
+        Image("instagram")
+        .aspectRatio(contentMode: .fill)
+        .frame(width: 27, height: 27)
+        Text("Connect me")
+        .font(.callout)
+        .foregroundColor(.black)
+        }
+        .padding()
+        .frame(maxWidth: .infinity)
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(25)
+        .padding(.horizontal, 40)
+        }
+      }
+      
+      
        
-       if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
-       Button(action: {
-       if let url = URL(string: instagramLink) {
-       UIApplication.shared.open(url)
-       }
-       }) {
-       HStack {
-       Image("instagram")
-       .aspectRatio(contentMode: .fill)
-       .frame(width: 27, height: 27)
-       Text("Connect me")
-       .font(.callout)
-       .foregroundColor(.black)
-       }
-       .padding()
-       .frame(maxWidth: .infinity)
-       .background(Color.gray.opacity(0.2))
-       .cornerRadius(25)
-       .padding(.horizontal, 40)
-       }
-       }
-       */
+    
+      
       Spacer()
         .toolbar {
           ToolbarItem(placement: .topBarLeading) {

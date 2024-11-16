@@ -7,5 +7,5 @@
 
 import Foundation
 struct OrganizerModel : Codable,Hashable {
-    let userid,name,profileImageUrl,bio : String?
+    let userid,name,profileImageUrl, instagramLink, bio : String?
 }
