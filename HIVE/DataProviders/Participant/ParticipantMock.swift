@@ -12,9 +12,9 @@ struct ParticipantMock {
     static let instance = ParticipantMock()
     private init(){}
     
-    let participantA = ParticipantModel(userid: "1", name: "", profileImageUrl: "", bio: "")
+  let participantA = ParticipantModel(userid: "1", name: "", profileImageUrl: "", instagramLink: "", bio: "")
     
     let participants = [
-        ParticipantModel(userid: "1", name: "", profileImageUrl: "", bio: "")
+      ParticipantModel(userid: "1", name: "", profileImageUrl: "", instagramLink: "", bio: "")
     ]
 }
