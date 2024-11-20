@@ -53,12 +53,19 @@ struct TabScreenView: View {
         .onAppear {
             eventsVM.fetchEvents()
               
-              if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
-              
-              
-              profileVM.getOneUserById(id: reterivedUserId)
-              
-              
+//              if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
+//              
+//              print("\(reterivedUserId)")
+//              profileVM.getOneUserById(id: reterivedUserId)
+//              
+//              
+//            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
+                    print("\(reterivedUserId)")
+                    profileVM.getOneUserById(id: reterivedUserId)
+                }
             }
               
               

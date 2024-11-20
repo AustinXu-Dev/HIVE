@@ -49,6 +49,7 @@ class SignUpService: ObservableObject {
                 case .success(let response):
                     print("got singup response")
                     TokenManager.share.saveTokens(token: response.message.token)
+                    KeychainManager.shared.keychain.set(response.message.user._id, forKey: "appUserId")
                   //  UserDefaults.standard.set(true, forKey: "appState")
                   self.userAppState = AppState.signedIn.rawValue
                   print("user App State \(self.userAppState)")
