@@ -5,13 +5,8 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>Lato-Bold.ttf</string>
-		<string>Lato-Italic.ttf</string>
-		<string>Lato-Light.ttf</string>
 		<string>Lato-Regular.ttf</string>
-		<string>Lato-Thin.ttf</string>
-		<string>Inter_28pt-Regular.ttf</string>
-		<string>Inter_28pt-SemiBold.ttf</string>
-		<string>Inter_28pt-Bold.ttf</string>
+		<string>Lato-Light.ttf</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
@@ -23,11 +18,6 @@
 				<string>com.googleusercontent.apps.936318617452-28htlfdlq92t9nc6804mgkp4usae9sle</string>
 			</array>
 		</dict>
-	</array>
-	<key>UIAppFonts</key>
-	<array>
-		<string>Lato-Bold.ttf</string>
-		<string>Lato-SemiBold.ttf</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict>

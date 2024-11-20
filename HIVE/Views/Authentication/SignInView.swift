@@ -26,7 +26,7 @@ struct SignInView: View {
                 Text("Welcome!")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(CustomFont.onBoardingTitle)
-                Text("Find your next meepup tonight!")
+                Text("Find your next meetup tonight!")
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .font(CustomFont.onBoardingDescription)
                 Button {
