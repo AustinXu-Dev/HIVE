@@ -13,68 +13,71 @@ struct HomeView: View {
     @EnvironmentObject private var eventsVM : GetEventsViewModel
     @State private var selectedTimeFilter: TimeFilter = .all
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
-  @Environment(\.isGuest) private var isGuest: Bool
-  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-
-
+    @Environment(\.isGuest) private var isGuest: Bool
+    @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+    
+    
     var body: some View {
         
-            if eventsVM.isLoading {
-                VStack {
-                    ProgressView()
-                }
-            } else {
-                ScrollView(.vertical,showsIndicators: false) {
+        if eventsVM.isLoading {
+            VStack {
+                ProgressView()
+            }
+        } else {
+            ScrollView(.vertical,showsIndicators: false) {
                 VStack(alignment: .center,spacing:14) {
                     headerRow
                         .padding(.horizontal)
-                //    if TokenManager.share.getToken() == nil {
-                  if isGuest {
+                    //    if TokenManager.share.getToken() == nil {
+                    if isGuest {
                         accountCreationButton
                     }
                     eventsScrollView
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.horizontal)
                 
+                
             }
-                .navigationBarHidden(true)
-                .navigationBarBackButtonHidden()
-                .refreshable {
-                    eventsVM.fetchEvents()
-                }
-                .onAppear {
-                  print("user app State \(userAppState)")
-                }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden()
+            .refreshable {
+                eventsVM.fetchEvents()
+            }
+            .onAppear {
+                print("user app State \(userAppState)")
+            }
         }
-           
         
-          
+        
+        
         
     }
-
+    
     private var eventsScrollView: some View {
         VStack(alignment: .leading) {
-          HStack {
-            Text("Explore")
-              .font(CustomFont.profileTitle)
-              .fontWeight(.bold)
-              .padding(.horizontal)
-              .frame(alignment: .leading)
-            Spacer()
-          }
-          //  ScrollView(.vertical, showsIndicators: false) {
-          VStack(alignment:.leading,spacing: 30) {
-                    ForEach(filteredEvents, id: \._id) { event in
-                        EventCard(event: event)
-                            .onTapGesture {
-                                appCoordinator.push(.eventDetailView(named: event))
-                            }
-                    }
+            HStack {
+                Text("Explore")
+                    .font(CustomFont.profileTitle)
+                    .fontWeight(.bold)
+                    .padding(.horizontal)
+                    .frame(alignment: .leading)
+                Spacer()
+            }
+            //  ScrollView(.vertical, showsIndicators: false) {
+            VStack(alignment:.leading,spacing: 30) {
+                ForEach(filteredEvents, id: \._id) { event in
+                    EventCard(event: event)
+                        .onTapGesture {
+                            appCoordinator.push(.eventDetailView(named: event))
+                        }
                 }
-          //  }
+            }
+            //  }
         }
     }
-   
+    
     private var filteredEvents: [EventModel] {
         // Apply the time filter
         return eventsVM.events.filter { event in
@@ -84,34 +87,34 @@ struct HomeView: View {
     
     
     
-       private func matchesTimeFilter(event: EventModel) -> Bool {
-           guard let eventStartDate = parseDate(event.startDate) else { return false }
-           let currentDate = Date()
-
-           switch selectedTimeFilter {
-           case .all:
-               return true
-           case .today:
-               return Calendar.current.isDate(eventStartDate, inSameDayAs: currentDate)
-           case .thisWeek:
-               return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .weekOfYear)
-           case .thisMonth:
-               return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .month)
-           }
-       }
-
-       // Parse the event date string and convert it to Thailand's local time zone
-       private func parseDate(_ dateString: String) -> Date? {
-           let formatter = DateFormatter()
-           formatter.dateFormat = "yyyy-MM-dd" // Adjust based on your event date format
-           formatter.timeZone = TimeZone(identifier: "Asia/Bangkok") // Thailand time zone
-
-           if let date = formatter.date(from: dateString) {
-               // No need for conversion as it's already in Thailand's time zone
-               return date
-           }
-           return nil
-       }
+    private func matchesTimeFilter(event: EventModel) -> Bool {
+        guard let eventStartDate = parseDate(event.startDate) else { return false }
+        let currentDate = Date()
+        
+        switch selectedTimeFilter {
+        case .all:
+            return true
+        case .today:
+            return Calendar.current.isDate(eventStartDate, inSameDayAs: currentDate)
+        case .thisWeek:
+            return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .weekOfYear)
+        case .thisMonth:
+            return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .month)
+        }
+    }
+    
+    // Parse the event date string and convert it to Thailand's local time zone
+    private func parseDate(_ dateString: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd" // Adjust based on your event date format
+        formatter.timeZone = TimeZone(identifier: "Asia/Bangkok") // Thailand time zone
+        
+        if let date = formatter.date(from: dateString) {
+            // No need for conversion as it's already in Thailand's time zone
+            return date
+        }
+        return nil
+    }
 }
 
 #Preview {
@@ -143,20 +146,20 @@ extension HomeView {
                     .background(Color.gray.opacity(0.5))
                     .cornerRadius(8)
             }
-           
+            
         }
     }
-
+    
     private var accountCreationButton: some View {
         VStack {
             Text("Ready to Connect?")
                 .bold()
             Button {
-              userAppState =  AppState.notSignedIn.rawValue
+                userAppState =  AppState.notSignedIn.rawValue
             } label: {
-              ReusableAccountCreationButton()
+                ReusableAccountCreationButton()
             }
-           
+            
             Text("To join or host your own!")
                 .bold()
         }
