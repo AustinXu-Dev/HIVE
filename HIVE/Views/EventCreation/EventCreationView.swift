@@ -8,7 +8,6 @@
 import SwiftUI
 import PhotosUI
 
-
 struct EventCreationView: View {
   @State private var selectedItem: PhotosPickerItem? // Holds the selected item
   @State private var selectedImage: UIImage? // Holds the selected image

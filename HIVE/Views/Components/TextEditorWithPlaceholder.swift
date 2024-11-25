@@ -10,6 +10,7 @@ import SwiftUI
 struct TextEditorWithPlaceholder: View {
     
     @Binding var text: String
+    var wordCount: Int
     @FocusState.Binding var isFocused: Bool
     
     var body: some View {
@@ -22,7 +23,7 @@ struct TextEditorWithPlaceholder: View {
             TextEditor(text: $text)
                 .opacity(text.isEmpty ? 0.85 : 1)
                 .multilineTextAlignment(.center)
-                .limitInputLength(value: $text, length: 10)
+                .limitInputLength(value: $text, length: wordCount)
                 .focused($isFocused)
         }
         .frame(minWidth: 150)
