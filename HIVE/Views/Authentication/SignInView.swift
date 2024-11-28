@@ -24,9 +24,6 @@ struct SignInView: View {
     
     if isNew {
       OnboardingView()
-        .onAppear {
-          print("app state \(userAppState)")
-        }
     } else {
       ZStack {
         Color.white
@@ -83,12 +80,7 @@ extension SignInView {
         isNew = isNewUser
       }
     } label: {
-
           Image("continue_with_google")
-         
-        
-       
-        
     }
   }
   
