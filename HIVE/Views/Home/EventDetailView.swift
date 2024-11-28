@@ -60,7 +60,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         
                         
-                        Text(event.additionalInfo)
+                        Text(event.additionalInfo ?? "")
                             .font(CustomFont.eventBodyStyle)
                         
                         VStack(alignment: .leading, spacing: 8) {

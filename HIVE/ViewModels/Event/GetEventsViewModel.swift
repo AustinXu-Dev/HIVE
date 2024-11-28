@@ -31,6 +31,7 @@ class GetEventsViewModel : ObservableObject {
                    }
                case .failure(let error):
                    DispatchQueue.main.async {
+                       print("Error getting all event")
                        self?.isLoading = false
                        self?.errorMessage = "Failed to get all the events: \(error.localizedDescription)"
                        print(error.localizedDescription)
