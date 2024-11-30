@@ -35,7 +35,6 @@ struct SignInView: View {
           VStack(alignment:.leading,spacing:44) {
             header
             BlankTextField(titleText: "Email", isValid: $emailSignInVM.emailFieldIsValid , isSecuredField: false, inputText: $emailSignInVM.email, passwordIsShown: .constant(true), errorText: $emailSignInVM.emailFieldErrorMessage, isFocused: $emailIsFocused)
-            
             BlankTextField(titleText: "Password", isValid: $emailSignInVM.passwordFieldIsValid, isSecuredField: true, inputText: $emailSignInVM.password, passwordIsShown: $passwordIsShown, errorText: $emailSignInVM.passwordFieldErrorMessage, isFocused: $passwordIsFocused)
           }
           forgetPasswordButton
