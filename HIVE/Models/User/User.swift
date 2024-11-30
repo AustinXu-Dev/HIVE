@@ -28,6 +28,8 @@ struct UpdatedUserResponse : Codable, Hashable {
 
 // User details model
 struct UserModel: Codable, Hashable {
+  let verificationImageUrl: String?
+  let verficatiionStatus: String?
     let _id: String?
     let name: String?
     let email: String?
@@ -40,3 +42,4 @@ struct UserModel: Codable, Hashable {
     let isOrganizer: Bool?
     let isSuspended: Bool?
 }
+
