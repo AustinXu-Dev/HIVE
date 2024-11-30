@@ -95,7 +95,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
                    //MARK: -UserDefaults.standard.set(false, forKey: "appState")
                     completion(nil, true)
                 } else {
-                    // Observe userData updates to check if the user exists
+                    // Observe userData updates to check if the use r exists
                     self.getAllUserVM.$userData
                         .sink { [weak self] userData in
                             guard let self = self, let users = userData else { return }
@@ -120,7 +120,6 @@ class GoogleAuthenticationViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             print("Existing User")
                             self.signInService.signIn()
-                          //MARK: - UserDefaults.standard.set(true, forKey: "appState")
                           self.userAppState = AppState.signedIn.rawValue
                           print("User app state is \(self.userAppState)")
                             completion(nil, false) // Returning false for existing user

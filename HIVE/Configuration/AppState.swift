@@ -7,8 +7,9 @@
 
 import Foundation
 
-enum AppState: String {
+enum AppState: String, Hashable {
     case signedIn = "signedIn"
     case guest = "guest"
     case notSignedIn = "notSignedIn"
 }
+

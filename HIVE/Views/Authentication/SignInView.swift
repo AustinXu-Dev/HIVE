@@ -18,8 +18,12 @@ struct SignInView: View {
   @State private var passwordInput: String = ""
   @FocusState private var passwordIsFocused: Bool
   @State private var passwordIsShown: Bool = false
+  @StateObject var emailSignInVM = EmailSignInViewModel()
   
-  
+  @State private var resetPasswordEmailInput:String = ""
+  @State private var showErrorAlert: Bool = false
+  @State private var showAlert: Bool = false
+
   var body: some View {
     
     if isNew {
@@ -30,9 +34,9 @@ struct SignInView: View {
         VStack(alignment: .center,spacing: 32){
           VStack(alignment:.leading,spacing:44) {
             header
-            BlankTextField(titleText: "Email", isValid: true, isSecuredField: false, inputText: $emailInput, passwordIsShown: .constant(true), errorText: .constant(""), isFocused: $emailIsFocused)
+            BlankTextField(titleText: "Email", isValid: $emailSignInVM.emailFieldIsValid , isSecuredField: false, inputText: $emailSignInVM.email, passwordIsShown: .constant(true), errorText: $emailSignInVM.emailFieldErrorMessage, isFocused: $emailIsFocused)
             
-            BlankTextField(titleText: "Password", isValid: true, isSecuredField: true, inputText: $passwordInput, passwordIsShown: $passwordIsShown, errorText: .constant(""), isFocused: $passwordIsFocused)
+            BlankTextField(titleText: "Password", isValid: $emailSignInVM.passwordFieldIsValid, isSecuredField: true, inputText: $emailSignInVM.password, passwordIsShown: $passwordIsShown, errorText: $emailSignInVM.passwordFieldErrorMessage, isFocused: $passwordIsFocused)
           }
           forgetPasswordButton
           signInButton
@@ -48,9 +52,63 @@ struct SignInView: View {
         .frame(maxWidth: .infinity)
         .navigationBarBackButtonHidden(true)
       }
+      .onChange(of: emailSignInVM.isNewUser, { _, isNewUser in
+        self.isNew = isNewUser
+      })
+      .onChange(of: emailSignInVM.password, { _, typedPassword in
+        emailSignInVM.password = typedPassword
+      })
+      .onChange(of: emailSignInVM.errorMessage, { _, _ in
+        showErrorAlert = true
+      })
+      .onChange(of: emailSignInVM.email, { _, typedEmail in
+        withAnimation(.smooth.speed(5.0)) {
+          if emailSignInVM.email.count > 6 && emailSignInVM.email.contains(where: { $0 == "@"}) {
+            (emailSignInVM.emailFieldErrorMessage,emailSignInVM.emailFieldIsValid) = TextFieldValidationManager.validateEmail(typedEmail)
+          }
+        }
+      })
+      .onChange(of: emailSignInVM.password, { _, typedPassword in
+        if emailSignInVM.password.count > 6 {
+          withAnimation(.smooth.speed(5.0)) {
+            (emailSignInVM.passwordFieldErrorMessage,emailSignInVM.passwordFieldIsValid) = TextFieldValidationManager.validatePassword(typedPassword)
+          }
+        }
+      })
+      //MARK: alert for email verification
+      .alert("Check your email inbox", isPresented: $emailSignInVM.showAlert) {
+        Button("OK", role: .cancel) {}
+      } message: {
+        Text(emailSignInVM.alertMessage)
+      }
+      //MARK: alert for password reset
+      .alert("Enter your email", isPresented: $showAlert, actions: {
+        TextField("Email", text: $resetPasswordEmailInput)
+        Button("Submit") {
+          Task {
+            print("email is :\(resetPasswordEmailInput)")
+            await emailSignInVM.resetPassword(email: resetPasswordEmailInput)
+          }
+        }
+        Button("Cancel", role: .cancel) {
+          showAlert = false
+        }
+      }, message: {
+        Text("Please enter the email address of the account that you want to reset password.")
+      })
+      //MARK: alert for error
+      .alert("Unexpected Error", isPresented: $showErrorAlert) {
+        Button("OK", role: .cancel) {
+          showErrorAlert = false
+        }
+      } message: {
+        Text(emailSignInVM.errorMessage ?? "Unknown Error Occured")
+      }
+      
       .onTapGesture {
         self.hideKeyboard()
       }
+      
     }
     
   }
@@ -59,7 +117,7 @@ struct SignInView: View {
 }
 
 #Preview {
-  SignInView()
+  SignInView(emailSignInVM: EmailSignInViewModel())
 }
 
 extension SignInView {
@@ -80,15 +138,28 @@ extension SignInView {
         isNew = isNewUser
       }
     } label: {
-          Image("continue_with_google")
+      Image("continue_with_google")
     }
   }
   
   private var forgetPasswordButton: some View {
     HStack {
+      /*
+      if emailSignInVM.isWaitingForVerification {
+        Button {
+          Task {
+            await emailSignInVM.sendEmailVerification()
+          }
+        } label: {
+          Text("Resend verification mail")
+            .font(.caption)
+            .foregroundStyle(Color.blue)
+        }
+      }
+      */
       Spacer()
       Button {
-        print("Forget password clicked")
+        showAlert = true
       } label: {
         Text("Forgot password?")
           .font(.caption)
@@ -99,7 +170,16 @@ extension SignInView {
   
   private var signInButton: some View {
     Button {
-      print("")
+      withAnimation(.smooth.speed(5.0)) {
+        (emailSignInVM.emailFieldErrorMessage,emailSignInVM.emailFieldIsValid) = TextFieldValidationManager.validateEmail(emailSignInVM
+          .email)
+        (emailSignInVM.passwordFieldErrorMessage,emailSignInVM.passwordFieldIsValid) = TextFieldValidationManager.validatePassword(emailSignInVM.password)
+      }
+      if emailSignInVM.emailFieldIsValid && emailSignInVM.passwordFieldIsValid {
+        Task {
+          await emailSignInVM.handleAuthentication()
+        }
+      }
     } label: {
       Text("Sign up/Log in")
         .font(.headline)

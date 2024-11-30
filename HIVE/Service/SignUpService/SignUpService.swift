@@ -25,6 +25,8 @@ class SignUpService: ObservableObject {
     @Published var errorMessage: String? = nil
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
 
+  
+  
     func signUp() {
         
         let newUser = SignUpSchema(
@@ -50,7 +52,6 @@ class SignUpService: ObservableObject {
                     print("got singup response")
                     TokenManager.share.saveTokens(token: response.message.token)
                     KeychainManager.shared.keychain.set(response.message.user._id, forKey: "appUserId")
-                  //  UserDefaults.standard.set(true, forKey: "appState")
                   self.userAppState = AppState.signedIn.rawValue
                   print("user App State \(self.userAppState)")
                 case .failure(let error):

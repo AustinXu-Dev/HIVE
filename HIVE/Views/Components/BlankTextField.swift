@@ -2,11 +2,11 @@ import SwiftUI
 
 struct BlankTextField: View {
   let titleText: String
-  let isValid: Bool
+  @Binding var isValid: Bool
   let isSecuredField: Bool
   @Binding var inputText: String
   @Binding var passwordIsShown: Bool
-  @Binding var errorText: String
+  @Binding var errorText: TextFieldValidationError?
   @FocusState.Binding var isFocused: Bool
   
   
@@ -54,14 +54,16 @@ struct BlankTextField: View {
         .frame(maxWidth: .infinity)
         .frame(height:2)
         .foregroundStyle(isFocused ? Color.themeColorPurple : Color.black)
-      
+      if !isValid {
+        Text(errorText?.rawValue ?? "")
+          .font(CustomFont.createEventBody)
+          .foregroundStyle(Color.red.opacity(0.75))
+          .lineLimit(5)
+          .multilineTextAlignment(.leading)
+      }
       
     }
   }
 }
 
-#Preview {
-  @FocusState var isFocus_Preview: Bool
-  BlankTextField(titleText: "Email", isValid: true, isSecuredField: true, inputText: .constant("example@gmail.com"), passwordIsShown: .constant(true), errorText: .constant(""), isFocused: $isFocus_Preview)
-    .padding(.horizontal)
-}
+
