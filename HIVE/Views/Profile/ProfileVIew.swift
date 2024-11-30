@@ -51,6 +51,7 @@ struct ProfileView: View {
     } else if profileVM.isLoading || updateProfileVM.isLoading {
       ProgressView()
     } else {
+      ScrollView(.vertical,showsIndicators: false){
       VStack(spacing: 20) {
         HStack {
           Spacer()
@@ -118,15 +119,29 @@ struct ProfileView: View {
         .sheet(isPresented: $showImagePicker) {
           ImagePicker(selectedImage: $profileImage)
         }
-        
-        Text(profileVM.userDetail?.name ?? "Unknown User")
-          .font(CustomFont.profileTitle)
-          .fontWeight(.bold)
+        HStack {
+          Text(profileVM.userDetail?.name ?? "Unknown User")
+            .font(CustomFont.profileTitle)
+            .fontWeight(.bold)
+          if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
+            Button(action: {
+              if let url = URL(string: instagramLink) {
+                UIApplication.shared.open(url)
+              }
+            }) {
+              Image("instagram")
+                .aspectRatio(contentMode: .fill)
+                .frame(width: 27, height: 27)
+            }
+          }
+          
+        }
         if let about = profileVM.userDetail?.about {
           Text("(\(about))")
             .font(CustomFont.aboutStyle)
             .foregroundColor(.gray)
         }
+        
         
         if isEditingDescription {
           TextField("Enter New Bio", text: Binding(
@@ -144,29 +159,7 @@ struct ProfileView: View {
             .padding(.horizontal, 40)
         }
         
-        if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
-          Button(action: {
-            if let url = URL(string: instagramLink) {
-              UIApplication.shared.open(url)
-            }
-          }) {
-            HStack {
-              Image("instagram")
-                .aspectRatio(contentMode: .fill)
-                .frame(width: 27, height: 27)
-              Text("Connect me")
-                .font(.callout)
-                .foregroundColor(.black)
-            }
-            .padding()
-            .frame(maxWidth: .infinity)
-            .background(Color.gray.opacity(0.2))
-            .cornerRadius(25)
-            .padding(.horizontal, 40)
-          }
-        }
-        
-        Spacer()
+        EventHistory()
         
         Button {
           showLogoutAlert = true
@@ -181,10 +174,11 @@ struct ProfileView: View {
             .padding(.horizontal, 40)
             .padding(.bottom,20)
         }
-        .padding(.top,30)
+        .padding(EdgeInsets(top: 60, leading: 0, bottom: 20, trailing: 0))
         
         
       }
+    }
       
       .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
         Button("Cancel", role: .cancel) {}

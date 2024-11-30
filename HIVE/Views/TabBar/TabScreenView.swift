@@ -36,7 +36,7 @@ struct TabScreenView: View {
                     Label(selectedIndex == 2 ? "---" : "", image: "plus")
                 }
                 .tag(2)
-           Text("Coming Soon")
+          EventHistory()
                 .bold()
                 .font(.largeTitle)
                 .tabItem {

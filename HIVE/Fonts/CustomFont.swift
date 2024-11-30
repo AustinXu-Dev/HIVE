@@ -46,4 +46,7 @@ struct CustomFont{
     static let createEventSubtitle: Font = .custom(titleFont, size: 14)
     static let createEventSubBody: Font = .custom(bodyFont, size: 16)
     static let createEventBody: Font = .custom(bodyFont, size: 14)
+  
+  static let eventRowEventTitle: Font = .custom("Inter-Medium", size: 20)
+  static let eventRowEventDate: Font =  .custom("Inter-Bold", size: 14)
 }
