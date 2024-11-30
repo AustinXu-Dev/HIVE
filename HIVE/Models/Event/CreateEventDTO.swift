@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct CreateEventDTO: Codable {
+struct CreateEventDTO: Codable, Hashable {
     let eventImageUrl: String
     let name: String
     let location: String
@@ -16,15 +16,16 @@ struct CreateEventDTO: Codable {
     let startTime: String
     let endTime: String
     let maxParticipants: Int
-    let isLimited: Bool
     let category: [String]
     let additionalInfo: String
+    let isPrivate: Bool
+    let minAge: Int
 }
 
 
 struct CreateEventResponse : Codable, Hashable{
     let success : Bool
-    let message : CreatedEventModel
+    let message : CreateEventDTO
 }
 
 
@@ -34,10 +35,12 @@ struct CreatedEventModel : Codable, Hashable {
     let  _id,eventImageUrl,name,location: String?
     let startDate,endDate,startTime,endTime : String?
     let maxParticipants : Int?
-    let isLimited : Bool?
+    let minAge: Int?
     let category : [String]?
     let additionalInfo : String?
 //    let participants : [ParticipantModel]?
     let participants : [String]?
+    let isPrivate: Bool
+    let pendingParticipants: [ParticipantModel]?
     let organizer : String?
 }

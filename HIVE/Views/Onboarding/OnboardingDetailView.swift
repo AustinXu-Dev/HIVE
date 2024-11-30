@@ -42,7 +42,7 @@ struct OnboardingDetailView: View {
             .edgesIgnoringSafeArea(.all)
           Spacer()
           VStack{
-            TextEditorWithPlaceholder(text: $viewModel.name, isFocused: $isFocused)
+              TextEditorWithPlaceholder(text: $viewModel.name, wordCount: 20, isFocused: $isFocused)
               .lineLimit(1)
           }.frame(maxWidth: .infinity, maxHeight: 50)
           Spacer()
@@ -89,8 +89,8 @@ struct OnboardingDetailView: View {
               if let profileImage = viewModel.profileImage {
                 Image(uiImage: profileImage)
                   .resizable()
+                  .scaledToFill()
                   .frame(width: 300, height: 300)
-                  .aspectRatio(contentMode: .fill)
                   .clipShape(RoundedRectangle(cornerRadius: 30))
               } else {
                 Image("image_placeholder")
@@ -210,41 +210,3 @@ struct RectangleOption: View {
 //#Preview {
 //    OnboardingDetailView()
 //}
-
-struct PhotoPicker: UIViewControllerRepresentable {
-  @Binding var selectedImage: UIImage?
-  
-  func makeUIViewController(context: Context) -> PHPickerViewController {
-    var config = PHPickerConfiguration()
-    config.filter = .images
-    let picker = PHPickerViewController(configuration: config)
-    picker.delegate = context.coordinator
-    return picker
-  }
-  
-  func updateUIViewController(_ uiViewController: PHPickerViewController, context: Context) {}
-  
-  func makeCoordinator() -> Coordinator {
-    Coordinator(self)
-  }
-  
-  class Coordinator: NSObject, PHPickerViewControllerDelegate {
-    let parent: PhotoPicker
-    
-    init(_ parent: PhotoPicker) {
-      self.parent = parent
-    }
-    
-    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
-      picker.dismiss(animated: true)
-      
-      guard let provider = results.first?.itemProvider, provider.canLoadObject(ofClass: UIImage.self) else { return }
-      
-      provider.loadObject(ofClass: UIImage.self) { image, _ in
-        DispatchQueue.main.async {
-          self.parent.selectedImage = image as? UIImage
-        }
-      }
-    }
-  }
-}

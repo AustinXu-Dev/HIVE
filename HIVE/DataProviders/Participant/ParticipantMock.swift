@@ -17,4 +17,7 @@ struct ParticipantMock {
     let participants = [
       ParticipantModel(userid: "1", name: "", profileImageUrl: "", instagramLink: "", bio: "")
     ]
+    let pendingParticipants = [
+        PendingParticipantModel(userid: "1", name: "", profileImageUrl: "", instagramLink: "", bio: "")
+    ]
 }

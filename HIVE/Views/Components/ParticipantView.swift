@@ -25,12 +25,7 @@ struct ParticipantView: View {
                             .overlay(
                                 Circle()
                                     .stroke(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [   Color("topColor"), Color("bottomColor")  ]),
-                                            
-                                            startPoint: .top,
-                                            endPoint: .bottom
-                                        ),
+                                        Color.black,
                                         lineWidth: 1
                                     )
                             )

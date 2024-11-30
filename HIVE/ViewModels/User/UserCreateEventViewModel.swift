@@ -21,9 +21,10 @@ class UserCreateEventViewModel: ObservableObject {
     @Published var startTime: String
     @Published var endTime: String
     @Published var maxParticipants: Int
-    @Published var isLimited: Bool
     @Published var category: [String]
     @Published var additionalInfo: String
+    @Published var isPrivate: Bool
+    @Published var minAge: Int
     
     @Published var eventCreationSuccess : Bool = false
     @Published var isLoading: Bool = false
@@ -31,7 +32,7 @@ class UserCreateEventViewModel: ObservableObject {
 
     
     //https://lh3.googleusercontent.com/a/ACg8ocJWN9H5pN0ecH3xit1l8PFbf4oE7bVeMTepu3zjnvUKJwynsQ=s96-c
-    init(eventImageUrl: String = "", name: String = "", location: String = "", startDate: String = "", endDate: String = "", startTime: String = "", endTime: String = "", maxParticipants: Int = 0, isLimited: Bool = false, category: [String] = [], additionalInfo: String = "") {
+    init(eventImageUrl: String = "", name: String = "", location: String = "", startDate: String = "", endDate: String = "", startTime: String = "", endTime: String = "", maxParticipants: Int = 0, category: [String] = [], additionalInfo: String = "", isPrivate: Bool = false, minAge: Int = 0) {
             self.eventImageUrl = eventImageUrl
             self.name = name
             self.location = location
@@ -40,9 +41,10 @@ class UserCreateEventViewModel: ObservableObject {
             self.startTime = startTime
             self.endTime = endTime
             self.maxParticipants = maxParticipants
-            self.isLimited = isLimited
             self.category = category
             self.additionalInfo = additionalInfo
+        self.isPrivate = isPrivate
+        self.minAge = minAge
         }
     
     
@@ -56,9 +58,10 @@ class UserCreateEventViewModel: ObservableObject {
             startTime: startTime,
             endTime: endTime,
             maxParticipants: maxParticipants,
-            isLimited: isLimited,
             category: category,
-            additionalInfo: additionalInfo
+            additionalInfo: additionalInfo,
+            isPrivate: isPrivate,
+            minAge: minAge
         )
         
         let createEventManager = UserCreateEventUseCase()

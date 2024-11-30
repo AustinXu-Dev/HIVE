@@ -14,9 +14,9 @@ struct EventDetailView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject private var joinEventVM = JoinEventViewModel()
     @State private var eventAlreadyJoined : Bool = false
-  @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-  @State private var showCreateAccountAlert = false
-
+    @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
+    @State private var showCreateAccountAlert = false
+    
     var body: some View {
         
         ScrollView {
@@ -28,70 +28,70 @@ struct EventDetailView: View {
                         Spacer()
                     }
                 } else {
-                  VStack(alignment: .leading, spacing: 16) {
-                    
-                    KFImage(URL(string: event.eventImageUrl))
-                      .resizable()
-                      .aspectRatio(contentMode: .fill)
-                      .frame(maxWidth: .infinity)
-                      .frame(height: 230)
-                      .cornerRadius(10)
-                    
-                    
-                    Text(event.name)
-                      .font(CustomFont.eventTitleStyle)
-                      .fontWeight(.bold)
-                    
-                    HStack {
-                      eventCategories
-                    }
-                    
-                    
-                    HStack(spacing: 20) {
-                      ParticipantView(event: event)
-                        .onTapGesture {
-                          if userAppState != AppState.guest.rawValue {
-                            appCoordinator.push(.eventAttendeeView(named: event))
-                          } else {
-                            showCreateAccountAlert = true
-                          }
-                        }
-                    }
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    
-                    
-                    Text(event.additionalInfo)
-                      .font(CustomFont.eventBodyStyle)
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                      Text("Host")
-                        .font(CustomFont.eventSubtitleStyle)
-                        .fontWeight(.semibold)
-                      HStack {
-                        if let eventOrganizer = event.organizer {
-                          KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
+                    VStack(alignment: .leading, spacing: 16) {
+                        
+                        KFImage(URL(string: event.eventImageUrl))
                             .resizable()
-                            .frame(width: 40, height: 40)
-                            .clipShape(Circle())
-                          VStack(alignment: .leading) {
-                            Text(eventOrganizer.name ?? "Organizer")
-                              .font(CustomFont.hostTitle)
-                            Text(eventOrganizer.bio ?? "")
-                              .font(CustomFont.hostDescription)
-                          }
+                            .aspectRatio(contentMode: .fill)
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 230)
+                            .cornerRadius(10)
+                        
+                        
+                        Text(event.name)
+                            .font(CustomFont.eventTitleStyle)
+                            .fontWeight(.bold)
+                        
+                        HStack {
+                            eventCategories
                         }
-                      }
-                    }
-                    .onTapGesture {
-                    if userAppState != AppState.guest.rawValue {
-                      if let eventOrganizer = event.organizer {
-                        appCoordinator.push(.organizerProfile(named: eventOrganizer))
-                      }
-                    } else {
-                      showCreateAccountAlert = true
-
-                    }
-                  }
+                        
+                        
+                        HStack(spacing: 20) {
+                            ParticipantView(event: event)
+                                .onTapGesture {
+                                    if userAppState != AppState.guest.rawValue {
+                                        appCoordinator.push(.eventAttendeeView(named: event))
+                                    } else {
+                                        showCreateAccountAlert = true
+                                    }
+                                }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        
+                        
+                        Text(event.additionalInfo ?? "")
+                            .font(CustomFont.eventBodyStyle)
+                        
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Host")
+                                .font(CustomFont.eventSubtitleStyle)
+                                .fontWeight(.semibold)
+                            HStack {
+                                if let eventOrganizer = event.organizer {
+                                    KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
+                                        .resizable()
+                                        .frame(width: 40, height: 40)
+                                        .clipShape(Circle())
+                                    VStack(alignment: .leading) {
+                                        Text(eventOrganizer.name ?? "Organizer")
+                                            .font(CustomFont.hostTitle)
+                                        Text(eventOrganizer.bio ?? "")
+                                            .font(CustomFont.hostDescription)
+                                    }
+                                }
+                            }
+                        }
+                        .onTapGesture {
+                            if userAppState != AppState.guest.rawValue {
+                                if let eventOrganizer = event.organizer {
+                                    appCoordinator.push(.organizerProfile(named: eventOrganizer))
+                                }
+                            } else {
+                                showCreateAccountAlert = true
+                                
+                            }
+                        }
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
                                 .font(CustomFont.eventSubtitleStyle)
@@ -123,62 +123,53 @@ struct EventDetailView: View {
                                     .font(CustomFont.detail)
                             }
                         }
-                      
-                      HStack {
-                        Spacer()
-                        if userAppState == AppState.guest.rawValue {
-                          Button {
-                            appCoordinator.popToRoot()
-                            userAppState =  AppState.notSignedIn.rawValue
-                          } label: {
-                            ReusableAccountCreationButton()
-                          }
-                          .frame(alignment:.center)
+                        
+                        HStack {
+                            Spacer()
+                            if userAppState == AppState.guest.rawValue {
+                                Button {
+                                    appCoordinator.popToRoot()
+                                    userAppState =  AppState.notSignedIn.rawValue
+                                } label: {
+                                    ReusableAccountCreationButton()
+                                }
+                                .frame(alignment:.center)
+                            }
+                            Spacer()
                         }
-                        Spacer()
-                      }
-                      
+                        
                         
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
                            currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
                             
-                          VStack {
-                            Spacer()
-                          
-                              
-                        
-                            Button(action: {
-                              if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
-                                joinEventVM.joinEvent(eventId: event._id, token: userToken)
-                              }
-                              
-                              
-                            }) {
-                              ZStack {
-                                RoundedRectangle(cornerRadius: 25)
-                                  .stroke(Color.purple, lineWidth: 5)
-                                  .shadow(color: Color.purple.opacity(0.4), radius: 20, x: 0, y: 0)
-                                  .shadow(color: Color.purple.opacity(0.4), radius: 40, x: 0, y: 0)
-                                  .frame(width: 300, height: 60)
-                                  .overlay {
-                                    Text(eventAlreadyJoined ? "Joined" :"Join")
-                                      .font(.system(size: 24, weight: .bold))
-                                      .foregroundColor(.black)
-                                      .frame(width: 300, height: 60)
-                                      .background(Color.white)
-                                      .cornerRadius(25)
-                                    
-                                  }
-                              }
+                            VStack {
+                                Spacer()
+                                Button(action: {
+                                    if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
+                                        joinEventVM.joinEvent(eventId: event._id, token: userToken)
+                                    }
+                                }) {
+                                    ZStack{
+                                        RoundedRectangle(cornerRadius: 25)
+                                        //                                        .stroke(Color.purple, lineWidth: 5)
+                                            .shadow(color: Color("shadowColor"), radius: 5, x: 0, y: 0)
+                                            .frame(width: 200, height: 60)
+                                            .overlay {
+                                                Text(eventAlreadyJoined ? "Joined" :"Join")
+                                                    .font(.system(size: 24, weight: .bold))
+                                                    .foregroundColor(.black)
+                                                    .frame(width: 200, height: 60)
+                                                    .background(Color.white)
+                                                    .cornerRadius(25)
+                                            }
+                                    }
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .shadow(color: Color("shadowColor"), radius: 10, x: 0, y: 0)
                             }
-                            .buttonStyle(PlainButtonStyle())
                             .frame(maxWidth: .infinity)
-                          }
-                            }
-                            Spacer()
-                            
-                              
-                        
+
+                        }
                     }
                     .padding(.horizontal,20)
                 }
@@ -194,31 +185,31 @@ struct EventDetailView: View {
                     appCoordinator.push(.eventJoinSuccess)
                 }
             }
-         
+            
             
             .toolbar {
-              ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                  appCoordinator.pop()
-                }) {
-                  Image(systemName: "chevron.left")
-                    .font(.title2)
-                    .foregroundColor(.black)
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        appCoordinator.pop()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title2)
+                            .foregroundColor(.black)
+                    }
                 }
-              }
             }
             .alert(isPresented: $showCreateAccountAlert) {
                 Alert(
                     title: Text("You must create or log in to an account, first"),
                     primaryButton: .default(Text("Sign Up/Sign In"), action: {
-                      appCoordinator.popToRoot()
-                      userAppState = AppState.notSignedIn.rawValue
+                        appCoordinator.popToRoot()
+                        userAppState = AppState.notSignedIn.rawValue
                     }),
                     secondaryButton: .destructive(Text("Cancel"))
                 )
             }
-
-         
+            
+            
         }
     }
     
@@ -226,19 +217,19 @@ struct EventDetailView: View {
         guard let currentUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
         eventAlreadyJoined = event.participants?.contains(where: {$0.userid == currentUserId}) ?? false
         
-//        event.participants?.forEach({ user in
-//            if user.userid == currentUserId {
-//                eventAlreadyJoined = true
-//
-//            } else {
-//                eventAlreadyJoined = false
-//            }
-//            
-//        })
-//        eventAlreadyJoined = event.participants?.contains { $0._id == currentUserId } ?? false
-
+        //        event.participants?.forEach({ user in
+        //            if user.userid == currentUserId {
+        //                eventAlreadyJoined = true
+        //
+        //            } else {
+        //                eventAlreadyJoined = false
+        //            }
+        //
+        //        })
+        //        eventAlreadyJoined = event.participants?.contains { $0._id == currentUserId } ?? false
+        
     }
-
+    
     
     
 }
@@ -265,18 +256,22 @@ extension EventDetailView {
     private var eventCategories : some View {
         HStack(spacing:8) {
             ForEach(event.category, id: \.self) { category in
-          
-          
+                
+                
                 Text(category)
-                    .foregroundColor(.white)
+                    .foregroundColor(.black)
                     .font(CustomFont.eventSubtitleStyle)
                     .padding(.vertical, 6)
-                    .padding(.horizontal, 10)
-                    .background(Color.gray.opacity(1))
-                    .cornerRadius(8)
+                    .padding(.horizontal, 14)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(Color.black, lineWidth: 1.5)
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                     .fixedSize(horizontal: true, vertical: false)
                 
-                          }
+                
+            }
         }
         
     }
