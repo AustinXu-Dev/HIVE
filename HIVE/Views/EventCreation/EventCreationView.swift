@@ -53,7 +53,7 @@ struct EventCreationView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 20) {
-                        customToolbar
+//                        customToolbar
                         eventImage
                         eventName
                         
@@ -568,63 +568,93 @@ extension EventCreationView {
             }
         }
     }
-    
-    private var eventCategory : some View {
+        
+    private var eventCategory: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // Title and Description
             Text("Category")
                 .font(CustomFont.createEventTitle)
+            
             Text("Select between 1 and 3 categories")
                 .font(CustomFont.createEventBody)
                 .foregroundStyle(invalidFields.contains("categories") ? Color.red : Color.gray)
                 .animation(.linear, value: invalidFields.contains("categories"))
             
-            
-            HStack {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 10) {
-                    ForEach(categories.prefix(isCategoryExpanded ? categories.count : 3), id: \.self) { category in
-                        Button(action: {
-                            toggleCategory(category)
-                        }) {
-                            
-                            Text(category)
-                                .font(CustomFont.createEventBody)
-                                .lineLimit(1)
-                                .foregroundStyle(Color.black)
-                                .padding(.horizontal,8)
-                                .padding(.vertical,6)
-                                .background(selectedCategories.contains(category) ? Color.blue.opacity(0.65) : Color.gray.opacity(0.2))
-                                .cornerRadius(30)
-                                .onChange(of: selectedCategories) { _,_ in
-                                    validateCategory()
-                                }
+            // Dynamic Category Buttons
+            VStack(alignment: .leading, spacing: 10) {
+                let rows = getRows(items: categories, maxWidth: UIScreen.main.bounds.width - 40)
+                
+                ForEach(isCategoryExpanded ? rows.indices : rows.indices.prefix(1), id: \.self) { index in
+                    let row = rows[index]
+                    HStack {
+                        ForEach(row, id: \.self) { category in
+                            Button(action: {
+                                toggleCategory(category)
+                            }) {
+                                Text(category)
+                                    .font(CustomFont.createEventBody)
+                                    .lineLimit(1)
+                                    .foregroundStyle(Color.black)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 6)
+                                    .background(selectedCategories.contains(category) ? Color.blue.opacity(0.65) : Color.gray.opacity(0.2))
+                                    .cornerRadius(30)
+                            }
                         }
+                        Spacer()
                     }
                 }
-                .frame(maxWidth:350)
-                
-                
-                // Expand/Collapse Button
-                Button(action: {
-                    withAnimation(.linear(duration: 0.35)){
-                        isCategoryExpanded.toggle()
-                    }
-                }) {
-                    Circle()
-                        .frame(height:27)
-                        .foregroundStyle(Color.black)
-                        .overlay (
-                            Image(systemName: "chevron.down")
-                                .rotationEffect(.degrees(isCategoryExpanded ? 180 : 0))
-                                .foregroundStyle(.white)
-                        )
-                    
-                }
-                Spacer()
+
             }
             
-            
+            // Expand/Collapse Button
+            Button(action: {
+                withAnimation(.linear(duration: 0.35)) {
+                    isCategoryExpanded.toggle()
+                }
+            }) {
+                Circle()
+                    .frame(height: 27)
+                    .foregroundStyle(Color.black)
+                    .overlay(
+                        Image(systemName: "chevron.down")
+                            .rotationEffect(.degrees(isCategoryExpanded ? 180 : 0))
+                            .foregroundStyle(.white)
+                    )
+            }
+            Spacer()
         }
     }
+
+    // Helper function to calculate rows for categories
+    private func getRows(items: [String], maxWidth: CGFloat) -> [[String]] {
+        var rows: [[String]] = []
+        var currentRow: [String] = []
+        var currentWidth: CGFloat = 0
+        
+        let padding: CGFloat = 45 // Total padding for a button (left + right)
+        
+        for item in items {
+            let buttonWidth = (item.size(withAttributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)]).width + padding)
+            
+            if currentWidth + buttonWidth > maxWidth {
+                rows.append(currentRow)
+                currentRow = [item]
+                currentWidth = buttonWidth
+            } else {
+                currentRow.append(item)
+                currentWidth += buttonWidth
+            }
+        }
+        
+        if !currentRow.isEmpty {
+            rows.append(currentRow)
+        }
+        return rows
+    }
+
+    
+
     
     private var eventAdditionalInfo : some View {
         VStack(alignment: .leading) {
