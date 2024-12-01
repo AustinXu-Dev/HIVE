@@ -36,7 +36,7 @@ struct TabScreenView: View {
                     Label(selectedIndex == 2 ? "---" : "", image: "plus")
                 }
                 .tag(2)
-          EventHistory()
+          TestView()
                 .bold()
                 .font(.largeTitle)
                 .tabItem {

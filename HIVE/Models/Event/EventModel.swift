@@ -17,7 +17,7 @@ struct EventHistoryResponse: Codable,Hashable {
 
 struct EventHistoryModel : Codable, Hashable {
   let minAge : Int?
-  let isPrivate: Bool?
+  let isPrivate: Bool
   let pendingParticipants: [PendingParticipantModel]?
   let  _id,eventImageUrl,name,location: String?
   let startDate,endDate,startTime,endTime : String?

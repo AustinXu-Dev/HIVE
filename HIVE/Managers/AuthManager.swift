@@ -87,6 +87,8 @@ final class AuthenticationManager {
     do {
       try await Auth.auth().currentUser?.sendEmailVerification()
       isWaitingForVerification = true
+      //wait agani for 3 mins
+      try await waitForEmailVerification()
     } catch {
       throw error
     }
