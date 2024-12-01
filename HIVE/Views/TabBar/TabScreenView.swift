@@ -36,7 +36,7 @@ struct TabScreenView: View {
                     Label(selectedIndex == 2 ? "---" : "", image: "plus")
                 }
                 .tag(2)
-          TestView()
+            EventApproveRejectView()
                 .bold()
                 .font(.largeTitle)
                 .tabItem {
@@ -52,14 +52,6 @@ struct TabScreenView: View {
         }
         .onAppear {
             eventsVM.fetchEvents()
-              
-//              if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
-//              
-//              print("\(reterivedUserId)")
-//              profileVM.getOneUserById(id: reterivedUserId)
-//              
-//              
-//            }
             
             DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                 if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {

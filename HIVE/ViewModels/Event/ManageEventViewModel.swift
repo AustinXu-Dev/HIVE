@@ -12,7 +12,8 @@ enum manageAction: String {
   case reject = "reject"
 }
 
-final class ManageEventViewModel: ObservableObject {
+@MainActor
+class ManageEventViewModel: ObservableObject {
   
   @Published var manageSuccessful: Bool = false
   @Published var isLoading : Bool = false
@@ -24,14 +25,21 @@ final class ManageEventViewModel: ObservableObject {
     let manageUserUseCase = ManageParticipants(eventId: eventId, participantId: participantId)
     let data = ManageParticipantDTO(action: action.rawValue)
     manageUserUseCase.execute(data: data, getMethod: "POST", token: token) { [weak self] result in
-      self?.isLoading = false
+        DispatchQueue.main.async {
+            self?.isLoading = false
+        }
       switch result {
       case .success(let status):
-        self?.manageSuccessful = status.success
-        print("manage sucessful with status: \(self?.manageSuccessful)")
+          DispatchQueue.main.async {
+              self?.manageSuccessful = status.success
+              //set the hasApprovedOrReject to true
+          }
+        print("manage sucessful with status: \(self?.manageSuccessful ?? true)")
       case .failure(let error):
-        self?.errorMessage = error.localizedDescription
-        print(self?.errorMessage)
+          DispatchQueue.main.async {
+              self?.errorMessage = error.localizedDescription
+          }
+        print(self?.errorMessage ?? "")
       }
       
     }
