@@ -25,6 +25,8 @@ final class EmailSignInViewModel: ObservableObject {
   @Published var emailFieldIsValid:Bool = false
   @Published var passwordFieldIsValid:Bool = false
 
+  
+  @Published var hasWaiting3Mintutes: Bool = false
 
   
   
@@ -116,6 +118,7 @@ final class EmailSignInViewModel: ObservableObject {
   private func waitingForVerification() async {
     do {
       try await AuthenticationManager.shared.waitForEmailVerification()
+      hasWaiting3Mintutes = true
       isWaitingForVerification = AuthenticationManager.shared.isWaitingForVerification
       self.isNewUser = !isWaitingForVerification && isEmailVerified()
     } catch {

@@ -143,19 +143,17 @@ extension SignInView {
   
   private var forgetPasswordButton: some View {
     HStack {
-      /*
-      if emailSignInVM.isWaitingForVerification {
-        Button {
-          Task {
-            await emailSignInVM.sendEmailVerification()
+      if emailSignInVM.isWaitingForVerification && emailSignInVM.hasWaiting3Mintutes {
+          Button {
+            Task {
+              await emailSignInVM.sendEmailVerification()
+            }
+          } label: {
+            Text("Resend verification mail")
+              .font(.caption)
+              .foregroundStyle(Color.blue)
           }
-        } label: {
-          Text("Resend verification mail")
-            .font(.caption)
-            .foregroundStyle(Color.blue)
         }
-      }
-      */
       Spacer()
       Button {
         showAlert = true

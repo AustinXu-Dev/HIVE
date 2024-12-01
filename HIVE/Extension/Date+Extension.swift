@@ -14,6 +14,12 @@ extension Date {
             dateFormatter.dateFormat = "d MMM"
             return dateFormatter.string(from: self)
         }
+  
+  func toDayMonthYearString() -> String {
+      let dateFormatter = DateFormatter()
+      dateFormatter.dateFormat = "d MMM yyyy"
+      return dateFormatter.string(from: self)
+  }
     
     
   
