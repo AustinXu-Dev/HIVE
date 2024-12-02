@@ -12,6 +12,8 @@ struct EventHistory: View {
   @StateObject var viewModel = EventHistoryViewModel()
   @State private var showHostingView: Bool = false
   @State private var showErrorMessage: Bool = false
+  @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+
   var body: some View {
     ZStack {
       if viewModel.isLoading {
@@ -59,9 +61,10 @@ struct EventHistory: View {
           ForEach(viewModel.joinedEventHistory,id: \._id){ event in
             VStack(alignment:.center,spacing: 12){
               EventRow(event: event)
-              if showErrorMessage {
-                Text(viewModel.errorMessage ?? "")
-              }
+                .onTapGesture {
+                  appCoordinator.push(.eventDetailView(named: event))
+                }
+      
             }
             
           }
@@ -69,9 +72,9 @@ struct EventHistory: View {
             ForEach(viewModel.hostedEventHistory,id: \._id){ event in
               VStack(alignment:.center,spacing: 12){
                 EventRow(event: event)
-                if showErrorMessage {
-                  Text(viewModel.errorMessage ?? "")
-                }
+                  .onTapGesture {
+                    appCoordinator.push(.eventDetailView(named: event))
+                  }
               }
               
             }

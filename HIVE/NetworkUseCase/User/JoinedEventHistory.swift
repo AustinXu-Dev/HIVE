@@ -15,7 +15,7 @@ class JoinedEventHistory: APIManager {
   }
   
   
-  typealias ModelType = EventHistoryResponse
+  typealias ModelType = EventResponse
   
   var methodPath: String {
     return "/user/joinedEvents/\(id)"

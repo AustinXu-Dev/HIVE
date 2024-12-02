@@ -68,6 +68,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
           ParticipantProfile(participant : participant)
         case .organizerProfile(named: let organizer):
           OrganizerProfile(organizer: organizer)
+        case .eventApproveRejectView:
+          EventApproveRejectView()
         }
     }
     
