@@ -11,6 +11,7 @@ import PhotosUI
 struct EventCreationView: View {
     @State private var selectedItem: PhotosPickerItem? // Holds the selected item
     @State private var selectedImage: UIImage? // Holds the selected image
+    @State private var showPhotoPicker: Bool = false
     
     @State private var eventTitle: String = ""
     @State private var eventLocation: String = ""
@@ -320,50 +321,84 @@ extension EventCreationView {
     }
     
     
+//    private var eventImage: some View {
+//        VStack {
+//            PhotosPicker(
+//                selection: $selectedItem,
+//                matching: .images,
+//                photoLibrary: .shared()) {
+//                    // Display selected image or placeholder
+//                    if let eventPhoto = selectedImage {
+//                        Image(uiImage: eventPhoto)
+//                            .resizable()
+//                            .aspectRatio(contentMode: .fill)
+//                            .frame(height: 180)
+//                            .cornerRadius(10)
+//                    } else {
+//                        ZStack {
+//                            RoundedRectangle(cornerRadius: 10)
+//                                .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
+//                                .fill(Color.gray.opacity(0.3))
+//                                .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+//                                .frame(height: 200)
+//                            Circle()
+//                                .frame(height: 40)
+//                                .foregroundStyle(Color.black.opacity(0.5))
+//                            Image(systemName: "photo")
+//                                .font(.system(size: 20))
+//                                .foregroundStyle(.white)
+//                        }
+//                    }
+//                }
+//                .onChange(of: selectedItem) { _,newItem in
+//                    Task {
+//                        // Retrieve selected asset
+//                        if let newItem = newItem {
+//                            // Retrieve the selected asset in the background
+//                            if let data = try? await newItem.loadTransferable(type: Data.self) {
+//                                if let image = UIImage(data: data) {
+//                                    selectedImage = image // Assign the image
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//        }
+//    }
     private var eventImage: some View {
         VStack {
-            PhotosPicker(
-                selection: $selectedItem,
-                matching: .images,
-                photoLibrary: .shared()) {
-                    // Display selected image or placeholder
-                    if let eventPhoto = selectedImage {
-                        Image(uiImage: eventPhoto)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                            .frame(height: 180)
-                            .cornerRadius(10)
-                    } else {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
-                                .fill(Color.gray.opacity(0.3))
-                                .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-                                .frame(height: 200)
-                            Circle()
-                                .frame(height: 40)
-                                .foregroundStyle(Color.black.opacity(0.5))
-                            Image(systemName: "photo")
-                                .font(.system(size: 20))
-                                .foregroundStyle(.white)
-                        }
-                    }
+            if let eventPhoto = selectedImage {
+                // Display the selected image
+                Image(uiImage: eventPhoto)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(height: 180)
+                    .cornerRadius(10)
+            } else {
+                // Placeholder view when no image is selected
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10)
+                        .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
+                        .fill(Color.gray.opacity(0.3))
+                        .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+                        .frame(height: 200)
+                    Circle()
+                        .frame(height: 40)
+                        .foregroundStyle(Color.black.opacity(0.5))
+                    Image(systemName: "photo")
+                        .font(.system(size: 20))
+                        .foregroundStyle(.white)
                 }
-                .onChange(of: selectedItem) { _,newItem in
-                    Task {
-                        // Retrieve selected asset
-                        if let newItem = newItem {
-                            // Retrieve the selected asset in the background
-                            if let data = try? await newItem.loadTransferable(type: Data.self) {
-                                if let image = UIImage(data: data) {
-                                    selectedImage = image // Assign the image
-                                }
-                            }
-                        }
-                    }
-                }
+            }
+        }
+        .onTapGesture {
+            showPhotoPicker = true
+        }
+        .sheet(isPresented: $showPhotoPicker) {
+            PhotoPicker(selectedImage: $selectedImage)
         }
     }
+
     
     private var eventName : some View {
         VStack(alignment: .center, spacing: 5) {
