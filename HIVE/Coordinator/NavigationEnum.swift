@@ -23,6 +23,7 @@ enum Screen: Identifiable, Hashable {
     case eventAttendeeView(named : EventModel)
     case participantProfile(named : ParticipantModel)
   case organizerProfile(named: OrganizerModel)
+  case eventApproveRejectView
     
     var id: Self { return self }
 }

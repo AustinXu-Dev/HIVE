@@ -13,7 +13,6 @@ struct EventApproveRejectView: View {
     @StateObject var manageEventViewModel = ManageEventViewModel()
 
     var body: some View {
-        NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     ForEach(organizingEventsVM.organizingPrivateEvents, id: \._id) { event in
@@ -31,15 +30,15 @@ struct EventApproveRejectView: View {
             })
             .navigationTitle("Activity")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    Text("Activity")
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                }
-            }
+//            .toolbar {
+//                ToolbarItem(placement: .principal) {
+//                    Text("Activity")
+//                        .font(.headline)
+//                        .foregroundColor(.primary)
+//                }
+//            }
             .scrollIndicators(.hidden)
-        }
+        
     }
 
     private func refreshData() {
@@ -52,7 +51,7 @@ struct EventApproveRejectView: View {
 }
 
 struct PendingParticipantRow: View {
-    let event: EventHistoryModel
+    let event: EventModel
     @EnvironmentObject var manageEventViewModel: ManageEventViewModel
     @State private var participantActions: [String: manageAction] = [:] // Track actions by participant ID
 
@@ -82,14 +81,14 @@ struct PendingParticipantRow: View {
                         Text(" wants to join ")
                             .font(CustomFont.pendindParticipantText)
                         +
-                        Text("\(event.name ?? "")")
+                      Text("\(event.name)")
                             .bold()
                             .font(CustomFont.pendingParticipantBoldText)
                         
                         HStack(spacing: 10) {
-                            if let eventId = event._id, let participantId = participant.userid {
+                            if let participantId = participant.userid {
                                 Button {
-                                    handleApproveAction(eventId: eventId, participantId: participantId, action: .approve)
+                                  handleApproveAction(eventId: event._id, participantId: participantId, action: .approve)
                                 } label: {
                                     Text(participantActions[participantId] == .approve ? "Accepted" : "Accept")
                                         .font(.system(size: 14, weight: .bold))
@@ -101,9 +100,9 @@ struct PendingParticipantRow: View {
                                 .disabled(participantActions[participantId] == .approve) // Disable after action
                             }
 
-                            if let eventId = event._id, let participantId = participant.userid {
+                            if let participantId = participant.userid {
                                 Button {
-                                    handleApproveAction(eventId: eventId, participantId: participantId, action: .reject)
+                                  handleApproveAction(eventId: event._id, participantId: participantId, action: .reject)
                                 } label: {
                                     Text(participantActions[participantId] == .reject ? "Removed" : "Remove")
                                         .font(.system(size: 14, weight: .bold))

@@ -10,8 +10,8 @@ import Foundation
 final class EventHistoryViewModel: ObservableObject {
   
   
-  @Published var joinedEventHistory: [EventHistoryModel] = []
-  @Published var hostedEventHistory: [EventHistoryModel] = []
+  @Published var joinedEventHistory: [EventModel] = []
+  @Published var hostedEventHistory: [EventModel] = []
   @Published var errorMessage: String? = ""
   @Published var isLoading : Bool = false
   

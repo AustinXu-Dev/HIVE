@@ -12,15 +12,15 @@ import Foundation
 final class GetOngoingEventsViewModel: ObservableObject {
   
   
-  @Published var organizingEvents: [EventHistoryModel] = []
+  @Published var organizingEvents: [EventModel] = []
   @Published var errorMessage: String? = nil
   @Published var isLoading: Bool = false
-  @Published var organizingPrivateEvents: [EventHistoryModel] = []
+  @Published var organizingPrivateEvents: [EventModel] = []
 
   
   
-  func filerPrivateEvents(event: [EventHistoryModel]) -> [EventHistoryModel] {
-    return event.filter({$0.isPrivate})
+  func filerPrivateEvents(event: [EventModel]) -> [EventModel] {
+    return event.filter({$0.isPrivate ?? false})
   }
   
 

@@ -12,8 +12,6 @@ struct ParticipantView: View {
     let event : EventModel
     var body: some View {
         HStack {
-            
-        
             HStack(spacing:-12) {
                 if let eventParticipants = event.participants {
                     ForEach(eventParticipants.prefix(5),id: \.userid){ event in
@@ -42,7 +40,9 @@ struct ParticipantView: View {
                     .font(CustomFont.eventBodyStyle)
             }
     }
-        
+       
+      
+
     }
 }
 

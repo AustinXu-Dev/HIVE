@@ -16,7 +16,7 @@ class GetOrganizingEvents: APIManager {
   }
   
   
-  typealias ModelType = EventHistoryResponse
+  typealias ModelType = EventResponse
   
   var methodPath: String {
     return "/user/organizingEvents/\(userId)"

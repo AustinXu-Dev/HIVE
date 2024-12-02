@@ -9,24 +9,6 @@ import Foundation
 
 
 
-struct EventHistoryResponse: Codable,Hashable {
-  let success : Bool
-  let message : [EventHistoryModel]
-}
-
-
-struct EventHistoryModel : Codable, Hashable {
-  let minAge : Int?
-  let isPrivate: Bool
-  let pendingParticipants: [PendingParticipantModel]?
-  let  _id,eventImageUrl,name,location: String?
-  let startDate,endDate,startTime,endTime : String?
-  let maxParticipants : Int?
-  let category : [String]?
-  let additionalInfo : String?
-  let participants : [ParticipantModel]?
-  let organizer : String?
-}
 
 struct EventResponse : Codable, Hashable {
   let success : Bool

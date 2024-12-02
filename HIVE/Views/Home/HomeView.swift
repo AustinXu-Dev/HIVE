@@ -17,40 +17,36 @@ struct HomeView: View {
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
     
     
-    var body: some View {
-        
-        if eventsVM.isLoading {
-            VStack {
-                ProgressView()
-            }
-        } else {
-            ScrollView(.vertical,showsIndicators: false) {
-                VStack(alignment: .center,spacing:14) {
-                    headerRow
-                        .padding(.horizontal)
-                    //    if TokenManager.share.getToken() == nil {
-                    if isGuest {
-                        accountCreationButton
-                    }
-                    eventsScrollView
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .padding(.horizontal)
-                
-                
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .navigationBarHidden(true)
-            .navigationBarBackButtonHidden()
-            .refreshable {
-                eventsVM.fetchEvents()
-            }
-            .onAppear {
-                print("user app State \(userAppState)")
-            }
+  var body: some View {
+    ZStack {
+    if eventsVM.isLoading {
+      ProgressView()
+    } else {
+      ScrollView(.vertical,showsIndicators: false) {
+        VStack(alignment: .center,spacing:14) {
+          headerRow
+            .padding(.horizontal)
+          if isGuest {
+            accountCreationButton
+          }
+          eventsScrollView
         }
-        
-        
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(.horizontal)
+      }
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
+      .refreshable {
+        eventsVM.fetchEvents()
+      }
+      .navigationBarBackButtonHidden()
+      .toolbar(.hidden)
+      .onAppear {
+        print("user app State \(userAppState)")
+      }
+    }
+    
+  }
+
         
         
     }
@@ -126,27 +122,43 @@ struct HomeView: View {
 extension HomeView {
     private var headerRow: some View {
         HStack {
-            Image("HIVE")
+              Menu {
+                  ForEach(TimeFilter.allCases, id: \.self) { filter in
+                      Button(action: {
+                          selectedTimeFilter = filter
+                      }) {
+                          Text(filter.rawValue)
+                      }
+                  }
+              } label: {
+                Label("\(selectedTimeFilter.rawValue)", systemImage: "slider.horizontal.3")
+                  .foregroundStyle(Color.black)
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width:25,height:25)
+              }
+            
+            Spacer()
+            
+              Image(.HIVE)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 78, height: 34)
-            Spacer()
-            Menu {
-                ForEach(TimeFilter.allCases, id: \.self) { filter in
-                    Button(action: {
-                        selectedTimeFilter = filter
-                    }) {
-                        Text(filter.rawValue)
-                    }
-                }
-            } label: {
-                Label("\(selectedTimeFilter.rawValue)", systemImage: "calendar")
-                    .padding()
-                    .foregroundStyle(Color.black)
-                    .background(Color.gray.opacity(0.5))
-                    .cornerRadius(8)
-            }
+                .frame(width: 75,height: 34)
             
+            Spacer()
+            
+              HStack(spacing:12) {
+                Image(systemName: "bell")
+                  .onTapGesture {
+                    appCoordinator.push(.eventApproveRejectView)
+                  }
+                Image(systemName: "calendar")
+              }
+              .aspectRatio(contentMode: .fit)
+              .frame(width:25,height:25)
+            
+            
+           
+          
         }
     }
     
