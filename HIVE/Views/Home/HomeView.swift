@@ -19,9 +19,6 @@ struct HomeView: View {
     
   var body: some View {
     ZStack {
-    if eventsVM.isLoading {
-      ProgressView()
-    } else {
       ScrollView(.vertical,showsIndicators: false) {
         VStack(alignment: .center,spacing:14) {
           headerRow
@@ -43,7 +40,7 @@ struct HomeView: View {
       .onAppear {
         print("user app State \(userAppState)")
       }
-    }
+    
     
   }
 

@@ -120,7 +120,7 @@ struct ProfileView: View {
           ImagePicker(selectedImage: $profileImage)
         }
         HStack {
-          Text(profileVM.userDetail?.name ?? "Unknown User")
+          Text(profileVM.userDetail?.name ?? "")
             .font(CustomFont.profileTitle)
             .fontWeight(.bold)
           if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
@@ -152,7 +152,7 @@ struct ProfileView: View {
           .focused($isFocused)
           .padding(.horizontal, 40)
         } else {
-          Text(profileVM.userDetail?.bio ?? "No bio available")
+          Text(profileVM.userDetail?.bio ?? "")
             .font(.body)
             .foregroundColor(.secondary)
             .multilineTextAlignment(.center)
