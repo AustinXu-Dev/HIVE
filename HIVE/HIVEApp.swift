@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import TipKit
 
 @main
 struct HIVEApp: App {
@@ -18,5 +19,9 @@ struct HIVEApp: App {
           CoordinatorView()
 //            OnboardingView()
         }
+    }
+    
+    init() {
+        try? Tips.configure([.displayFrequency(.hourly)])
     }
 }
