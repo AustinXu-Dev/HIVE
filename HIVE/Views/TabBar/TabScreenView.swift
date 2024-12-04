@@ -9,58 +9,51 @@ import SwiftUI
 
 struct TabScreenView: View {
     
-    @State var selectedIndex: Int = 0
-    @StateObject private var eventsVM = GetEventsViewModel()
-    @Environment(\.isGuest) var isGuest
-    @StateObject var profileVM = GetOneUserByIdViewModel()
+  @EnvironmentObject private var eventsVM: GetEventsViewModel
+  @Environment(\.isGuest) var isGuest
+  @StateObject var profileVM = GetOneUserByIdViewModel()
+  @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
+  
   var body: some View {
-    ZStack {
-      if eventsVM.isLoading && profileVM.isLoading {
-        ProgressView()
-      } else {
-        TabView(selection: $selectedIndex) {
+        TabView(selection: $appCoordinator.selectedTabIndex) {
           HomeView()
             .environmentObject(eventsVM)
             .environmentObject(profileVM)
             .tabItem {
-              Label(selectedIndex == 0 ? "---" : "", image: "home")
+              Label(appCoordinator.selectedTabIndex == .home ? "---" : "", image: "home")
             }
-            .tag(0)
+            .tag(Tab.home)
           SearchView()
-            .environmentObject(eventsVM)
             .environmentObject(profileVM)
             .tabItem {
-              Label(selectedIndex == 1 ? "---" : "", image: "search")
+              Label(appCoordinator.selectedTabIndex == .search ? "---" : "", image: "search")
             }
-            .tag(1)
+            .tag(Tab.search)
           EventCreationView()
             .tabItem {
-              Label(selectedIndex == 2 ? "---" : "", image: "plus")
+              Label(appCoordinator.selectedTabIndex == .hostEvent ? "---" : "", image: "plus")
             }
-            .tag(2)
+            .tag(Tab.hostEvent)
           Text("Coming Soon")
             .bold()
             .font(.largeTitle)
             .tabItem {
-              Label(selectedIndex == 3 ? "---" : "", image: "messenger")
+              Label(appCoordinator.selectedTabIndex == .chat ? "---" : "", image: "messenger")
             }
-            .tag(3)
+            .tag(Tab.chat)
           ProfileView()
-            .environmentObject(eventsVM)
             .environmentObject(profileVM)
             .tabItem {
-              Label(selectedIndex == 4 ? "---" : "", image: "user")
+              Label(appCoordinator.selectedTabIndex == .profile ? "---" : "", image: "user")
             }
-            .tag(4)
+            .tag(Tab.profile)
         }
-      }
-    }
+      
     .onAppear {
-      eventsVM.fetchEvents()
       DispatchQueue.main.asyncAfter(deadline: .now() + 3){
         if let reterivedUserId = KeychainManager.shared.keychain.get("appUserId") {
-          print("\(reterivedUserId)")
+          print("reterivedUserId: \(reterivedUserId)")
           profileVM.getOneUserById(id: reterivedUserId)
         }
       }

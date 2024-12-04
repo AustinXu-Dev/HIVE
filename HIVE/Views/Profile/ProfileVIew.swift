@@ -184,6 +184,9 @@ struct ProfileView: View {
         Button("Cancel", role: .cancel) {}
         Button("Logout", role: .destructive) {
           googleVM.signOutWithGoogle()
+          DispatchQueue.main.asyncAfter(deadline: .now() + 3){
+            appCoordinator.selectedTabIndex = .home
+          }
         }
       }
       .refreshable {

@@ -22,6 +22,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
     @ObservedObject var getAllUserVM = GetAllUsersViewModel()
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
 
+
     var signInService = SignInService()
     var isNew: Bool?
     

@@ -10,6 +10,7 @@ import SwiftUI
 
 class AppCoordinatorImpl: AppCoordinatorProtocol {
     @Published var path: NavigationPath = NavigationPath()
+  @Published var selectedTabIndex: Tab = .home
 //    @Published var sheet: Sheet?
 //    @Published var fullScreenCover: FullScreenCover?
     
@@ -41,6 +42,11 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
 //    func dismissFullScreenOver() {
 //        self.fullScreenCover = nil
 //    }
+  
+  func setSelectedTab(index: Tab) {
+    print("Select tab index \(selectedTabIndex)")
+    selectedTabIndex = index
+  }
     
     // MARK: - Presentation Style Providers
     @ViewBuilder
