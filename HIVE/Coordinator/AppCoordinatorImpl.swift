@@ -56,8 +56,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             EventDetailView(event: event)
         case .eventCreationForm:
             EventCreationView()
-        case .eventJoinSuccess:
-            EventJoinSuccessView()
+        case .eventJoinSuccess(isPrivate: let isPrivate):
+            EventJoinSuccessView(isPrivate: isPrivate)
         case .eventAttendeeView(named: let event):
             EventAttendeeView(event: event)
         case .tab:

@@ -19,7 +19,7 @@ enum Screen: Identifiable, Hashable {
     case eventDetailView(named : EventModel)
     case eventCreationForm
     case eventCreationSuccess
-    case eventJoinSuccess
+    case eventJoinSuccess(isPrivate: Bool)
     case eventAttendeeView(named : EventModel)
     case participantProfile(named : ParticipantModel)
   case organizerProfile(named: OrganizerModel)
