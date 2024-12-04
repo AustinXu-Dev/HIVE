@@ -151,11 +151,14 @@ struct EventDetailView: View {
                                 }) {
                                     ZStack{
                                         RoundedRectangle(cornerRadius: 25)
-                                        //                                        .stroke(Color.purple, lineWidth: 5)
                                             .shadow(color: Color("shadowColor"), radius: 5, x: 0, y: 0)
                                             .frame(width: 200, height: 60)
                                             .overlay {
-                                                Text(eventAlreadyJoined ? "Joined" :"Join")
+                                                Text(
+                                                    eventAlreadyJoined
+                                                        ? "Joined"
+                                                        : (event.isPrivate ?? false ? "Request" : "Join")
+                                                )
                                                     .font(.system(size: 24, weight: .bold))
                                                     .foregroundColor(.black)
                                                     .frame(width: 200, height: 60)
@@ -182,7 +185,7 @@ struct EventDetailView: View {
             .onReceive(joinEventVM.$joinSuccess) { success in
                 if success {
                     eventAlreadyJoined = true // Update after joining successfully
-                    appCoordinator.push(.eventJoinSuccess)
+                    appCoordinator.push(.eventJoinSuccess(isPrivate: event.isPrivate ?? false)) 
                 }
             }
             
