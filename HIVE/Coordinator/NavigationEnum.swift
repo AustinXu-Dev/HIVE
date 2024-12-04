@@ -9,19 +9,17 @@ import Foundation
 
 enum Screen: Identifiable, Hashable {
   
-  
-  
-  
-  case signIn
-  case onBoarding
-  case home
-  case tab
-  case eventDetailView(named : EventModel)
-  case eventCreationForm
-  case eventCreationSuccess
-  case eventJoinSuccess
-  case eventAttendeeView(named : EventModel)
-  case participantProfile(named : ParticipantModel)
+    
+    case signIn
+    case onBoarding
+    case home
+    case tab
+    case eventDetailView(named : EventModel)
+    case eventCreationForm
+    case eventCreationSuccess
+    case eventJoinSuccess(isPrivate: Bool)
+    case eventAttendeeView(named : EventModel)
+    case participantProfile(named : ParticipantModel)
   case organizerProfile(named: OrganizerModel)
   case eventApproveRejectView
   

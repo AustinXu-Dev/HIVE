@@ -10,13 +10,20 @@ import Kingfisher
 
 struct EventDetailView: View {
     let event : EventModel
+    
     @State private var isCategoryExpanded: Bool = false
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject private var joinEventVM = JoinEventViewModel()
     @State private var eventAlreadyJoined : Bool = false
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
     @State private var showCreateAccountAlert = false
+    @State private var hasRequestedToJoin: Bool = false
+    @State private var currentId: String = ""
+    @State private var showAgeRestrictionAlert = false
+    @State private var isUnderage: Bool = false
     
+    @StateObject var profileVM = GetOneUserByIdViewModel()
+        
     var body: some View {
         
         ScrollView {
@@ -60,7 +67,7 @@ struct EventDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         
                         
-                        Text(event.additionalInfo ?? "")
+                        Text(event.additionalInfo)
                             .font(CustomFont.eventBodyStyle)
                         
                         VStack(alignment: .leading, spacing: 8) {
@@ -119,7 +126,7 @@ struct EventDetailView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
-                                Text("Anyone")
+                                Text(event.isPrivate ?? false ? "Private, \(event.minAge ?? 18)+" : "Public, \(event.minAge ?? 18)+")
                                     .font(CustomFont.detail)
                             }
                         }
@@ -146,16 +153,20 @@ struct EventDetailView: View {
                                 Spacer()
                                 Button(action: {
                                     if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
-                                        joinEventVM.joinEvent(eventId: event._id, token: userToken)
+                                        
+                                        if profileVM.isUnderage{
+                                            showAgeRestrictionAlert = true
+                                        } else {
+                                            joinEventVM.joinEvent(eventId: event._id, token: userToken)
+                                        }
                                     }
                                 }) {
                                     ZStack{
                                         RoundedRectangle(cornerRadius: 25)
-                                        //                                        .stroke(Color.purple, lineWidth: 5)
                                             .shadow(color: Color("shadowColor"), radius: 5, x: 0, y: 0)
                                             .frame(width: 200, height: 60)
                                             .overlay {
-                                                Text(eventAlreadyJoined ? "Joined" :"Join")
+                                                Text(getButtonText())
                                                     .font(.system(size: 24, weight: .bold))
                                                     .foregroundColor(.black)
                                                     .frame(width: 200, height: 60)
@@ -168,7 +179,7 @@ struct EventDetailView: View {
                                 .shadow(color: Color("shadowColor"), radius: 10, x: 0, y: 0)
                             }
                             .frame(maxWidth: .infinity)
-
+                            
                         }
                     }
                     .padding(.horizontal,20)
@@ -182,7 +193,7 @@ struct EventDetailView: View {
             .onReceive(joinEventVM.$joinSuccess) { success in
                 if success {
                     eventAlreadyJoined = true // Update after joining successfully
-                    appCoordinator.push(.eventJoinSuccess)
+                    appCoordinator.push(.eventJoinSuccess(isPrivate: event.isPrivate ?? false)) 
                 }
             }
             
@@ -208,29 +219,43 @@ struct EventDetailView: View {
                     secondaryButton: .destructive(Text("Cancel"))
                 )
             }
+            .alert(isPresented: $showAgeRestrictionAlert) {
+                Alert(
+                    title: Text("Age Restriction"),
+                    message: Text("You do not meet the minimum age requirement of \(event.minAge ?? 18)."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
             
             
         }
     }
     
+    private func getButtonText() -> String{
+        if event.isPrivate ?? false {
+            if eventAlreadyJoined {
+                return "Joined"
+            } else if hasRequestedToJoin{
+                return "Requested"
+            } else {
+                return "Request"
+            }
+        } else {
+            return eventAlreadyJoined ? "Joined" : "Join"
+        }
+    }
+    
     func eventAlreadyJoinedOrNot()  {
         guard let currentUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
-        eventAlreadyJoined = event.participants?.contains(where: {$0.userid == currentUserId}) ?? false
-        
-        //        event.participants?.forEach({ user in
-        //            if user.userid == currentUserId {
-        //                eventAlreadyJoined = true
-        //
-        //            } else {
-        //                eventAlreadyJoined = false
-        //            }
-        //
-        //        })
-        //        eventAlreadyJoined = event.participants?.contains { $0._id == currentUserId } ?? false
+        profileVM.getOneUserAndCheckAge(id: currentUserId, eventMinAge: event.minAge ?? 0)
+        self.eventAlreadyJoined = self.event.participants?.contains(where: { $0.userid == currentUserId }) ?? false
+        self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0.userid == currentUserId }) ?? false
         
     }
     
-    
+
+
+
     
 }
 
