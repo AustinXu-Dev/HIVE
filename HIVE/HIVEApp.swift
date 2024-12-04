@@ -12,10 +12,16 @@ struct HIVEApp: App {
     
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 //    @AppStorage("appState") var isSingIn = false
+  @StateObject private var eventsVM = GetEventsViewModel()
+
 
     var body: some Scene {
         WindowGroup {
           CoordinatorView()
+            .environmentObject(eventsVM)
+            .onAppear {
+              eventsVM.fetchEvents()
+            }
 //            OnboardingView()
         }
     }

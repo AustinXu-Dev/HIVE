@@ -18,6 +18,8 @@ protocol AppCoordinatorProtocol: ObservableObject {
 //    func presentFullScreenCover(_ fullScreenCover: FullScreenCover)
     func pop()
     func popToRoot()
+  func setSelectedTab(index: Tab)
+
 //    func dismissSheet()
 //    func dismissFullScreenOver()
 }

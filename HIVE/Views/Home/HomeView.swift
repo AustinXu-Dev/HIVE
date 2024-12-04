@@ -19,30 +19,34 @@ struct HomeView: View {
     
   var body: some View {
     ZStack {
-      ScrollView(.vertical,showsIndicators: false) {
-        VStack(alignment: .center,spacing:14) {
-          headerRow
-            .padding(.horizontal)
-          if isGuest {
-            accountCreationButton
+      if eventsVM.isLoading {
+        ProgressView("Loading...")
+      } else {
+        ScrollView(.vertical,showsIndicators: false) {
+          VStack(alignment: .center,spacing:14) {
+            headerRow
+              .padding(.horizontal)
+            if isGuest {
+              accountCreationButton
+            }
+            eventsScrollView
           }
-          eventsScrollView
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .padding(.horizontal)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .padding(.horizontal)
+        .refreshable {
+          eventsVM.fetchEvents()
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar(.hidden)
+        .onAppear {
+          print("user app State \(userAppState)")
+        }
+        
+        
       }
-      .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .refreshable {
-        eventsVM.fetchEvents()
-      }
-      .navigationBarBackButtonHidden()
-      .toolbar(.hidden)
-      .onAppear {
-        print("user app State \(userAppState)")
-      }
-    
-    
-  }
+    }
 
         
         
@@ -139,24 +143,29 @@ extension HomeView {
               Image(.HIVE)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 75,height: 34)
+                .frame(width: 40,height: 40)
+                .offset(x:8)
             
             Spacer()
             
-              HStack(spacing:12) {
+              HStack(spacing:4) {
                 Image(systemName: "bell")
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width:25,height:25)
                   .onTapGesture {
                     appCoordinator.push(.eventApproveRejectView)
                   }
                 Image(systemName: "calendar")
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width:25,height:25)
               }
-              .aspectRatio(contentMode: .fit)
-              .frame(width:25,height:25)
+              
             
             
            
           
         }
+        .frame(maxWidth: .infinity,alignment: .center)
     }
     
     private var accountCreationButton: some View {

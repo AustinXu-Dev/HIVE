@@ -12,6 +12,7 @@ struct SearchView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @EnvironmentObject var eventsVM : GetEventsViewModel
     
+    
     var body: some View {
         VStack {
             HStack {
@@ -57,7 +58,7 @@ struct SearchView: View {
                 Spacer()
                 
                 Button(action: {
-                    appCoordinator.push(.eventCreationForm)
+                  appCoordinator.setSelectedTab(index: .hostEvent)
                 }) {
                     Text("Be the first to host one! 🥳")
                         .font(CustomFont.boxTextStyle)

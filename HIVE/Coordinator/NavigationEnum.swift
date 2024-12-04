@@ -9,28 +9,36 @@ import Foundation
 
 enum Screen: Identifiable, Hashable {
   
-    
-   
-    
-    case signIn
-    case onBoarding
-    case home
-    case tab
-    case eventDetailView(named : EventModel)
-    case eventCreationForm
-    case eventCreationSuccess
-    case eventJoinSuccess
-    case eventAttendeeView(named : EventModel)
-    case participantProfile(named : ParticipantModel)
+  
+  
+  
+  case signIn
+  case onBoarding
+  case home
+  case tab
+  case eventDetailView(named : EventModel)
+  case eventCreationForm
+  case eventCreationSuccess
+  case eventJoinSuccess
+  case eventAttendeeView(named : EventModel)
+  case participantProfile(named : ParticipantModel)
   case organizerProfile(named: OrganizerModel)
   case eventApproveRejectView
-    
-    var id: Self { return self }
+  
+  var id: Self { return self }
+}
+
+enum Tab : Hashable {
+  case home
+  case search
+  case hostEvent
+  case chat
+  case profile
 }
 
 //enum Sheet: Identifiable, Hashable {
 ////    case detailTask(named: Task)
-//    
+//
 //    var id: Self { return self }
 //}
 
@@ -48,7 +56,7 @@ enum Screen: Identifiable, Hashable {
 //            hasher.combine("addHabit")
 //        }
 //    }
-//    
+//
 //    // Conform to Equatable
 //    static func == (lhs: FullScreenCover, rhs: FullScreenCover) -> Bool {
 //        switch (lhs, rhs) {
