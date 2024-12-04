@@ -30,6 +30,7 @@ class JoinEventViewModel: ObservableObject {
                         self?.joinSuccess = true
                         print("Successfully joined")
                     } else {
+                        print("Fail to join event")
                         self?.errorMessage = response.message
                        
                     }
@@ -41,4 +42,6 @@ class JoinEventViewModel: ObservableObject {
             }
         }
     }
+    
+    
 }

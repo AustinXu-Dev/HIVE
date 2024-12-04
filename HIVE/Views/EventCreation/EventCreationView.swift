@@ -34,8 +34,9 @@ struct EventCreationView: View {
     @State private var participantCount: Int = 20
     @State private var minimumAge: Int = 18
     @State private var allowMinimumAge: Bool = false
+    @State private var showRestriction: Bool = false
     @FocusState private var isFocused: Bool
-    
+    private var privateEventTip = PrivateEventTip()
     
     
     
@@ -289,7 +290,7 @@ struct EventCreationView: View {
 struct EventCreationView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            EventCreationView(eventCreationVM: UserCreateEventViewModel())
+            EventCreationView()
         }
     }
 }
@@ -567,37 +568,43 @@ extension EventCreationView {
                     Text("Private")
                         .font(CustomFont.createEventSubBody)
                     Image(systemName: "info.circle")
+                        .popoverTip(privateEventTip)
                 }
             }
             
             HStack{
                 Text("Restriction")
                     .font(CustomFont.createEventSubBody)
-                Image(systemName: "chevron.down")
+                Image(systemName: showRestriction ? "chevron.down" : "chevron.up")
+                    .onTapGesture {
+                        showRestriction.toggle()
+                    }
             }
             
-            Toggle(isOn: $allowMaxParticipants) {
-                HStack{
-                    Text("Max Participants:")
-                        .font(CustomFont.createEventSubBody)
-                    Spacer()
-                    if allowMaxParticipants{
-                        Text("\(participantCount)")
-                        Stepper("", value: $participantCount)
-                            .labelsHidden()
+            if showRestriction{
+                Toggle(isOn: $allowMaxParticipants) {
+                    HStack{
+                        Text("Max Participants:")
+                            .font(CustomFont.createEventSubBody)
+                        Spacer()
+                        if allowMaxParticipants{
+                            Text("\(participantCount)")
+                            Stepper("", value: $participantCount)
+                                .labelsHidden()
+                        }
                     }
                 }
-            }
-            
-            Toggle(isOn: $allowMinimumAge) {
-                HStack{
-                    Text("Minimum Age:")
-                        .font(CustomFont.createEventSubBody)
-                    Spacer()
-                    if allowMinimumAge{
-                        Text("\(minimumAge)")
-                        Stepper("", value: $minimumAge)
-                            .labelsHidden()
+                
+                Toggle(isOn: $allowMinimumAge) {
+                    HStack{
+                        Text("Minimum Age:")
+                            .font(CustomFont.createEventSubBody)
+                        Spacer()
+                        if allowMinimumAge{
+                            Text("\(minimumAge)")
+                            Stepper("", value: $minimumAge)
+                                .labelsHidden()
+                        }
                     }
                 }
             }
