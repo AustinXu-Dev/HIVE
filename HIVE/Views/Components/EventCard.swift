@@ -86,6 +86,7 @@ struct EventCard: View {
                 
             }
         }
+      
         .frame(width: UIScreen.main.bounds.width * 0.98) // Constrain the card width
     }
 }
