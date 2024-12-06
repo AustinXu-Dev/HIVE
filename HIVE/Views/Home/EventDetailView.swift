@@ -40,7 +40,7 @@ struct EventDetailView: View {
                         KFImage(URL(string: event.eventImageUrl))
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(maxWidth: .infinity)
+                            .frame(width: UIScreen.main.bounds.width * 0.90)
                             .frame(height: 230)
                             .cornerRadius(10)
                         
@@ -55,6 +55,7 @@ struct EventDetailView: View {
                         
                         
                         HStack(spacing: 20) {
+                            Spacer()
                             ParticipantView(event: event)
                                 .onTapGesture {
                                     if userAppState != AppState.guest.rawValue {
@@ -64,7 +65,7 @@ struct EventDetailView: View {
                                     }
                                 }
                         }
-                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .frame(alignment: .trailing)
                         
                         
                         Text(event.additionalInfo)
@@ -149,7 +150,7 @@ struct EventDetailView: View {
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
                            currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
                             
-                            VStack {
+                            VStack(alignment:.center) {
                                 Spacer()
                                 Button(action: {
                                     if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
@@ -178,7 +179,7 @@ struct EventDetailView: View {
                                 .buttonStyle(PlainButtonStyle())
                                 .shadow(color: Color("shadowColor"), radius: 10, x: 0, y: 0)
                             }
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth:.infinity,alignment:.center)
                             
                         }
                     }

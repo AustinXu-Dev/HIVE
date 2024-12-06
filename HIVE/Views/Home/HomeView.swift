@@ -19,6 +19,8 @@ struct HomeView: View {
     
   var body: some View {
     ZStack {
+        Color.white
+            .ignoresSafeArea(.all)
       if eventsVM.isLoading {
         ProgressView("Loading...")
       } else {
@@ -30,11 +32,10 @@ struct HomeView: View {
               accountCreationButton
             }
             eventsScrollView
+                  .fixedSize(horizontal: false, vertical: true)
           }
-          .frame(maxWidth: .infinity, maxHeight: .infinity)
           .padding(.horizontal)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .refreshable {
           eventsVM.fetchEvents()
         }
@@ -47,6 +48,10 @@ struct HomeView: View {
         
       }
     }
+    .onTapGesture {
+        print("screen is is pressed")
+    }
+      
 
         
         
@@ -63,12 +68,14 @@ struct HomeView: View {
                 Spacer()
             }
             //  ScrollView(.vertical, showsIndicators: false) {
-            VStack(alignment:.leading,spacing: 30) {
+            VStack(alignment:.leading, spacing: 30) {
                 ForEach(filteredEvents, id: \._id) { event in
-                    EventCard(event: event)
-                        .onTapGesture {
-                            appCoordinator.push(.eventDetailView(named: event))
-                        }
+                        EventCard(event: event)
+                    .contentShape(TopRoundedCorners(radius: 20))
+                    .onTapGesture {
+                        print("Event card is pressed")
+                        appCoordinator.push(.eventDetailView(named: event))
+                    }
                 }
             }
             //  }
@@ -153,6 +160,7 @@ extension HomeView {
                   .aspectRatio(contentMode: .fit)
                   .frame(width:25,height:25)
                   .onTapGesture {
+                      print("bell is pressed")
                     appCoordinator.push(.eventApproveRejectView)
                   }
                 Image(systemName: "calendar")

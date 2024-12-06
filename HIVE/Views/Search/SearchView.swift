@@ -48,7 +48,8 @@ struct SearchView: View {
                         .foregroundColor(.gray)
                         .padding(.vertical, 8) 
                         .padding(.horizontal, 8)
-                    
+                        .fixedSize(horizontal: true, vertical: false)
+
                     Rectangle()
                         .fill(Color.gray.opacity(0.5))
                         .frame(height: 1)
