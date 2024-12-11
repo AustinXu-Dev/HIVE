@@ -20,9 +20,7 @@ struct HIVEApp: App {
         WindowGroup {
           CoordinatorView()
             .environmentObject(eventsVM)
-            .onAppear {
-              eventsVM.fetchEvents()
-            }
+          
 //            OnboardingView()
         }
     }

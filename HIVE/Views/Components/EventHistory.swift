@@ -86,13 +86,7 @@ struct EventHistory: View {
     .onChange(of: viewModel.errorMessage, { _, _ in
       showErrorMessage = true
     })
-      .onAppear {
-        if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
-          print("user id is \(userId)")
-          viewModel.getJoinedEventHistory(id: userId,token: token)
-          viewModel.getOrganizedEventHistory(id: userId, token: token)
-        }
-      }
+  
     }
 }
 

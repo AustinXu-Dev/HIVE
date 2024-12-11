@@ -16,7 +16,11 @@ class GetEventsViewModel : ObservableObject {
     
        
 
-    
+  init(){
+    fetchEvents()
+  }
+  
+  
     private let getAllEvents = GetAllEvents()
        
        func fetchEvents() {

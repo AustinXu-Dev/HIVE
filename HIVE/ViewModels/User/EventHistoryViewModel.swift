@@ -18,6 +18,16 @@ final class EventHistoryViewModel: ObservableObject {
   
   
   
+  init(){
+    if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
+      print("user id is \(userId)")
+      getJoinedEventHistory(id: userId,token: token)
+      getOrganizedEventHistory(id: userId, token: token)
+    }
+  }
+  
+  
+  
   func getJoinedEventHistory(id: String,token: String){
     isLoading = true
     let eventJoinHistoryUseCase = JoinedEventHistory(id: id)

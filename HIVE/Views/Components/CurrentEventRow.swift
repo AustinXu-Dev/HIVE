@@ -13,20 +13,22 @@ struct CurrentEventRow: View {
       HStack(spacing:0) {
         if let eventDate = Date.stringToDate(event.startDate) {
           let formattedText = eventDate.toDayMonthString().split(separator: " ")
-          VStack(alignment: .center, spacing: 12) {
+          VStack(alignment: .center, spacing: 6) {
             Text("\(formattedText.first ?? "")")
+              .fontWeight(.semibold)
+              .font(.subheadline)
             Text("\(formattedText.last ?? "")")
+              .font(.caption)
           }
-            .fontWeight(.semibold)
-            .font(.subheadline)
+          
             .multilineTextAlignment(.center)
-            .frame(maxHeight: 60)
+            .frame(maxHeight: 40)
             .padding(.vertical)
             .padding(.horizontal)
-            .background(UnevenRoundedRectangle(topLeadingRadius: 8,bottomLeadingRadius: 8).foregroundStyle(Color.gray.opacity(0.5)))
+            .background(UnevenRoundedRectangle(topLeadingRadius: 20,bottomLeadingRadius: 20).foregroundStyle(.ongoingEventDate))
           
         }
-        VStack(alignment:.leading,spacing: 12) {
+        VStack(alignment:.leading,spacing: 6) {
           Text(event.name)
             .bold()
             .font(.subheadline)
@@ -39,10 +41,10 @@ struct CurrentEventRow: View {
               .fixedSize(horizontal: true, vertical: false)
           }
         }
-        .frame(maxHeight: 60)
+        .frame(maxHeight: 40)
         .padding(.vertical)
         .padding(.horizontal)
-        .background(UnevenRoundedRectangle(bottomTrailingRadius: 8, topTrailingRadius: 8).foregroundStyle(Color.gray.opacity(0.85)))
+        .background(UnevenRoundedRectangle(bottomTrailingRadius: 20, topTrailingRadius: 20).foregroundStyle(.ongoingEventName))
     
       }
       .frame(maxWidth: .infinity)

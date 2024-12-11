@@ -48,8 +48,9 @@ final class EmailSignInViewModel: ObservableObject {
         // if new user for firebase
           if shouldAttemptUserCreation(for: error.code) {
               do {
-                  showEmailSentAlertBox()
                   try await createUser(email: email, password: password)
+                alertMessage = "Verification email is sent to \(email)"
+                showAlert = AuthenticationManager.shared.showAlert
                 isWaitingForVerification = AuthenticationManager.shared.isWaitingForVerification
                 await waitingForVerification()
               } catch {
@@ -72,7 +73,6 @@ final class EmailSignInViewModel: ObservableObject {
     }
   }
   
- // mgshine69zzz@gmail.com
   //MARK: - Helper Methods
 
   
