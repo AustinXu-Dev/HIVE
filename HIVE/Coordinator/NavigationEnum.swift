@@ -8,7 +8,7 @@
 import Foundation
 
 enum Screen: Identifiable, Hashable {
-  
+    
     
     case signIn
     case onBoarding
@@ -24,18 +24,19 @@ enum Screen: Identifiable, Hashable {
     case eventJoinSuccess(isPrivate: Bool)
     case eventAttendeeView(named : EventModel)
     case participantProfile(named : ParticipantModel)
-  case organizerProfile(named: OrganizerModel)
-  case eventApproveRejectView
-  
-  var id: Self { return self }
+    case organizerProfile(named: OrganizerModel)
+    case eventApproveRejectView
+    case followerView
+    
+    var id: Self { return self }
 }
 
 enum Tab : Hashable {
-  case home
-  case search
-  case hostEvent
-  case chat
-  case profile
+    case home
+    case search
+    case hostEvent
+    case chat
+    case profile
 }
 
 //enum Sheet: Identifiable, Hashable {

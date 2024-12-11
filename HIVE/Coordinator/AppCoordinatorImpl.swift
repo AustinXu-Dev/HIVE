@@ -67,6 +67,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
           EventApproveRejectView()
         case .instagram:
             ShareSocialView()
+        case .followerView:
+            FollowerView()
         }
     }
 }
