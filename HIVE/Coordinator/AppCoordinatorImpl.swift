@@ -76,6 +76,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
           OrganizerProfile(organizer: organizer)
         case .eventApproveRejectView:
           EventApproveRejectView()
+        case .eventSchedule:
+          CurrentEventScheduleView()
         }
     }
     
