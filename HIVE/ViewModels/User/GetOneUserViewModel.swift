@@ -43,7 +43,7 @@ class GetOneUserByIdViewModel: ObservableObject {
                 case .success(let userDetailData):
                     self?.isLoading = false
                     self?.userDetail = userDetailData.message
-                    print(self?.userDetail?.dateOfBirth ?? "Date not here")
+//                    print(self?.userDetail?.dateOfBirth ?? "Date not here")
                     
                     // Check if the user is underage for the event
                     self?.checkUnderAge(eventMinAge: eventMinAge)
@@ -62,12 +62,9 @@ class GetOneUserByIdViewModel: ObservableObject {
             isUnderage = false
             return
         }
-        
-        print("user date of birth", userDateOfBirth)
-        
+                
         let userAge = calculateAge(from: userDateOfBirth)
-        print("User Age", userAge)
-        
+
         // Check if the user's age is less than the event's min age
         isUnderage = userAge < eventMinAge
     }

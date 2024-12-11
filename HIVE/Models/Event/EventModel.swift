@@ -40,6 +40,11 @@ struct JoinEventResponse : Codable, Hashable{
   let message : String
 }
 
+struct KickParticipantResponse: Codable, Hashable{
+    let success: Bool
+    let message: String
+}
+
 /*
  // Event Schema
  "minAge": 0,
