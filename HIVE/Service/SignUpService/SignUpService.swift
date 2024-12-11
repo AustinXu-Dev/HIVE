@@ -19,6 +19,7 @@ class SignUpService: ObservableObject {
     @Published var about: String = ""
     @Published var bio: String = ""
     @Published var instagramLink: String = ""
+    @Published var verificationImageUrl: String = ""
     @Published var isOrganizer: Bool = false
     @Published var isSuspened: Bool = false
     
@@ -38,6 +39,7 @@ class SignUpService: ObservableObject {
             about: about,
             bio: bio,
             instagramLink: instagramLink,
+            verificationImageUrl: verificationImageUrl,
             isOrganizer: isOrganizer,
             isSuspened: isSuspened,
             password: password

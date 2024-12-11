@@ -11,11 +11,10 @@ import FirebaseAuth
 
 struct OnboardingView: View {
     
-    @StateObject var viewModel = OnboardingViewModel()
-    @StateObject var googleVM = GoogleAuthenticationViewModel()
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+    @EnvironmentObject var googleVM: GoogleAuthenticationViewModel
+    @EnvironmentObject var viewModel: OnboardingViewModel
     @State var currentStep: Int = 0
-//    @State var showHome: Bool = false
-    @State var showInsta: Bool = false
     
     @State private var showAlert = false
     @State private var alertMessage = ""
@@ -32,25 +31,20 @@ struct OnboardingView: View {
     
     var body: some View {
         ZStack{
-            if showInsta {
-                ShareSocialView()
-                    .environmentObject(viewModel)
-                    .environmentObject(googleVM)
-            } else {
-                VStack{
-                    BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
-                    OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel, isFocused: $isFocused)
-                    Spacer()
-                    ContinueButton(currentStep: $currentStep, color: viewModel.isUploading ? .constant(.gray) : .constant(.black)) {
-                        handleStepCompletion()
-                    }
-                    .disabled(viewModel.isUploading)
-                    .alert(isPresented: $showAlert) {
-                        Alert(title: Text("Input Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
-                    }
-                }.padding()
-                    
-            }
+            VStack{
+                BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
+                OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel, isFocused: $isFocused)
+                Spacer()
+                ContinueButton(currentStep: $currentStep, color: viewModel.isUploading ? .constant(.gray) : .constant(.black)) {
+                    handleStepCompletion()
+                }
+                .disabled(viewModel.isUploading)
+                .alert(isPresented: $showAlert) {
+                    Alert(title: Text("Input Error"), message: Text(alertMessage), dismissButton: .default(Text("OK")))
+                }
+            }.padding()
+            
+            //            }
         }
         .navigationBarBackButtonHidden()
         .onTapGesture {
@@ -70,7 +64,8 @@ struct OnboardingView: View {
                         currentStep += 1
                     } else {
                         withAnimation(.linear.delay(0.5)) {
-                            showInsta = true
+                            //                            showInsta = true
+                            appCoordinator.push(.instagram)
                         }
                     }
                 }
@@ -80,7 +75,8 @@ struct OnboardingView: View {
                     currentStep += 1
                 } else {
                     withAnimation(.linear.delay(0.5)) {
-                        showInsta = true
+                        //                        showInsta = true
+                        appCoordinator.push(.instagram)
                     }
                 }
             }

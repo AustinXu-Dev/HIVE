@@ -12,6 +12,10 @@ enum Screen: Identifiable, Hashable {
     
     case signIn
     case onBoarding
+    case instagram
+    case faceVerification
+    case imageCapture
+    case verifySuccess
     case home
     case tab
     case eventDetailView(named : EventModel)
