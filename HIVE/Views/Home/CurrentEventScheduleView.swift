@@ -1,3 +1,10 @@
+
+//  CurrentEventScheduleView.swift
+//  HIVE
+//
+//  Created by Swan Nay Phue Aung on 11/12/2024.
+//
+
 import SwiftUI
 
 struct CurrentEventScheduleView: View {
