@@ -16,6 +16,7 @@ struct SignUpSchema: Codable {
     let about: String
     let bio: String
     let instagramLink: String
+    let verificationImageUrl: String
     let isOrganizer: Bool
     let isSuspened: Bool
     let password: String

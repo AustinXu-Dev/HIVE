@@ -11,22 +11,12 @@ import SwiftUI
 class AppCoordinatorImpl: AppCoordinatorProtocol {
     @Published var path: NavigationPath = NavigationPath()
   @Published var selectedTabIndex: Tab = .home
-//    @Published var sheet: Sheet?
-//    @Published var fullScreenCover: FullScreenCover?
     
     // MARK: - Navigation Functions
     func push(_ screen: Screen) {
         path.append(screen)
     }
-//    
-//    func presentSheet(_ sheet: Sheet) {
-//        self.sheet = sheet
-//    }
-//    
-//    func presentFullScreenCover(_ fullScreenCover: FullScreenCover) {
-//        self.fullScreenCover = fullScreenCover
-//    }
-//    
+    
     func pop() {
         path.removeLast()
     }
@@ -35,13 +25,6 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
         path.removeLast(path.count)
     }
     
-//    func dismissSheet() {
-//        self.sheet = nil
-//    }
-//    
-//    func dismissFullScreenOver() {
-//        self.fullScreenCover = nil
-//    }
   
   func setSelectedTab(index: Tab) {
     print("Select tab index \(selectedTabIndex)")
@@ -56,6 +39,12 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             SignInView()
         case .onBoarding:
             OnboardingView()
+        case .faceVerification:
+            FaceVerificationView()
+        case .imageCapture:
+            ImageCaptureView()
+        case .verifySuccess:
+            FaceVerifySuccessView()
         case .home:
             TabScreenView()
         case .eventDetailView(named: let event):
@@ -78,22 +67,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
           EventApproveRejectView()
         case .eventSchedule:
           CurrentEventScheduleView()
+        case .instagram:
+            ShareSocialView()
         }
     }
-    
-//    @ViewBuilder
-//    func build(_ sheet: Sheet) -> some View {
-//        switch sheet {
-//        case .detailTask(named: let task):
-//            DetailTaskView(task: task)
-//        }
-//    }
-//    
-//    @ViewBuilder
-//    func build(_ fullScreenCover: FullScreenCover) -> some View {
-//        switch fullScreenCover {
-//        case .addHabit(onSaveButtonTap: let onSaveButtonTap):
-//            AddHabitView(onSaveButtonTap: onSaveButtonTap)
-//        }
-//    }
 }

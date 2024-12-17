@@ -50,6 +50,10 @@ struct CustomFont{
     
     static let pendingParticipantBoldText: Font = .custom(titleFont, size: 14)
     static let pendindParticipantText: Font = .custom(bodyFont, size: 14)
+    
+    static let faceIdViewBoldText: Font = .custom(titleFont, size: 20)
+    static let faceIdViewBigBoldText: Font = .custom(titleFont, size: 36)
+    static let faceIdViewBodyText: Font = .custom(bodyFont, size: 20)
   
   static let eventRowEventTitle: Font = .custom("Inter-Medium", size: 20)
   static let eventRowEventDate: Font =  .custom("Inter-Bold", size: 14)

@@ -43,6 +43,7 @@ struct HomeView: View {
         .toolbar(.hidden)
         .onAppear {
           print("user app State \(userAppState)")
+            print(TokenManager.share.getToken() ?? "No token")
         }
         
         
