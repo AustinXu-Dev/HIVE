@@ -52,7 +52,13 @@ struct HomeView: View {
     .onTapGesture {
         print("screen is is pressed")
     }
-      
+    .alert(isPresented: $eventsVM.showErrorAlert){
+      Alert(title: Text("⚠️Fail to get the events⚠️"),
+            message: Text(eventsVM.errorMessage ?? ""),
+            dismissButton: .cancel(Text("OK"))
+      )
+    }
+
 
         
         
@@ -167,6 +173,9 @@ extension HomeView {
                 Image(systemName: "calendar")
                   .aspectRatio(contentMode: .fit)
                   .frame(width:25,height:25)
+                  .onTapGesture {
+                    appCoordinator.push(.eventSchedule)
+                  }
               }
               
             

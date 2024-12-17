@@ -8,27 +8,28 @@
 import Foundation
 
 enum Screen: Identifiable, Hashable {
-    
-    
-    case signIn
-    case onBoarding
-    case instagram
-    case faceVerification
-    case imageCapture
-    case verifySuccess
-    case home
-    case tab
-    case eventDetailView(named : EventModel)
-    case eventCreationForm
-    case eventCreationSuccess
-    case eventJoinSuccess(isPrivate: Bool)
-    case eventAttendeeView(named : EventModel)
-    case participantProfile(named : ParticipantModel)
-    case organizerProfile(named: OrganizerModel)
-    case eventApproveRejectView
-    case followerView
-    
-    var id: Self { return self }
+  
+  
+  case signIn
+  case onBoarding
+  case instagram
+  case faceVerification
+  case imageCapture
+  case verifySuccess
+  case home
+  case tab
+  case eventDetailView(named : EventModel)
+  case eventCreationForm
+  case eventCreationSuccess
+  case eventJoinSuccess(isPrivate: Bool)
+  case eventAttendeeView(named : EventModel)
+  case eventApproveRejectView
+  case followerView(followingsSocial: [UserModel], follwersSocial: [UserModel], currentUser:UserModel)
+  case eventSchedule
+  case socialProfile(user: UserModel)
+  
+  var id: Self { return self }
+
 }
 
 enum Tab : Hashable {

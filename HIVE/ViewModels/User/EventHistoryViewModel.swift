@@ -18,6 +18,15 @@ final class EventHistoryViewModel: ObservableObject {
   
   
   
+  init(){
+    if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
+      getJoinedEventHistory(id: userId,token: token)
+      getOrganizedEventHistory(id: userId, token: token)
+    }
+  }
+  
+  
+  
   func getJoinedEventHistory(id: String,token: String){
     isLoading = true
     let eventJoinHistoryUseCase = JoinedEventHistory(id: id)
@@ -35,6 +44,7 @@ final class EventHistoryViewModel: ObservableObject {
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
         }
+        print("ERROR OCCURED")
         print(self?.errorMessage ?? "")
       }
     }
@@ -58,6 +68,7 @@ final class EventHistoryViewModel: ObservableObject {
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
         }
+        print("ERROR OCCURED")
         print(self?.errorMessage ?? "")
       }
     }

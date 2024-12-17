@@ -9,19 +9,14 @@ import SwiftUI
 
 struct EventHistory: View {
   
-  @StateObject var viewModel = EventHistoryViewModel()
+  @ObservedObject var viewModel: EventHistoryViewModel
   @State private var showHostingView: Bool = false
   @State private var showErrorMessage: Bool = false
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
   var body: some View {
     ZStack {
-      if viewModel.isLoading {
-        ProgressView("Loading...")
-      } else {
         VStack(alignment:.center,spacing: 24) {
-          
-
           HStack {
             VStack(alignment:.center,spacing: 2) {
               Text("Joined")
@@ -31,12 +26,12 @@ struct EventHistory: View {
                 .onTapGesture {
                   print("tapped")
                   withAnimation(.smooth.speed(5.0)) {
-                    showHostingView = true
+                    showHostingView = false
                   }
                 }
               Rectangle()
                 .frame(width:128,height: 1.5)
-                .opacity(showHostingView ? 1 : 0)
+                .opacity(showHostingView ? 0 : 1)
             }
             Spacer()
             VStack(alignment:.center,spacing: 2) {
@@ -47,12 +42,12 @@ struct EventHistory: View {
                 .onTapGesture {
                   print("tapped")
                   withAnimation(.smooth.speed(5.0)) {
-                    showHostingView = false
+                    showHostingView = true
                   }
                 }
               Rectangle()
                 .frame(width:128,height: 1.5)
-                .opacity(showHostingView ? 0 : 1)
+                .opacity(showHostingView ? 1 : 0)
             }
           }
           .padding(.horizontal,20)
@@ -81,18 +76,16 @@ struct EventHistory: View {
           }
       }
     .padding(.horizontal)
-    }
+    
   }
+    .onAppear {
+      showHostingView = false
+    }
     .onChange(of: viewModel.errorMessage, { _, _ in
       showErrorMessage = true
     })
-      .onAppear {
-        if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
-          print("user id is \(userId)")
-          viewModel.getJoinedEventHistory(id: userId,token: token)
-          viewModel.getOrganizedEventHistory(id: userId, token: token)
-        }
-      }
+  
+  
     }
 }
 

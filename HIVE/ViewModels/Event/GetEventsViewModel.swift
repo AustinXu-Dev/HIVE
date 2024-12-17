@@ -13,10 +13,15 @@ class GetEventsViewModel : ObservableObject {
     @Published var events : [EventModel] = []
     @Published var isLoading : Bool = false
     @Published var errorMessage : String? = nil
+  @Published var showErrorAlert: Bool = false
     
        
 
-    
+  init(){
+    fetchEvents()
+  }
+  
+  
     private let getAllEvents = GetAllEvents()
        
        func fetchEvents() {
@@ -33,7 +38,7 @@ class GetEventsViewModel : ObservableObject {
                    DispatchQueue.main.async {
                        print("Error getting all event")
                        self?.isLoading = false
-                       self?.errorMessage = "Failed to get all the events: \(error.localizedDescription)"
+                     self?.setUpErrorAlert(errorMessage: error.localizedDescription)
                        print(error.localizedDescription)
                    }
                }
@@ -41,7 +46,10 @@ class GetEventsViewModel : ObservableObject {
        }
     
     
-   
+  private func setUpErrorAlert(errorMessage: String){
+    self.errorMessage = errorMessage
+    showErrorAlert = true
+  }
     
     
 }

@@ -10,6 +10,7 @@ import Kingfisher
 
 struct ProfileView: View {
     
+
     @State private var profileImage: UIImage? = nil
     @State private var isEditingDescription = false
     @State private var isEditingProfileImage = false
@@ -19,14 +20,22 @@ struct ProfileView: View {
     @State private var isEditable = true
     @State private var showLogoutAlert = false
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
-    @EnvironmentObject var profileVM: GetOneUserByIdViewModel
+    @EnvironmentObject var profileVM : GetOneUserByIdViewModel
     @StateObject var updateProfileVM = UpdateUserViewModel()
+    @StateObject var socialVM: GetSocialViewModel
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @Environment(\.isGuest) private var isGuest: Bool
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-    
+  @StateObject var eventHistoryVM = EventHistoryViewModel()
     @FocusState private var isFocused: Bool
     
+  
+  init(){
+     let userId = KeychainManager.shared.keychain.get("appUserId")
+      _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
+  }
+  
+
     var body: some View {
         ZStack {
             Color.white
@@ -38,7 +47,8 @@ struct ProfileView: View {
                         .fontWeight(.bold)
                         .multilineTextAlignment(.center)
                     Button {
-                        userAppState = AppState.notSignedIn.rawValue
+                        userAppState =  AppState.notSignedIn.rawValue
+
                     } label: {
                         ReusableAccountCreationButton()
                     }
@@ -47,19 +57,17 @@ struct ProfileView: View {
                         .bold()
                     
                 }
-            } else if profileVM.isLoading || updateProfileVM.isLoading {
+            } else if (profileVM.isLoading && socialVM.isLoading && eventHistoryVM.isLoading) || updateProfileVM.isLoading {
                 ProgressView()
             } else {
-                ScrollView(.vertical, showsIndicators: false) {
+                ScrollView(.vertical,showsIndicators: false){
                     VStack(spacing: 20) {
                         HStack {
                             Spacer()
-                            if isEditingDescription {
+                            if isEditingDescription  {
                                 Button(action: {
-                                    if profileImage != nil || descriptionText != editedDescriptionText {
-                                        descriptionText = editedDescriptionText
-                                        updateProfile()
-                                    }
+                                    descriptionText = editedDescriptionText
+                                    updateProfile()
                                     isEditingDescription = false
                                     isEditingProfileImage = false
                                 }) {
@@ -94,16 +102,28 @@ struct ProfileView: View {
                                     .shadow(radius: 5)
                                     .opacity(isEditingProfileImage ? 0.5 : 1.0)
                             } else {
+                              ZStack(alignment:.bottomTrailing){
                                 KFImage(URL(string: profileVM.userDetail?.profileImageUrl ?? ""))
+                                  .resizable()
+                                  .aspectRatio(contentMode: .fill)
+                                  .frame(width: 120, height: 120)
+                                  .clipShape(Circle())
+                                  .shadow(radius: 5)
+                                  .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                                
+                                if profileVM.userDetail?.verificationStatus == VertificationEnum.approved.rawValue {
+                                  Image(systemName: "checkmark.seal.fill")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 120, height: 120)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 5)
-                                    .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:30,height:30)
+                                    .foregroundColor(.blue)
+                                    .offset(y:-5)
+                                }
+                              }
                             }
                             
-                            if isEditable && isEditingProfileImage {
+                            if isEditable && isEditingProfileImage  {
+
                                 Button(action: {
                                     showImagePicker = true
                                 }) {
@@ -114,18 +134,18 @@ struct ProfileView: View {
                                         .background(Circle().fill(Color.black.opacity(0.7)))
                                 }
                             }
-                            
+                                                        
+
                             Image("Approval")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 52, height: 49)
                                 .offset(x: 50, y: 45)
+
+                        
                         }
-                        .sheet(isPresented: $showImagePicker, onDismiss: {
-                            if profileImage != nil {
-                                updateProfile()
-                            }
-                        }) {
+                        .sheet(isPresented: $showImagePicker) {
+
                             ImagePicker(selectedImage: $profileImage)
                         }
 
@@ -148,8 +168,9 @@ struct ProfileView: View {
                                         .frame(width: 27, height: 27)
                                 }
                             }
+                            
                         }
-                        
+
                         if let about = profileVM.userDetail?.about {
                             Text("(\(about))")
                                 .font(CustomFont.aboutStyle)
@@ -158,7 +179,8 @@ struct ProfileView: View {
                         
                         HStack {
                             VStack {
-                                Text("0")
+                              Text("\(socialVM.followers.count)")
+
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Followers")
@@ -167,7 +189,8 @@ struct ProfileView: View {
                             }
                             Spacer()
                             VStack {
-                                Text("0")
+                              Text("\(socialVM.followings.count)")
+
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Following")
@@ -178,14 +201,20 @@ struct ProfileView: View {
                         .padding(.horizontal, 116)
                         .padding(.vertical, 5)
                         .onTapGesture {
-                            appCoordinator.push(.followerView)
+                          if let currentUser = profileVM.userDetail {
+                            appCoordinator.push(.followerView(followingsSocial: socialVM.followings, follwersSocial: socialVM.followers, currentUser: currentUser))
+                          }
                         }
                         
                         if isEditingDescription {
-                            TextField("Enter New Bio", text: $editedDescriptionText)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .focused($isFocused)
-                                .padding(.horizontal, 40)
+                            TextField("Enter New Bio", text: Binding(
+                                get: { profileVM.userDetail?.bio ?? "" },
+                                set: { profileVM.userDetail?.bio = $0 }
+                            ))
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .focused($isFocused)
+                            .padding(.horizontal, 40)
+
                         } else {
                             Text(profileVM.userDetail?.bio ?? "")
                                 .font(.body)
@@ -194,7 +223,8 @@ struct ProfileView: View {
                                 .padding(.horizontal, 40)
                         }
                         
-                        EventHistory()
+                      EventHistory(viewModel:eventHistoryVM)
+
                         
                         Button {
                             showLogoutAlert = true
@@ -207,69 +237,57 @@ struct ProfileView: View {
                                 .background(Color.gray.opacity(0.2))
                                 .cornerRadius(12)
                                 .padding(.horizontal, 40)
-                                .padding(.bottom, 20)
+                                .padding(.bottom,20)
                         }
                         .padding(EdgeInsets(top: 60, leading: 0, bottom: 20, trailing: 0))
+                        
+                        
                     }
                 }
+                
+
                 .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Logout", role: .destructive) {
                         googleVM.signOutWithGoogle()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            appCoordinator.selectedTabIndex = .home
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3){
+                          appCoordinator.setSelectedTab(index: .home)
+
                         }
                     }
                 }
                 .refreshable {
                     refreshProfile()
+                  if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                    socialVM.getFollowersOfUser(userId: userId)
+                    socialVM.getFollowingOfUser(userId: userId)
+                  }
                 }
                 .navigationBarBackButtonHidden(true)
                 .onAppear {
-                                    // Initialize descriptionText with backend data
-                                    descriptionText = profileVM.userDetail?.bio ?? ""
-                                }
+                  // Initialize descriptionText with backend data
+                  descriptionText = profileVM.userDetail?.bio ?? ""
+                }
             }
         }
         .onTapGesture {
             self.hideKeyboard()
         }
+
     }
     
     // MARK: - Private Methods
     
     private func updateProfile() {
-        guard let uid = KeychainManager.shared.keychain.get("appUserId"),
-              let email = profileVM.userDetail?.email else { return }
         
-        guard let uid = KeychainManager.shared.keychain.get("appUserId"),
-                      let userToken = TokenManager.share.getToken() else { return }
-
+        guard let uid = KeychainManager.shared.keychain.get("appUserId"), let email = profileVM.userDetail?.email else { return }
         
-        // Update bio unconditionally
-                profileVM.userDetail?.bio = editedDescriptionText
-                updateProfileVM.bio = editedDescriptionText
-                updateProfileVM.updateUser(id: uid, token: userToken) { result in
-                    switch result {
-                    case .success:
-                        print("Bio updated successfully")
-                        DispatchQueue.main.async {
-                            descriptionText = editedDescriptionText
-                        }
-                    case .failure(let error):
-                        print("Failed to update bio: \(error.localizedDescription)")
-                    }
-                }
-
-        // Handle image update if necessary
-        if let selectedImage = profileImage {
-            updateProfileVM.uploadImage(selectedImage) { result in
-                switch result {
-                case .success(let imageURL):
-                    storeImageUrlAndRetrieveImage(uid: uid, email: email, imageUrl: imageURL)
-                case .failure(let error):
-                    print("Failed to upload image: \(error.localizedDescription)")
-                }
+        updateProfileVM.uploadImage(profileImage ?? UIImage(named: "profile")!) { result in
+            switch result {
+            case .success(let imageURL):
+                storeImageUrlAndRetrieveImage(uid: uid, email: email, imageUrl: imageURL)
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
