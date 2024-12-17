@@ -16,16 +16,13 @@ final class GetOngoingEventsViewModel: ObservableObject {
 
   
   
-  
-  
-  
   init(){
     if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
       getOrganizingEventsOfUser(userId: userId, token: token)
       getJoiningEventsOfUser(userId: userId, token: token)
-      print("Joining events: \(joiningEvents.count)")
-      print("Hosting events: \(organizingEvents.count)")
 
+      print("Fetch successfull")
+      print(joiningEvents)
     }
   }
   

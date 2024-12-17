@@ -24,12 +24,12 @@ enum Screen: Identifiable, Hashable {
     case eventJoinSuccess(isPrivate: Bool)
     case eventAttendeeView(named : EventModel)
     case participantProfile(named : ParticipantModel)
-    case eventSchedule
     case organizerProfile(named: OrganizerModel)
     case eventApproveRejectView
     case followerView
-    
-    var id: Self { return self }
+    case eventSchedule
+  
+  var id: Self { return self }
 }
 
 enum Tab : Hashable {
