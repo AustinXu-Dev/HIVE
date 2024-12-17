@@ -69,6 +69,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
           CurrentEventScheduleView()
         case .instagram:
             ShareSocialView()
+        case .followerView:
+            FollowerView()
         }
     }
 }
