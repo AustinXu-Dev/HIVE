@@ -7,17 +7,20 @@ struct SocialProfile: View {
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
   @StateObject var socialVM: GetSocialViewModel
   @StateObject var userFollowVM = UserFollowViewModel()
-  
+  @StateObject var eventHistoryVM: EventHistoryViewModel
+
   init(social:UserModel) {
     self.social = social
     _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: social._id ?? ""))
+    _eventHistoryVM = StateObject(wrappedValue: EventHistoryViewModel(userId: social._id ?? ""))
   }
   
   var body: some View {
     ZStack {
-      if socialVM.isLoading {
+      if socialVM.isLoading && eventHistoryVM.isLoading {
         ProgressView("Loading...")
       } else {
+        ScrollView(.vertical,showsIndicators: false){
         VStack(spacing: 24) {
           socialProfilePhoto
           nameAndInstagram
@@ -28,6 +31,7 @@ struct SocialProfile: View {
               .disabled(userFollowVM.followedButtonClicked || socialVM.alreadyFollowing)
           }
           bio
+          EventHistory(viewModel: eventHistoryVM)
           Spacer()
             .toolbar {
               ToolbarItem(placement: .topBarLeading) {
@@ -40,6 +44,12 @@ struct SocialProfile: View {
                 }
               }
             }
+        }
+      }
+        .refreshable {
+          socialVM.fetchUserData(userId: social._id ?? "")
+          eventHistoryVM.getAllEventHistories(userId: social._id ?? "")
+          
         }
     }
   }

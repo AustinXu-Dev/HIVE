@@ -26,13 +26,14 @@ struct ProfileView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @Environment(\.isGuest) private var isGuest: Bool
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-  @StateObject var eventHistoryVM = EventHistoryViewModel()
+    @StateObject var eventHistoryVM: EventHistoryViewModel
     @FocusState private var isFocused: Bool
     
   
   init(){
      let userId = KeychainManager.shared.keychain.get("appUserId")
       _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
+    _eventHistoryVM = StateObject(wrappedValue: EventHistoryViewModel(userId: userId ?? ""))
   }
   
 
@@ -259,8 +260,8 @@ struct ProfileView: View {
                 .refreshable {
                     refreshProfile()
                   if let userId = KeychainManager.shared.keychain.get("appUserId") {
-                    socialVM.getFollowersOfUser(userId: userId)
-                    socialVM.getFollowingOfUser(userId: userId)
+                    socialVM.fetchUserData(userId: userId)
+                    eventHistoryVM.getAllEventHistories(userId: userId)
                   }
                 }
                 .navigationBarBackButtonHidden(true)

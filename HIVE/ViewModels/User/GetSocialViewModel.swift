@@ -27,15 +27,37 @@ class GetSocialViewModel: ObservableObject {
     }
   }
   
-  init(userId: String){
-    getFollowingOfUser(userId: userId)
-    getFollowersOfUser(userId: userId)
-    getFollowingOfCurrentUser(toBeFollowedId: userId)
+  init(userId: String) {
+    fetchUserData(userId: userId)
+  }
+  
+   func fetchUserData(userId: String) {
+      let dispatchGroup = DispatchGroup()
+      incrementLoading()
+      
+      dispatchGroup.enter()
+      getFollowingOfUser(userId: userId) {
+          dispatchGroup.leave()
+      }
+      
+      dispatchGroup.enter()
+      getFollowersOfUser(userId: userId) {
+          dispatchGroup.leave()
+      }
+      
+      dispatchGroup.enter()
+      getFollowingOfCurrentUser(toBeFollowedId: userId) {
+          dispatchGroup.leave()
+      }
+      
+      dispatchGroup.notify(queue: .main) {
+          self.decrementLoading()
+          print("All data fetches are complete!")
+      }
   }
   
   
-  
-  func getFollowingOfUser(userId: String){
+  func getFollowingOfUser(userId: String, completion:  @escaping () -> ()) {
     incrementLoading()
     let getFollowingUsecase = GetFollowingsOfUser(userId: userId)
     getFollowingUsecase.execute(getMethod: "GET") { [weak self] result in
@@ -53,11 +75,15 @@ class GetSocialViewModel: ObservableObject {
         print(error.localizedDescription)
       }
     }
+    completion()
   }
   
-  func getFollowingOfCurrentUser(toBeFollowedId: String){
+  func getFollowingOfCurrentUser(toBeFollowedId: String,completion:  @escaping () -> ()) {
     incrementLoading()
-    guard let userId = KeychainManager.shared.keychain.get("appUserId") else { return }
+    guard let userId = KeychainManager.shared.keychain.get("appUserId") else {
+      completion()
+      return
+    }
     let getFollowingUsecase = GetFollowingsOfUser(userId: userId)
     getFollowingUsecase.execute(getMethod: "GET") { [weak self] result in
       self?.decrementLoading()
@@ -75,10 +101,11 @@ class GetSocialViewModel: ObservableObject {
         print(error.localizedDescription)
       }
     }
+    completion()
   }
   
   
-  func getFollowersOfUser(userId: String){
+  func getFollowersOfUser(userId: String,completion:  @escaping () -> ()) {
     incrementLoading()
     let getFollowerUsecase = GetFollowersOfUser(userId: userId)
     getFollowerUsecase.execute(getMethod: "GET") { [weak self] result in
@@ -97,6 +124,7 @@ class GetSocialViewModel: ObservableObject {
 
       }
     }
+    completion()
   }
   
   private func incrementLoading() {
@@ -108,15 +136,11 @@ class GetSocialViewModel: ObservableObject {
     }
   
   
-  func checkFollowingStatus(following:[UserModel],toBeFollowedId: String)  {
-//    print("want to follow: \(toBeFollowedId)")
-//    print("following id in my list \(following)")
-//    print("Matching where \(following.contains(where: {$0._id == toBeFollowedId}))")
+  func checkFollowingStatus(following:[UserModel],toBeFollowedId: String) {
     let alreadyFollowing = following.contains(where: {$0._id == toBeFollowedId})
     DispatchQueue.main.async {
       self.alreadyFollowing = alreadyFollowing
     }
-//    print("already following: \(alreadyFollowing)")
 
     }
   

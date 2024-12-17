@@ -9,30 +9,52 @@ import Foundation
 
 final class EventHistoryViewModel: ObservableObject {
   
-  
   @Published var joinedEventHistory: [EventModel] = []
   @Published var hostedEventHistory: [EventModel] = []
   @Published var errorMessage: String? = ""
   @Published var isLoading : Bool = false
-  
-  
-  
-  
-  init(){
-    if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
-      getJoinedEventHistory(id: userId,token: token)
-      getOrganizedEventHistory(id: userId, token: token)
+  private var loadingCount = 0 {
+    didSet {
+      DispatchQueue.main.async {
+        self.isLoading = self.loadingCount > 0
+      }
     }
   }
   
   
   
-  func getJoinedEventHistory(id: String,token: String){
-    isLoading = true
+  init(userId:String){
+    getAllEventHistories(userId: userId)
+  }
+  
+  
+  func getAllEventHistories(userId: String) {
+     let dispatchGroup = DispatchGroup()
+     incrementLoading()
+     
+     dispatchGroup.enter()
+    getJoinedEventHistory(id: userId) {
+         dispatchGroup.leave()
+     }
+     
+     dispatchGroup.enter()
+    getOrganizedEventHistory(id: userId) {
+      dispatchGroup.leave()
+    }
+  
+     
+     dispatchGroup.notify(queue: .main) {
+         self.decrementLoading()
+         print("All data fetches are complete!")
+     }
+ }
+  
+  func getJoinedEventHistory(id: String,completion: @escaping () -> ()){
+    incrementLoading()
     let eventJoinHistoryUseCase = JoinedEventHistory(id: id)
-    eventJoinHistoryUseCase.execute(getMethod: "GET", token: token) { [weak self] result in
+    eventJoinHistoryUseCase.execute(getMethod: "GET") { [weak self] result in
       DispatchQueue.main.async {
-        self?.isLoading = false
+        self?.decrementLoading()
       }
       switch result {
       case .success(let event):
@@ -48,15 +70,16 @@ final class EventHistoryViewModel: ObservableObject {
         print(self?.errorMessage ?? "")
       }
     }
+    completion()
   }
   
   
-  func getOrganizedEventHistory(id: String,token:String){
-      isLoading = true
+  func getOrganizedEventHistory(id: String,completion: @escaping () -> ()){
+    incrementLoading()
     let eventHostHistoryUsecase = OrganizedEventHistory(id: id)
-    eventHostHistoryUsecase.execute(getMethod: "GET",token: token) { [weak self] result in
+    eventHostHistoryUsecase.execute(getMethod: "GET") { [weak self] result in
       DispatchQueue.main.async {
-        self?.isLoading = false
+        self?.decrementLoading()
       }
       switch result {
       case .success(let event):
@@ -72,6 +95,15 @@ final class EventHistoryViewModel: ObservableObject {
         print(self?.errorMessage ?? "")
       }
     }
+    completion()
   }
-
+  
+  private func incrementLoading() {
+        loadingCount += 1
+    }
+    
+    private func decrementLoading() {
+        loadingCount = max(loadingCount - 1, 0)
+    }
+  
 }
