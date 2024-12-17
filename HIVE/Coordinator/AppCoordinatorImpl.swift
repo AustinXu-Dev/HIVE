@@ -59,20 +59,20 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             TabScreenView()
         case .eventCreationSuccess:
             EventCreationSuccessView()
-        case .participantProfile(named: let participant):
-          ParticipantProfile(participant : participant)
-        case .organizerProfile(named: let organizer):
-          OrganizerProfile(organizer: organizer)
+//        case .participantOrOrganizerProfile(named: let user):
+//          ParticipantProfile(user : user)
         case .eventApproveRejectView:
           EventApproveRejectView()
         case .eventSchedule:
           CurrentEventScheduleView()
         case .instagram:
             ShareSocialView()
-        case .followerView:
-            FollowerView()
+        case .followerView(followingsSocial: let followings, follwersSocial: let followers, currentUser: let currentUser):
+          FollowerView(followings: followings, followers: followers, currentUser: currentUser)
         case .eventSchedule:
           CurrentEventScheduleView()
+        case .socialProfile(user: let user):
+          SocialProfile(social: user)
         }
     }
 }

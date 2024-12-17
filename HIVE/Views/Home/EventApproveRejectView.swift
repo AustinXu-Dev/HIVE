@@ -57,7 +57,7 @@ struct PendingParticipantRow: View {
 
     var body: some View {
         VStack {
-            ForEach(event.pendingParticipants ?? [], id: \.userid) { participant in
+          ForEach(event.pendingParticipants ?? [], id: \._id) { participant in
                 HStack(spacing: 12) {
                     if let imageUrl = participant.profileImageUrl, let url = URL(string: imageUrl) {
                         KFImage(url)
@@ -86,7 +86,7 @@ struct PendingParticipantRow: View {
                             .font(CustomFont.pendingParticipantBoldText)
                         
                         HStack(spacing: 10) {
-                            if let participantId = participant.userid {
+                          if let participantId = participant._id {
                                 Button {
                                   handleApproveAction(eventId: event._id, participantId: participantId, action: .approve)
                                 } label: {
@@ -100,7 +100,7 @@ struct PendingParticipantRow: View {
                                 .disabled(participantActions[participantId] == .approve) // Disable after action
                             }
 
-                            if let participantId = participant.userid {
+                          if let participantId = participant._id {
                                 Button {
                                   handleApproveAction(eventId: event._id, participantId: participantId, action: .reject)
                                 } label: {

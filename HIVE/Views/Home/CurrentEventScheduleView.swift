@@ -86,37 +86,38 @@ extension CurrentEventScheduleView {
         
         if viewModel.organizingEvents.count != 0 && viewModel.joiningEvents.count != 0 {
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .today, showHosting: $showHosting)
-          Rectangle()
-            .frame(maxWidth: .infinity)
-            .frame(height:1)
-            .foregroundStyle(.divider)
-            .padding(.horizontal,12)
+          divider
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .thisWeek, showHosting: $showHosting)
-          Rectangle()
-            .frame(maxWidth: .infinity)
-            .frame(height:1)
-            .foregroundStyle(.divider)
-            .padding(.horizontal,12)
+          divider
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .thisMonth, showHosting: $showHosting)
-          Rectangle()
-            .frame(maxWidth: .infinity)
-            .frame(height:1)
-            .foregroundStyle(.divider)
-            .padding(.horizontal,12)
+          divider
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .all, showHosting: $showHosting)
         } else {
-          VStack(alignment:.center,spacing: 12){
-            Image(systemName: "clock.badge.xmark")
-              .scaledToFit()
-              .frame(width:60,height: 60)
-            Text(showHosting ? "No currently hosting events" : "No current joining events")
-              .font(.subheadline)
-              .fontWeight(.medium)
+          ZStack {
+            Color.white
+            VStack(alignment:.center,spacing: 12){
+              Image(systemName: "clock.badge.xmark")
+                .resizable()
+                .scaledToFit()
+                .frame(width:60,height: 60)
+              Text(showHosting ? "No currently hosting events" : "No current joining events")
+                .font(.subheadline)
+                .fontWeight(.medium)
+            }
           }
+          .frame(maxWidth: .infinity,maxHeight: .infinity,alignment: .center)
         }
       }
     }
     .padding(.horizontal,12)
+  }
+  
+  private var divider: some View {
+    Rectangle()
+      .frame(maxWidth: .infinity)
+      .frame(height:1)
+      .foregroundStyle(.divider)
+      .padding(.horizontal,12)
   }
 }
 
@@ -125,21 +126,25 @@ struct RelatedTimeFrameEvents: View {
   var timeFilter: TimeFilter
   @Binding var showHosting: Bool
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
-
+  
   var body: some View {
     VStack(alignment: .leading, spacing: 24) {
       Text(timeFilter.rawValue)
-          .bold()
-          let filteredHostingEvents = viewModel.organizingEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
-          let filteredJoiningEvents = viewModel.joiningEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
-
-      ForEach(showHosting ? filteredHostingEvents : filteredJoiningEvents, id: \._id) { event in
-              CurrentEventRow(event: event)
-                  .padding(.horizontal,12)
-                  .onTapGesture {
-                      appCoordinator.push(.eventDetailView(named: event))
-                  }
-          }
+        .bold()
+      let filteredHostingEvents = viewModel.organizingEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
+      let filteredJoiningEvents = viewModel.joiningEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
+      if filteredHostingEvents.count != 0 || filteredJoiningEvents.count != 0 {
+        ForEach(showHosting ? filteredHostingEvents : filteredJoiningEvents, id: \._id) { event in
+          CurrentEventRow(event: event)
+            .padding(.horizontal,12)
+            .onTapGesture {
+              appCoordinator.push(.eventDetailView(named: event))
+            }
+        }
+    
+        
+        
       }
+    }
   }
 }

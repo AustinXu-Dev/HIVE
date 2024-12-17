@@ -93,7 +93,7 @@ struct EventDetailView: View {
                         .onTapGesture {
                             if userAppState != AppState.guest.rawValue {
                                 if let eventOrganizer = event.organizer {
-                                    appCoordinator.push(.organizerProfile(named: eventOrganizer))
+                                  appCoordinator.push(.socialProfile(user: eventOrganizer))
                                 }
                             } else {
                                 showCreateAccountAlert = true
@@ -148,7 +148,7 @@ struct EventDetailView: View {
                         
                         
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
-                           currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
+                           currentUserId != event.organizer?._id && userAppState == AppState.signedIn.rawValue {
                             
                             VStack(alignment:.center) {
                                 Spacer()
@@ -249,8 +249,8 @@ struct EventDetailView: View {
     func eventAlreadyJoinedOrNot()  {
         guard let currentUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
         profileVM.getOneUserAndCheckAge(id: currentUserId, eventMinAge: event.minAge ?? 0)
-        self.eventAlreadyJoined = self.event.participants?.contains(where: { $0.userid == currentUserId }) ?? false
-        self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0.userid == currentUserId }) ?? false
+      self.eventAlreadyJoined = self.event.participants?.contains(where: { $0._id == currentUserId }) ?? false
+      self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0._id == currentUserId }) ?? false
         
     }
     

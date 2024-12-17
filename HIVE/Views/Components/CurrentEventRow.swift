@@ -48,7 +48,7 @@ struct CurrentEventRow: View {
     
       }
       .frame(maxWidth: .infinity)
-    
+      
     }
 }
 

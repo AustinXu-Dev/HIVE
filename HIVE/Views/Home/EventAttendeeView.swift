@@ -19,7 +19,7 @@ struct EventAttendeeView: View {
         VStack {
             Divider()
             
-            List(event.participants ?? [], id: \.userid) { participant in
+          List(event.participants ?? [], id: \._id) { participant in
                 HStack {
                     KFImage(URL(string: participant.profileImageUrl ?? ""))
                         .resizable()
@@ -28,7 +28,7 @@ struct EventAttendeeView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading) {
-                        Text(participant.name ?? "Unknown")
+                      Text(participant.name ?? "Unknown")
                             .font(CustomFont.attendeeTitle)
                         
                         Text(participant.bio ?? "")
@@ -50,7 +50,7 @@ struct EventAttendeeView: View {
                         .buttonStyle(.borderedProminent)
                         .alert("Are you sure you want to kick?", isPresented: $showAlert, actions: {
                             Button("OK", role: .cancel) {
-                                kickAction(eventId: event._id, participantId: participant.userid ?? "")
+                              kickAction(eventId: event._id, participantId: participant._id ?? "")
                             }
                             Button("Cancel", role: .destructive) { }
                         })
@@ -62,7 +62,7 @@ struct EventAttendeeView: View {
                 .padding(.vertical, 8)
                 .background(Color.white.opacity(0.000001))
                 .onTapGesture {
-                    appCoordinator.push(.participantProfile(named: participant))
+                  appCoordinator.push(.socialProfile(user: participant))
                 }
             }
             .listStyle(PlainListStyle())
@@ -115,7 +115,7 @@ struct EventAttendeeView: View {
     
     func checkOrganizer() -> Bool{
         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"){
-            return currentUserId == event.organizer?.userid
+          return currentUserId == event.organizer?._id
         } else {
             return false
         }

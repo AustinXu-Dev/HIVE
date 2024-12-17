@@ -25,14 +25,14 @@ struct OneEventResponse : Codable, Hashable{
 struct EventModel : Codable, Hashable {
   let minAge : Int?
   let isPrivate: Bool?
-  let pendingParticipants: [PendingParticipantModel]?
+  let pendingParticipants: [UserModel]?
   let  _id,eventImageUrl,name,location: String
   let startDate,endDate,startTime,endTime : String
   let maxParticipants : Int
   let category : [String]
   let additionalInfo : String
-  let participants : [ParticipantModel]?
-  let organizer : OrganizerModel?
+  let participants : [UserModel]?
+  let organizer : UserModel?
 }
 
 struct JoinEventResponse : Codable, Hashable{

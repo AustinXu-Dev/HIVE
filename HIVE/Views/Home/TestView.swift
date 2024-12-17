@@ -81,11 +81,11 @@ struct TestView: View {
 
 
 struct PendingParticipantsView: View {
-  let participants: [PendingParticipantModel]
+  let participants: [UserModel]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            ForEach(participants, id: \.userid) { participant in
+            ForEach(participants, id: \._id) { participant in
                 VStack(alignment: .leading, spacing: 10) {
                     Text(participant.name ?? "")
                         .font(.headline)

@@ -22,12 +22,20 @@ struct ProfileView: View {
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     @EnvironmentObject var profileVM : GetOneUserByIdViewModel
     @StateObject var updateProfileVM = UpdateUserViewModel()
+    @StateObject var socialVM: GetSocialViewModel
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @Environment(\.isGuest) private var isGuest: Bool
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-    
+  @StateObject var eventHistoryVM = EventHistoryViewModel()
     @FocusState private var isFocused: Bool
     
+  
+  init(){
+     let userId = KeychainManager.shared.keychain.get("appUserId")
+      _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
+  }
+  
+  
     var body: some View {
         ZStack {
             Color.white
@@ -48,7 +56,7 @@ struct ProfileView: View {
                         .bold()
                     
                 }
-            } else if profileVM.isLoading || updateProfileVM.isLoading {
+            } else if (profileVM.isLoading && socialVM.isLoading && eventHistoryVM.isLoading) || updateProfileVM.isLoading {
                 ProgressView()
             } else {
                 ScrollView(.vertical,showsIndicators: false){
@@ -93,13 +101,24 @@ struct ProfileView: View {
                                     .shadow(radius: 5)
                                     .opacity(isEditingProfileImage ? 0.5 : 1.0)
                             } else {
+                              ZStack(alignment:.bottomTrailing){
                                 KFImage(URL(string: profileVM.userDetail?.profileImageUrl ?? ""))
+                                  .resizable()
+                                  .aspectRatio(contentMode: .fill)
+                                  .frame(width: 120, height: 120)
+                                  .clipShape(Circle())
+                                  .shadow(radius: 5)
+                                  .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                                
+                                if profileVM.userDetail?.verificationStatus == VertificationEnum.approved.rawValue {
+                                  Image(systemName: "checkmark.seal.fill")
                                     .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(width: 120, height: 120)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 5)
-                                    .opacity(isEditingProfileImage ? 0.5 : 1.0)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width:30,height:30)
+                                    .foregroundColor(.blue)
+                                    .offset(y:-5)
+                                }
+                              }
                             }
                             
                             if isEditable && isEditingProfileImage  {
@@ -155,7 +174,7 @@ struct ProfileView: View {
                         
                         HStack {
                             VStack {
-                                Text("0")
+                              Text("\(socialVM.followers.count)")
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Followers")
@@ -164,7 +183,7 @@ struct ProfileView: View {
                             }
                             Spacer()
                             VStack {
-                                Text("0")
+                              Text("\(socialVM.followings.count)")
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Following")
@@ -175,7 +194,9 @@ struct ProfileView: View {
                         .padding(.horizontal, 116)
                         .padding(.vertical, 5)
                         .onTapGesture {
-                            appCoordinator.push(.followerView)
+                          if let currentUser = profileVM.userDetail {
+                            appCoordinator.push(.followerView(followingsSocial: socialVM.followings, follwersSocial: socialVM.followers, currentUser: currentUser))
+                          }
                         }
                         
                         if isEditingDescription {
@@ -194,7 +215,7 @@ struct ProfileView: View {
                                 .padding(.horizontal, 40)
                         }
                         
-                        EventHistory()
+                      EventHistory(viewModel:eventHistoryVM)
                         
                         Button {
                             showLogoutAlert = true
@@ -220,12 +241,16 @@ struct ProfileView: View {
                     Button("Logout", role: .destructive) {
                         googleVM.signOutWithGoogle()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3){
-                            appCoordinator.selectedTabIndex = .home
+                          appCoordinator.setSelectedTab(index: .home)
                         }
                     }
                 }
                 .refreshable {
-                    refreshProfile()
+                  refreshProfile()
+                  if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                    socialVM.getFollowersOfUser(userId: userId)
+                    socialVM.getFollowingOfUser(userId: userId)
+                  }
                 }
                 .navigationBarBackButtonHidden(true)
             }
@@ -234,7 +259,7 @@ struct ProfileView: View {
         .onTapGesture {
             self.hideKeyboard()
         }
-        
+      
         
     }
     

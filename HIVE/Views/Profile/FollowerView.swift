@@ -6,33 +6,20 @@
 //
 
 import SwiftUI
-
-struct DemoUser: Identifiable {
-    let id = UUID()
-    let name: String
-    let description: String
-    let image: String
-}
+import Kingfisher
 
 struct FollowerView: View {
     @State private var searchText = ""
     @State private var hasResults = true
     @State private var isFollowingTabSelected = true
+  var followings: [UserModel]
+  var followers:   [UserModel]
+  var currentUser: UserModel
+  @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
-    let following: [DemoUser] = [
-        DemoUser(name: "Rose", description: "Hi I’m rose, hope we get along 🙌", image: "person.circle"),
-        DemoUser(name: "Lewis", description: "Hi I’m lewis, I’m the 8-time world champion 🏆🐐", image: "person.circle"),
-        DemoUser(name: "Jennie", description: "Hi I’m jennie, hope we get along 🙌", image: "person.circle"),
-    ]
 
-    let followers: [DemoUser] = [
-        DemoUser(name: "Alex", description: "I’m Alex. Let’s connect! ✨", image: "person.circle"),
-        DemoUser(name: "Taylor", description: "I’m Taylor, happy to be here!", image: "person.circle"),
-        DemoUser(name: "Chris", description: "Hey, I’m Chris. Nice to meet you! 👋", image: "person.circle"),
-    ]
-
-    var filteredUsers: [DemoUser] {
-        let list = isFollowingTabSelected ? following : followers
+  var filteredUsers: [UserModel] {
+    let list = isFollowingTabSelected ? followings : followers
         if searchText.isEmpty {
             return list
         } else {
@@ -43,7 +30,6 @@ struct FollowerView: View {
     }
 
     var body: some View {
-        NavigationView {
             VStack {
                 HStack {
                     Button(action: {
@@ -52,7 +38,7 @@ struct FollowerView: View {
                         hasResults = true
                     }) {
                         VStack(spacing: 5) {
-                            Text("\(following.count) Following")
+                          Text("\(followings.count) Following")
                                 .fontWeight(.bold)
                                 .foregroundColor(isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -70,7 +56,7 @@ struct FollowerView: View {
                         hasResults = true
                     }) {
                         VStack(spacing: 5) {
-                            Text("\(followers.count) Followers")
+                          Text("\(followers.count) Followers")
                                 .fontWeight(.bold)
                                 .foregroundColor(!isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -105,59 +91,69 @@ struct FollowerView: View {
 
                 // User List or No Results Message
                 if hasResults {
-                    List(filteredUsers) { user in
+                  ForEach(filteredUsers,id: \._id){ user in
                         HStack {
-                            Image(systemName: user.image)
+                          KFImage(URL(string: user.profileImageUrl ?? "" ))
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                             VStack(alignment: .leading) {
-                                Text(user.name)
+                              Text(user.name ?? "")
                                     .font(.headline)
-                                Text(user.description)
+                              Text(user.bio ?? "")
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
                             Spacer()
                         }
-                        .padding(.vertical, 5)
+                        .onTapGesture {
+                          appCoordinator.push(.socialProfile(user: user))
+                        }
+                        .padding(6)
                         .listRowSeparator(.hidden)
                     }
                     .listStyle(PlainListStyle())
                 } else {
                     VStack {
-                        Spacer()
+                       // Spacer()
                         Text("No results found")
                             .font(.headline)
                             .foregroundColor(.gray)
-                        Spacer()
+                      //  Spacer()
                     }
+                    .frame(maxHeight: .infinity,alignment: .center)
                 }
             }
+            .frame(maxHeight: .infinity,alignment: .top)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    HStack {
-                        Text("Lebron")
-                            .font(.headline)
+                  HStack {
+                      Text(currentUser.name ?? "")
+                        .font(.headline)
+                      if currentUser.verificationStatus == VertificationEnum.approved.rawValue {
                         Image(systemName: "checkmark.seal.fill")
-                            .foregroundColor(.blue)
-                    }
+                          .aspectRatio(contentMode: .fit)
+                          .frame(width:20,height:20)
+                          .foregroundColor(.blue)
+                      }
+                    
+                  }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
             .onTapGesture {
                 dismissKeyboard()
             }
-        }
+          
+        
     }
 
-    func performSearch(for query: String, in user: DemoUser) -> Bool {
+    func performSearch(for query: String, in user: UserModel) -> Bool {
         let lowercasedQuery = query.lowercased()
-        let userName = user.name.lowercased()
-        let userDescription = user.description.lowercased()
+        let userName = user.name?.lowercased()
+      let userDescription = user.bio?.lowercased()
 
-        return userName.contains(lowercasedQuery) || userDescription.contains(lowercasedQuery)
+      return ((userName?.contains(lowercasedQuery)) != nil) || ((userDescription?.contains(lowercasedQuery)) != nil)
     }
 
     private func dismissKeyboard() {
@@ -165,7 +161,4 @@ struct FollowerView: View {
     }
 }
 
-#Preview {
-    FollowerView()
-}
 

@@ -52,7 +52,12 @@ struct HomeView: View {
     .onTapGesture {
         print("screen is is pressed")
     }
-      
+    .alert(isPresented: $eventsVM.showErrorAlert){
+      Alert(title: Text("⚠️Fail to get the events⚠️"),
+            message: Text(eventsVM.errorMessage ?? ""),
+            dismissButton: .cancel(Text("OK"))
+      )
+    }
 
         
         

@@ -53,6 +53,7 @@ final class GetOngoingEventsViewModel: ObservableObject {
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          self?.setUpErrorAlert(error: error.localizedDescription)
         }
       }
     }
@@ -105,19 +106,19 @@ final class GetOngoingEventsViewModel: ObservableObject {
       
       switch timeFilter {
       case .all:
-             return true
-         case .today:
-             return calendar.isDate(eventStartDate, inSameDayAs: currentDate)
-         case .thisWeek:
-             guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: currentDate) else { return false }
+        return true
+      case .today:
+        return calendar.isDate(eventStartDate, inSameDayAs: currentDate)
+      case .thisWeek:
+        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: currentDate) else { return false }
              return weekStart.contains(eventStartDate)
-         case .thisMonth:
-             let eventYear = calendar.component(.year, from: eventStartDate)
-             let eventMonth = calendar.component(.month, from: eventStartDate)
-             let currentYear = calendar.component(.year, from: currentDate)
-             let currentMonth = calendar.component(.month, from: currentDate)
-             return eventYear == currentYear && eventMonth == currentMonth
-         }
+      case .thisMonth:
+        let eventYear = calendar.component(.year, from: eventStartDate)
+        let eventMonth = calendar.component(.month, from: eventStartDate)
+        let currentYear = calendar.component(.year, from: currentDate)
+        let currentMonth = calendar.component(.month, from: currentDate)
+        return eventYear == currentYear && eventMonth == currentMonth
+      }
   }
   
   // Parse the event date string and convert it to Thailand's local time zone
