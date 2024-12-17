@@ -89,6 +89,3 @@ struct EventHistory: View {
     }
 }
 
-#Preview {
-  EventHistory(viewModel: EventHistoryViewModel())
-}
