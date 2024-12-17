@@ -14,24 +14,8 @@
             filePath = "HIVE/Views/Profile/ProfileVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "160"
-            endingLineNumber = "160"
-            landmarkName = "body"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "A5D8B52A-730C-4B46-B4A3-957DB62BBB45"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "HIVE/Views/Profile/ProfileVIew.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "162"
-            endingLineNumber = "162"
+            startingLineNumber = "126"
+            endingLineNumber = "126"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>
@@ -46,15 +30,10 @@
             filePath = "HIVE/Views/Profile/ProfileVIew.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "32"
-            endingLineNumber = "32"
-<<<<<<< HEAD
-            landmarkName = "body"
-            landmarkType = "24">
-=======
+            startingLineNumber = "28"
+            endingLineNumber = "28"
             landmarkName = "ProfileView"
             landmarkType = "14">
->>>>>>> 7ccc67a (add: followers and following, api integration)
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

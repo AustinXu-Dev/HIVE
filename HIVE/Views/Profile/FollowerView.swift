@@ -8,6 +8,7 @@
 import SwiftUI
 import Kingfisher
 
+
 struct FollowerView: View {
     @State private var searchText = ""
     @State private var hasResults = true
@@ -20,6 +21,7 @@ struct FollowerView: View {
 
   var filteredUsers: [UserModel] {
     let list = isFollowingTabSelected ? followings : followers
+
         if searchText.isEmpty {
             return list
         } else {
@@ -30,6 +32,7 @@ struct FollowerView: View {
     }
 
     var body: some View {
+
             VStack {
                 HStack {
                     Button(action: {
@@ -39,6 +42,7 @@ struct FollowerView: View {
                     }) {
                         VStack(spacing: 5) {
                           Text("\(followings.count) Following")
+
                                 .fontWeight(.bold)
                                 .foregroundColor(isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -57,6 +61,7 @@ struct FollowerView: View {
                     }) {
                         VStack(spacing: 5) {
                           Text("\(followers.count) Followers")
+
                                 .fontWeight(.bold)
                                 .foregroundColor(!isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -94,6 +99,7 @@ struct FollowerView: View {
                   ForEach(filteredUsers,id: \._id){ user in
                         HStack {
                           KFImage(URL(string: user.profileImageUrl ?? "" ))
+
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 50)
@@ -102,6 +108,7 @@ struct FollowerView: View {
                               Text(user.name ?? "")
                                     .font(.headline)
                               Text(user.bio ?? "")
+
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
@@ -111,6 +118,7 @@ struct FollowerView: View {
                           appCoordinator.push(.socialProfile(user: user))
                         }
                         .padding(6)
+
                         .listRowSeparator(.hidden)
                     }
                     .listStyle(PlainListStyle())
@@ -160,5 +168,6 @@ struct FollowerView: View {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
+
 
 

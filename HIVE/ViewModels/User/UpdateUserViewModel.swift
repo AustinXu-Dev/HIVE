@@ -37,36 +37,18 @@ class UpdateUserViewModel: ObservableObject {
         self.password = password
     }
 
-    func updateUser(id: String, token: String) {
+    func updateUser(id: String, token: String, completion: @escaping (Result<Void, Error>) -> Void) {
         var updatedUserInfo: [String: String] = [:]
 
-        if !name.isEmpty {
-            updatedUserInfo["name"] = name
-        }
-        if !email.isEmpty {
-            updatedUserInfo["email"] = email
-        }
-        if !dateOfBirth.isEmpty {
-            updatedUserInfo["dateOfBirth"] = dateOfBirth
-        }
-        if !gender.isEmpty {
-            updatedUserInfo["gender"] = gender
-        }
-        if !profileImageUrl.isEmpty {
-            updatedUserInfo["profileImageUrl"] = profileImageUrl
-        }
-        if !about.isEmpty {
-            updatedUserInfo["about"] = about
-        }
-        if !bio.isEmpty {
-            updatedUserInfo["bio"] = bio
-        }
-        if !instagramLink.isEmpty {
-            updatedUserInfo["instagramLink"] = instagramLink
-        }
-        if !password.isEmpty {
-            updatedUserInfo["password"] = password
-        }
+        if !name.isEmpty { updatedUserInfo["name"] = name }
+        if !email.isEmpty { updatedUserInfo["email"] = email }
+        if !dateOfBirth.isEmpty { updatedUserInfo["dateOfBirth"] = dateOfBirth }
+        if !gender.isEmpty { updatedUserInfo["gender"] = gender }
+        if !profileImageUrl.isEmpty { updatedUserInfo["profileImageUrl"] = profileImageUrl }
+        if !about.isEmpty { updatedUserInfo["about"] = about }
+        if !bio.isEmpty { updatedUserInfo["bio"] = bio }
+        if !instagramLink.isEmpty { updatedUserInfo["instagramLink"] = instagramLink }
+        if !password.isEmpty { updatedUserInfo["password"] = password }
 
         let updateUser = UpdateUser(id: id)
         isLoading = true
@@ -76,15 +58,18 @@ class UpdateUserViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self?.isLoading = false
                 switch result {
-                case .success(_):
+                case .success:
                     print("Successfully updated user profile")
+                    completion(.success(())) // Notify caller of success
                 case .failure(let error):
                     self?.errorMessage = "Failed to update user: \(error.localizedDescription)"
-                    print(error.localizedDescription)
+                    print("Error: \(error.localizedDescription)")
+                    completion(.failure(error)) // Notify caller of failure
                 }
             }
         }
     }
+
     
     func storeImageUrl(imageUrl: String, uid: String, email: String, completion: @escaping (Result<Void, Error>) -> Void) {
         let db = Firestore.firestore()

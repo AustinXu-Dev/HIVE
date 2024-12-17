@@ -29,6 +29,7 @@ struct EventAttendeeView: View {
                     
                     VStack(alignment: .leading) {
                       Text(participant.name ?? "Unknown")
+
                             .font(CustomFont.attendeeTitle)
                         
                         Text(participant.bio ?? "")
@@ -51,6 +52,7 @@ struct EventAttendeeView: View {
                         .alert("Are you sure you want to kick?", isPresented: $showAlert, actions: {
                             Button("OK", role: .cancel) {
                               kickAction(eventId: event._id, participantId: participant._id ?? "")
+
                             }
                             Button("Cancel", role: .destructive) { }
                         })
@@ -63,6 +65,7 @@ struct EventAttendeeView: View {
                 .background(Color.white.opacity(0.000001))
                 .onTapGesture {
                   appCoordinator.push(.socialProfile(user: participant))
+
                 }
             }
             .listStyle(PlainListStyle())
@@ -116,6 +119,7 @@ struct EventAttendeeView: View {
     func checkOrganizer() -> Bool{
         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"){
           return currentUserId == event.organizer?._id
+
         } else {
             return false
         }

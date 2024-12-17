@@ -2,7 +2,7 @@
 //  ProfileView.swift
 //  HIVE
 //
-//  Created by Kelvin Gao  on 20/10/2567 BE.
+//  Created by Kelvin Gao on 20/10/2567 BE.
 //
 
 import SwiftUI
@@ -10,7 +10,7 @@ import Kingfisher
 
 struct ProfileView: View {
     
-    
+
     @State private var profileImage: UIImage? = nil
     @State private var isEditingDescription = false
     @State private var isEditingProfileImage = false
@@ -35,7 +35,7 @@ struct ProfileView: View {
       _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
   }
   
-  
+
     var body: some View {
         ZStack {
             Color.white
@@ -48,6 +48,7 @@ struct ProfileView: View {
                         .multilineTextAlignment(.center)
                     Button {
                         userAppState =  AppState.notSignedIn.rawValue
+
                     } label: {
                         ReusableAccountCreationButton()
                     }
@@ -122,6 +123,7 @@ struct ProfileView: View {
                             }
                             
                             if isEditable && isEditingProfileImage  {
+
                                 Button(action: {
                                     showImagePicker = true
                                 }) {
@@ -133,6 +135,7 @@ struct ProfileView: View {
                                 }
                             }
                                                         
+
                             Image("Approval")
                                 .resizable()
                                 .scaledToFit()
@@ -142,6 +145,7 @@ struct ProfileView: View {
                         
                         }
                         .sheet(isPresented: $showImagePicker) {
+
                             ImagePicker(selectedImage: $profileImage)
                         }
 
@@ -166,6 +170,7 @@ struct ProfileView: View {
                             }
                             
                         }
+
                         if let about = profileVM.userDetail?.about {
                             Text("(\(about))")
                                 .font(CustomFont.aboutStyle)
@@ -175,6 +180,7 @@ struct ProfileView: View {
                         HStack {
                             VStack {
                               Text("\(socialVM.followers.count)")
+
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Followers")
@@ -184,6 +190,7 @@ struct ProfileView: View {
                             Spacer()
                             VStack {
                               Text("\(socialVM.followings.count)")
+
                                     .font(.system(size: 18))
                                     .fontWeight(.bold)
                                 Text("Following")
@@ -207,6 +214,7 @@ struct ProfileView: View {
                             .textFieldStyle(RoundedBorderTextFieldStyle())
                             .focused($isFocused)
                             .padding(.horizontal, 40)
+
                         } else {
                             Text(profileVM.userDetail?.bio ?? "")
                                 .font(.body)
@@ -216,6 +224,7 @@ struct ProfileView: View {
                         }
                         
                       EventHistory(viewModel:eventHistoryVM)
+
                         
                         Button {
                             showLogoutAlert = true
@@ -236,31 +245,35 @@ struct ProfileView: View {
                     }
                 }
                 
+
                 .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
                     Button("Cancel", role: .cancel) {}
                     Button("Logout", role: .destructive) {
                         googleVM.signOutWithGoogle()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 3){
                           appCoordinator.setSelectedTab(index: .home)
+
                         }
                     }
                 }
                 .refreshable {
-                  refreshProfile()
+                    refreshProfile()
                   if let userId = KeychainManager.shared.keychain.get("appUserId") {
                     socialVM.getFollowersOfUser(userId: userId)
                     socialVM.getFollowingOfUser(userId: userId)
                   }
                 }
                 .navigationBarBackButtonHidden(true)
+                .onAppear {
+                  // Initialize descriptionText with backend data
+                  descriptionText = profileVM.userDetail?.bio ?? ""
+                }
             }
-            
         }
         .onTapGesture {
             self.hideKeyboard()
         }
-      
-        
+
     }
     
     // MARK: - Private Methods
@@ -282,7 +295,7 @@ struct ProfileView: View {
     private func storeImageUrlAndRetrieveImage(uid: String, email: String, imageUrl: String) {
         updateProfileVM.storeImageUrl(imageUrl: imageUrl, uid: uid, email: email) { result in
             switch result {
-            case .success(_):
+            case .success:
                 retrieveImageURL(uid: uid)
             case .failure(let error):
                 print(error.localizedDescription)
@@ -294,18 +307,32 @@ struct ProfileView: View {
         updateProfileVM.retrieveImageUrl(uid: uid) { result in
             switch result {
             case .success(let storedImageUrl):
-                guard let userBio = profileVM.userDetail?.bio else { return }
-                updateProfileVM.profileImageUrl = storedImageUrl
-                updateProfileVM.bio = userBio
-                if let userToken = TokenManager.share.getToken() {
-                    print("Token is \(userToken)")
-                    updateProfileVM.updateUser(id: uid, token: userToken)
+                print("Successfully retrieved image URL: \(storedImageUrl)")
+                
+                // Update the ViewModel with the retrieved URL
+                self.updateProfileVM.profileImageUrl = storedImageUrl
+                
+                // Proceed to update the user profile
+                guard let userToken = TokenManager.share.getToken() else {
+                    print("Failed to retrieve user token")
+                    return
                 }
+                
+                self.updateProfileVM.updateUser(id: uid, token: userToken) { updateResult in
+                    switch updateResult {
+                    case .success:
+                        print("Successfully updated user profile with new image URL")
+                    case .failure(let error):
+                        print("Failed to update user profile: \(error.localizedDescription)")
+                    }
+                }
+                
             case .failure(let error):
-                print(error.localizedDescription)
+                print("Failed to retrieve image URL: \(error.localizedDescription)")
             }
         }
     }
+
     
     private func refreshProfile() {
         if let userId = KeychainManager.shared.keychain.get("appUserId") {

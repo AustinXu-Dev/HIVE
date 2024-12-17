@@ -35,7 +35,7 @@ struct UserModel: Codable, Hashable {
     let email: String?
     let dateOfBirth: String?
     let gender: String?
-    let profileImageUrl: String?
+    var profileImageUrl: String?
     let about: String?
     var bio: String?
     let instagramLink: String?

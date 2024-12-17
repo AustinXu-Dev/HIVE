@@ -29,14 +29,15 @@ enum Screen: Identifiable, Hashable {
   case socialProfile(user: UserModel)
   
   var id: Self { return self }
+
 }
 
 enum Tab : Hashable {
-  case home
-  case search
-  case hostEvent
-  case chat
-  case profile
+    case home
+    case search
+    case hostEvent
+    case chat
+    case profile
 }
 
 //enum Sheet: Identifiable, Hashable {
