@@ -19,7 +19,7 @@ final class AuthenticationManager {
     print("sign up invoked")
     do {
       try await Auth.auth().createUser(withEmail: email, password: password)
-      try await sendEmailVerification()
+//      try await sendEmailVerification()
       print("sign up invoke success")
     } catch {
       throw error

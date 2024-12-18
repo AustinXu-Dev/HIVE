@@ -2,22 +2,36 @@ import SwiftUI
 
 struct CurrentEventScheduleView: View {
   
-  @StateObject var viewModel = GetOngoingEventsViewModel()
+  @StateObject var viewModel: GetOngoingEventsViewModel
   @State private var showHosting: Bool = false
+  
+  
+  init(){
+    _viewModel = StateObject(wrappedValue: GetOngoingEventsViewModel())
+  }
   
   var body: some View {
     ZStack {
       if viewModel.isLoading {
-        ProgressView()
+        ProgressView("Loading")
       } else {
         VStack(alignment:.leading,spacing:24) {
           header
           eventScrollView
+          
         }
         .padding(.horizontal)
         
       }
   }
+    
+    .refreshable {
+      print("REFERSHING")
+      if let userId = KeychainManager.shared.keychain.get("appUserId") {
+        viewModel.fetchAllEventHistory(userId: userId)
+        print("rfreshed with \(viewModel.joiningEvents.count)")
+      }
+    }
     .padding(.horizontal)
       .alert(isPresented: $viewModel.showErrorAlert){
         Alert(title: Text(viewModel.errorTitle),
@@ -27,6 +41,7 @@ struct CurrentEventScheduleView: View {
       .navigationTitle("Schedule")
       .navigationBarTitleDisplayMode(.inline)
     }
+  
 }
 
 #Preview {
@@ -68,13 +83,14 @@ extension CurrentEventScheduleView {
           .opacity(showHosting ? 1 : 0)
       }
     }
+    .frame(maxWidth: .infinity)
   }
   
   private var eventScrollView: some View {
     ScrollView(.vertical, showsIndicators: false) {
       VStack(alignment:.leading,spacing:24) {
         
-        if viewModel.organizingEvents.count != 0 && viewModel.joiningEvents.count != 0 {
+        if viewModel.organizingEvents.count != 0 || viewModel.joiningEvents.count != 0 {
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .today, showHosting: $showHosting)
           divider
           RelatedTimeFrameEvents(viewModel: viewModel, timeFilter: .thisWeek, showHosting: $showHosting)
@@ -123,7 +139,7 @@ struct RelatedTimeFrameEvents: View {
         .bold()
       let filteredHostingEvents = viewModel.organizingEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
       let filteredJoiningEvents = viewModel.joiningEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
-      if filteredHostingEvents.count != 0 || filteredJoiningEvents.count != 0 {
+//      if filteredHostingEvents.count != 0 || filteredJoiningEvents.count != 0 {
         ForEach(showHosting ? filteredHostingEvents : filteredJoiningEvents, id: \._id) { event in
           CurrentEventRow(event: event)
             .padding(.horizontal,12)
@@ -134,7 +150,7 @@ struct RelatedTimeFrameEvents: View {
     
         
         
-      }
+//      }
     }
   }
 }
