@@ -43,7 +43,7 @@ struct EventApproveRejectView: View {
 
     private func refreshData() {
         if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
-            organizingEventsVM.getOrganizingEventsOfUser(userId: userId, token: token)
+            organizingEventsVM.fetchOrganizingEventsConcurrently(userId: userId)
         } else {
             print("Error: Unable to retrieve user ID or token")
         }

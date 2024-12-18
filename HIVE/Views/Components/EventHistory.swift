@@ -52,26 +52,39 @@ struct EventHistory: View {
           }
           .padding(.horizontal,20)
           
+       
+          
+          
+          
           if !showHostingView {
-          ForEach(viewModel.joinedEventHistory,id: \._id){ event in
-            VStack(alignment:.center,spacing: 12){
-              EventRow(event: event)
-                .onTapGesture {
-                  appCoordinator.push(.eventDetailView(named: event))
-                }
-      
-            }
-            
-          }
-          } else {
-            ForEach(viewModel.hostedEventHistory,id: \._id){ event in
+            //if no events
+            if viewModel.joinedEventHistory.count != 0 {
+            ForEach(viewModel.joinedEventHistory,id: \._id){ event in
               VStack(alignment:.center,spacing: 12){
                 EventRow(event: event)
                   .onTapGesture {
                     appCoordinator.push(.eventDetailView(named: event))
                   }
+                
               }
               
+            }
+            } else {
+              noEvents
+            }
+          } else {
+            if viewModel.joinedEventHistory.count != 0 {
+              ForEach(viewModel.hostedEventHistory,id: \._id){ event in
+                VStack(alignment:.center,spacing: 12){
+                  EventRow(event: event)
+                    .onTapGesture {
+                      appCoordinator.push(.eventDetailView(named: event))
+                    }
+                }
+                
+              }
+            } else {
+              noEvents
             }
           }
       }
@@ -89,3 +102,20 @@ struct EventHistory: View {
     }
 }
 
+
+extension EventHistory {
+  private var noEvents: some View {
+    ZStack {
+      Color.white
+      VStack(alignment:.center,spacing: 12){
+        Image(systemName: "calendar.badge.exclamationmark")
+          .resizable()
+          .scaledToFit()
+          .frame(width:60,height: 60)
+        Text("No Activities Yet")
+          .font(.subheadline)
+          .fontWeight(.medium)
+      }
+    }
+  }
+}
