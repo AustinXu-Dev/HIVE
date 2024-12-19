@@ -81,6 +81,7 @@ struct HomeView: View {
                     .contentShape(TopRoundedCorners(radius: 20))
                     .onTapGesture {
                         print("Event card is pressed")
+                        eventsVM.currentEvent = event
                         appCoordinator.push(.eventDetailView(named: event))
                     }
                 }

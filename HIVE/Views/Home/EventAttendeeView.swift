@@ -10,7 +10,9 @@ import Kingfisher
 
 
 struct EventAttendeeView: View {
-    let event : EventModel
+    @State var event : EventModel
+    @EnvironmentObject private var eventsVM : GetEventsViewModel
+
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject var kickParticipantVM = KickParticipantViewModel()
     @State var showAlert = false
@@ -19,7 +21,7 @@ struct EventAttendeeView: View {
         VStack {
             Divider()
             
-          List(event.participants ?? [], id: \._id) { participant in
+            List(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
                 HStack {
                     KFImage(URL(string: participant.profileImageUrl ?? ""))
                         .resizable()
@@ -94,8 +96,8 @@ struct EventAttendeeView: View {
             
             ToolbarItem(placement: .primaryAction) {
                 
-                if let eventParticipants = event.participants {
-                    Text("\(eventParticipants.count) / \(event.maxParticipants)")
+                if let eventParticipants = eventsVM.currentEvent?.participants {
+                    Text("\(eventParticipants.count) / \(eventsVM.currentEvent?.maxParticipants ?? 0)")
                         .foregroundColor(.gray)
                         .bold()
                 }
@@ -104,9 +106,14 @@ struct EventAttendeeView: View {
         }
 
         .alert("Alert",isPresented: $kickParticipantVM.kickSuccess) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {
+                eventsVM.getOneEvent(id: event._id)
+            }
         } message: {
             Text(kickParticipantVM.successMessage ?? "")
+        }
+        .refreshable {
+            eventsVM.getOneEvent(id: event._id)
         }
         
         .navigationBarBackButtonHidden()
