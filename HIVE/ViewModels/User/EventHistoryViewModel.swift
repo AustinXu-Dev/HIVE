@@ -66,7 +66,7 @@ final class EventHistoryViewModel: ObservableObject {
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
         }
-        print("ERROR OCCURED")
+        print("Get join event history ERROR OCCURED")
         print(self?.errorMessage ?? "")
       }
     }

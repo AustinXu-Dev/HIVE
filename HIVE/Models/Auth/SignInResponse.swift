@@ -29,8 +29,8 @@ struct User: Codable {
     let instagramLink: String
     let isOrganizer: Bool
     let isSuspened: Bool
-//    let verificationImageUrl: String
-//    let verficatiionStatus: String
-//    let password: String
-//    let __v: Int
+    let verificationImageUrl: String
+    let verificationStatus: String
+    let password: String
+    let __v: Int
 }

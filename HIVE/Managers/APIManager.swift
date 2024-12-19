@@ -62,6 +62,7 @@ extension APIManager {
             }
             
             if !(200...299).contains(httpResponse.statusCode) {
+                print("In API Manager: ",httpResponse.statusCode, httpResponse.statusCode.description)
                 completion(.failure(URLError(.badServerResponse)))
                 return
             }

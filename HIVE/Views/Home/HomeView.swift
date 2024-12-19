@@ -39,11 +39,13 @@ struct HomeView: View {
         .refreshable {
           eventsVM.fetchEvents()
         }
+        .onChange(of: eventsVM.currentEvent, {
+            eventsVM.fetchEvents()
+        })
         .navigationBarBackButtonHidden()
         .toolbar(.hidden)
         .onAppear {
           print("user app State \(userAppState)")
-            print(TokenManager.share.getToken() ?? "No token")
         }
         
         
