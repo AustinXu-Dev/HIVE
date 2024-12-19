@@ -69,8 +69,6 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             ShareSocialView()
         case .followerView(followingsSocial: let followings, follwersSocial: let followers, currentUser: let currentUser):
           FollowerView(followings: followings, followers: followers, currentUser: currentUser)
-        case .eventSchedule:
-          CurrentEventScheduleView()
         case .socialProfile(user: let user):
           SocialProfile(social: user)
         }

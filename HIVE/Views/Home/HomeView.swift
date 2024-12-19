@@ -39,11 +39,13 @@ struct HomeView: View {
         .refreshable {
           eventsVM.fetchEvents()
         }
+        .onChange(of: eventsVM.currentEvent, {
+            eventsVM.fetchEvents()
+        })
         .navigationBarBackButtonHidden()
         .toolbar(.hidden)
         .onAppear {
           print("user app State \(userAppState)")
-            print(TokenManager.share.getToken() ?? "No token")
         }
         
         
@@ -81,6 +83,7 @@ struct HomeView: View {
                     .contentShape(TopRoundedCorners(radius: 20))
                     .onTapGesture {
                         print("Event card is pressed")
+                        eventsVM.currentEvent = event
                         appCoordinator.push(.eventDetailView(named: event))
                     }
                 }
