@@ -30,10 +30,10 @@ struct OnboardingDetailView: View {
     VStack(alignment: .leading){
       Text(onboardingSteps[currentStep].title)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .font(CustomFont.onBoardingSubtitle)
+        .heading1()
       Text(onboardingSteps[currentStep].description)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .font(CustomFont.onBoardingDescription)
+        .body5()
       
       switch onboardingSteps[currentStep].type{
       case .Name:
@@ -67,9 +67,15 @@ struct OnboardingDetailView: View {
       case .Gender:
         VStack {
           Picker("Gender", selection: $viewModel.gender) {
-            Text("Male").tag(Gender.male)
-            Text("Female").tag(Gender.female)
-            Text("Diverse").tag(Gender.diverse)
+            Text("Male")
+                  .tag(Gender.male)
+                  .body5()
+            Text("Female")
+                  .tag(Gender.female)
+                  .body5()
+            Text("Diverse")
+                  .tag(Gender.diverse)
+                  .body5()
           }
           
           .pickerStyle(SegmentedPickerStyle())
@@ -149,6 +155,7 @@ struct OnboardingDetailView: View {
                 .textFieldStyle(PlainTextFieldStyle()) // Use Plain style to avoid white background
                 .padding(16) // Add padding within the TextField
                 .foregroundColor(.black) // Text color
+                .body5()
                 .lineLimit(4, reservesSpace: true)
                 .background(Color.clear)
                 .limitInputLength(value: $viewModel.bio, length: 60)
@@ -193,6 +200,7 @@ struct RectangleOption: View {
   var body: some View {
     Button(action: action) {
       Text(option)
+        .body5()
         .frame(maxWidth: .infinity)
         .padding()
         .background(isSelected ? Color.black : Color("hive_gray"))

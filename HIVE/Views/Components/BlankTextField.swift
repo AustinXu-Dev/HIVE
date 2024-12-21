@@ -13,7 +13,7 @@ struct BlankTextField: View {
   var body: some View {
     VStack(alignment:.leading,spacing: 4) {
       Text(titleText)
-        .font(.caption)
+        .heading6()
         .bold()
         .foregroundStyle(isFocused ? Color.themeColorPurple : Color.black)
       Group {

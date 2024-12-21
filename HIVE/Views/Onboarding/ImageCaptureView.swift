@@ -58,6 +58,7 @@ struct ImageCaptureView: View {
                 }
                 
                 Text("Center your face and take a clear front facing photo.")
+                    .body4()
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .padding()

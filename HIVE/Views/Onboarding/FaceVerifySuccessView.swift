@@ -24,11 +24,11 @@ struct FaceVerifySuccessView: View {
                     .padding(.bottom, 20)
                 
                 Text("Thanks!")
-                    .font(CustomFont.faceIdViewBigBoldText)
+                    .heading1()
                     .padding(.bottom, 10)
                 
                 Text("We'll review and verify your profile within 3 days.")
-                    .font(CustomFont.faceIdViewBodyText)
+                    .body4()
                     .multilineTextAlignment(.center)
                     .lineLimit(2)
                 
