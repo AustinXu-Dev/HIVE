@@ -24,17 +24,17 @@ struct ShareSocialView: View {
                 VStack(alignment: .leading) {
                     Text("Connect easily")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(CustomFont.onBoardingSubtitle)
+                        .heading2()
                     Text("Share your Instagram so others can reach out!")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(CustomFont.onBoardingDescription)
+                        .body6()
                         .padding(.bottom, 50)
                     
                     TextField("Paste your instagram link here", text: $viewModel.instagramHandle)
                         .onChange(of: viewModel.instagramHandle, { oldValue, newValue in
                             validateLink()
                         })
-                        .font(CustomFont.termsStyle)
+                        .light6()
                         .multilineTextAlignment(.center)
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 20)
@@ -47,7 +47,7 @@ struct ShareSocialView: View {
                     if isValid == false {
                         Text("Invalid link! Please enter a valid Instagram profile link.")
                             .foregroundColor(.red)
-                            .font(CustomFont.onBoardingDescription)
+                            .light6()
                     }
                     
                 }
@@ -62,7 +62,7 @@ struct ShareSocialView: View {
                         Text("Done")
                             .foregroundStyle(.white)
                             .fontWeight(.semibold)
-                            .font(CustomFont.onBoardingButton)
+                            .heading4()
                     }
                     .onTapGesture {
                         // MARK: - Go to Home
@@ -113,7 +113,7 @@ struct ShareSocialView: View {
                     viewModel.instagramHandle = ""
                     appCoordinator.push(.faceVerification)
                 }
-                .font(CustomFont.onBoardingDescription)
+                .body6()
             }
         }
     }

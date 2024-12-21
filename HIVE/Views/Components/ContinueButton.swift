@@ -18,8 +18,7 @@ struct ContinueButton: View {
             .overlay {
                 Text("Continue")
                     .foregroundStyle(.white)
-                    .fontWeight(.semibold)
-                    .font(CustomFont.onBoardingButton)
+                    .heading4()
             }
             .onTapGesture {
                 action()

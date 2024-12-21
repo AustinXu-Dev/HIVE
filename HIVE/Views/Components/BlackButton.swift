@@ -20,7 +20,7 @@ struct BlackButton: View {
                 Text(text)
                     .foregroundStyle(.white)
                     .fontWeight(.semibold)
-                    .font(CustomFont.onBoardingButton)
+                    .heading4()
             }
             .onTapGesture {
                 action()
