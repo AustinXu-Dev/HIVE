@@ -21,7 +21,7 @@ struct EventHistory: View {
             VStack(alignment:.center,spacing: 2) {
               Text("Joined")
                 .foregroundStyle(Color.black)
-                .font(.headline)
+                .body4()
                 .bold()
                 .onTapGesture {
                   print("tapped")
@@ -36,7 +36,7 @@ struct EventHistory: View {
             Spacer()
             VStack(alignment:.center,spacing: 2) {
               Text("Hosted")
-                .font(.headline)
+                .body4()
                 .bold()
                 .foregroundStyle(Color.black)
                 .onTapGesture {
@@ -51,10 +51,6 @@ struct EventHistory: View {
             }
           }
           .padding(.horizontal,20)
-          
-       
-          
-          
           
           if !showHostingView {
             //if no events

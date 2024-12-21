@@ -38,7 +38,7 @@ struct UserModel: Codable, Hashable {
     var profileImageUrl: String?
     let about: String?
     var bio: String?
-    let instagramLink: String?
+    var instagramLink: String?
     let isOrganizer: Bool?
     let isSuspended: Bool?
 }

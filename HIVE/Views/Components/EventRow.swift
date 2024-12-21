@@ -20,11 +20,11 @@ struct EventRow: View {
         
         VStack(alignment:.leading,spacing:12){
           Text(event.name)
-            .font(CustomFont.eventRowEventTitle)
+                .heading5()
           HStack {
             if let eventDate = Date.stringToDate(event.startDate){
               Text(eventDate.toDayMonthYearString())
-                .font(CustomFont.eventRowEventDate)
+                    .heading7()
             }
             
             Spacer()

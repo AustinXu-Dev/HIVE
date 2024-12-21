@@ -108,6 +108,10 @@ extension View{
         self.modifier(CustomFontModifier(font: .custom(LatoFont.lightFont, size: 15)))
     }
     
+    func light7() -> some View{
+        self.modifier(CustomFontModifier(font: .custom(LatoFont.lightFont, size: 14)))
+    }
+    
     func light5() -> some View{
         self.modifier(CustomFontModifier(font: .custom(LatoFont.lightFont, size: 13)))
     }

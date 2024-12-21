@@ -42,7 +42,7 @@ struct FollowerView: View {
                     }) {
                         VStack(spacing: 5) {
                           Text("\(followings.count) Following")
-
+                                .body4()
                                 .fontWeight(.bold)
                                 .foregroundColor(isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -61,7 +61,7 @@ struct FollowerView: View {
                     }) {
                         VStack(spacing: 5) {
                           Text("\(followers.count) Followers")
-
+                                .body4()
                                 .fontWeight(.bold)
                                 .foregroundColor(!isFollowingTabSelected ? .black : .gray)
                             Rectangle()
@@ -94,7 +94,6 @@ struct FollowerView: View {
                 )
                 .padding(.horizontal, 16)
 
-                // User List or No Results Message
                 if hasResults {
                   ForEach(filteredUsers,id: \._id){ user in
                         HStack {
@@ -106,9 +105,9 @@ struct FollowerView: View {
                                 .clipShape(Circle())
                             VStack(alignment: .leading) {
                               Text(user.name ?? "")
-                                    .font(.headline)
+                                    .heading7()
                               Text(user.bio ?? "")
-
+                                    .light6()
                                     .font(.subheadline)
                                     .foregroundColor(.gray)
                             }
@@ -124,11 +123,9 @@ struct FollowerView: View {
                     .listStyle(PlainListStyle())
                 } else {
                     VStack {
-                       // Spacer()
                         Text("No results found")
                             .font(.headline)
                             .foregroundColor(.gray)
-                      //  Spacer()
                     }
                     .frame(maxHeight: .infinity,alignment: .center)
                 }

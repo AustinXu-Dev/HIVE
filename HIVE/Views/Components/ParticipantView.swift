@@ -37,13 +37,9 @@ struct ParticipantView: View {
             }
             if let eventParticipants = event.participants {
                 Text("\(eventParticipants.count) / \(event.maxParticipants)")
-                    .font(CustomFont.eventBodyStyle)
+                    .light7()
             }
     }
-      
-       
-       
-      
 
     }
 }
