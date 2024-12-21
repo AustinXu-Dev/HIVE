@@ -39,11 +39,13 @@ struct HomeView: View {
         .refreshable {
           eventsVM.fetchEvents()
         }
+        .onChange(of: eventsVM.currentEvent, {
+            eventsVM.fetchEvents()
+        })
         .navigationBarBackButtonHidden()
         .toolbar(.hidden)
         .onAppear {
           print("user app State \(userAppState)")
-            print(TokenManager.share.getToken() ?? "No token")
         }
         
         
@@ -52,7 +54,13 @@ struct HomeView: View {
     .onTapGesture {
         print("screen is is pressed")
     }
-      
+    .alert(isPresented: $eventsVM.showErrorAlert){
+      Alert(title: Text("⚠️Fail to get the events⚠️"),
+            message: Text(eventsVM.errorMessage ?? ""),
+            dismissButton: .cancel(Text("OK"))
+      )
+    }
+
 
         
         
@@ -75,6 +83,7 @@ struct HomeView: View {
                     .contentShape(TopRoundedCorners(radius: 20))
                     .onTapGesture {
                         print("Event card is pressed")
+                        eventsVM.currentEvent = event
                         appCoordinator.push(.eventDetailView(named: event))
                     }
                 }
@@ -167,6 +176,9 @@ extension HomeView {
                 Image(systemName: "calendar")
                   .aspectRatio(contentMode: .fit)
                   .frame(width:25,height:25)
+                  .onTapGesture {
+                    appCoordinator.push(.eventSchedule)
+                  }
               }
               
             

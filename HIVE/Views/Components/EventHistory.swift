@@ -9,41 +9,20 @@ import SwiftUI
 
 struct EventHistory: View {
   
-  @StateObject var viewModel = EventHistoryViewModel()
+  @ObservedObject var viewModel: EventHistoryViewModel
   @State private var showHostingView: Bool = false
   @State private var showErrorMessage: Bool = false
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
 
   var body: some View {
     ZStack {
-      if viewModel.isLoading {
-        ProgressView("Loading...")
-      } else {
         VStack(alignment:.center,spacing: 24) {
-          
-
           HStack {
             VStack(alignment:.center,spacing: 2) {
               Text("Joined")
                 .foregroundStyle(Color.black)
-                .font(.headline)
+                .body4()
                 .bold()
-                .onTapGesture {
-                  print("tapped")
-                  withAnimation(.smooth.speed(5.0)) {
-                    showHostingView = true
-                  }
-                }
-              Rectangle()
-                .frame(width:128,height: 1.5)
-                .opacity(showHostingView ? 1 : 0)
-            }
-            Spacer()
-            VStack(alignment:.center,spacing: 2) {
-              Text("Hosted")
-                .font(.headline)
-                .bold()
-                .foregroundStyle(Color.black)
                 .onTapGesture {
                   print("tapped")
                   withAnimation(.smooth.speed(5.0)) {
@@ -54,48 +33,85 @@ struct EventHistory: View {
                 .frame(width:128,height: 1.5)
                 .opacity(showHostingView ? 0 : 1)
             }
+            Spacer()
+            VStack(alignment:.center,spacing: 2) {
+              Text("Hosted")
+                .body4()
+                .bold()
+                .foregroundStyle(Color.black)
+                .onTapGesture {
+                  print("tapped")
+                  withAnimation(.smooth.speed(5.0)) {
+                    showHostingView = true
+                  }
+                }
+              Rectangle()
+                .frame(width:128,height: 1.5)
+                .opacity(showHostingView ? 1 : 0)
+            }
           }
           .padding(.horizontal,20)
           
           if !showHostingView {
-          ForEach(viewModel.joinedEventHistory,id: \._id){ event in
-            VStack(alignment:.center,spacing: 12){
-              EventRow(event: event)
-                .onTapGesture {
-                  appCoordinator.push(.eventDetailView(named: event))
-                }
-      
-            }
-            
-          }
-          } else {
-            ForEach(viewModel.hostedEventHistory,id: \._id){ event in
+            //if no events
+            if viewModel.joinedEventHistory.count != 0 {
+            ForEach(viewModel.joinedEventHistory,id: \._id){ event in
               VStack(alignment:.center,spacing: 12){
                 EventRow(event: event)
                   .onTapGesture {
                     appCoordinator.push(.eventDetailView(named: event))
                   }
+                
               }
               
+            }
+            } else {
+              noEvents
+            }
+          } else {
+            if viewModel.joinedEventHistory.count != 0 {
+              ForEach(viewModel.hostedEventHistory,id: \._id){ event in
+                VStack(alignment:.center,spacing: 12){
+                  EventRow(event: event)
+                    .onTapGesture {
+                      appCoordinator.push(.eventDetailView(named: event))
+                    }
+                }
+                
+              }
+            } else {
+              noEvents
             }
           }
       }
     .padding(.horizontal)
-    }
+    
   }
+    .onAppear {
+      showHostingView = false
+    }
     .onChange(of: viewModel.errorMessage, { _, _ in
       showErrorMessage = true
     })
-      .onAppear {
-        if let userId = KeychainManager.shared.keychain.get("appUserId"), let token = TokenManager.share.getToken() {
-          print("user id is \(userId)")
-          viewModel.getJoinedEventHistory(id: userId,token: token)
-          viewModel.getOrganizedEventHistory(id: userId, token: token)
-        }
-      }
+  
+  
     }
 }
 
-#Preview {
-  EventHistory(viewModel: EventHistoryViewModel())
+
+extension EventHistory {
+  private var noEvents: some View {
+    ZStack {
+      Color.white
+      VStack(alignment:.center,spacing: 12){
+        Image(systemName: "calendar.badge.exclamationmark")
+          .resizable()
+          .scaledToFit()
+          .frame(width:60,height: 60)
+        Text("No Activities Yet")
+          .font(.subheadline)
+          .fontWeight(.medium)
+      }
+    }
+  }
 }

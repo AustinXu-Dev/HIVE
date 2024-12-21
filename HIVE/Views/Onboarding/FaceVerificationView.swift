@@ -72,6 +72,7 @@ struct FaceVerificationView: View {
         signupVM.verificationImageUrl = ""
         
         signupVM.signUp()
+        appCoordinator.popToRoot()
     }
     
     func formatDate(_ date: Date, format: String = "yyyy-MM-dd") -> String {

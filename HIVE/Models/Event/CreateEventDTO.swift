@@ -41,6 +41,6 @@ struct CreatedEventModel : Codable, Hashable {
 //    let participants : [ParticipantModel]?
     let participants : [String]?
     let isPrivate: Bool
-    let pendingParticipants: [ParticipantModel]?
+  let pendingParticipants: [UserModel]?
     let organizer : String?
 }

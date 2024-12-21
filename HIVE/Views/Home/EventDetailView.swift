@@ -9,9 +9,11 @@ import SwiftUI
 import Kingfisher
 
 struct EventDetailView: View {
-    let event : EventModel
+    var event : EventModel
+    @EnvironmentObject private var eventsVM : GetEventsViewModel
     
     @State private var isCategoryExpanded: Bool = false
+    
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject private var joinEventVM = JoinEventViewModel()
     @State private var eventAlreadyJoined : Bool = false
@@ -56,10 +58,10 @@ struct EventDetailView: View {
                         
                         HStack(spacing: 20) {
                             Spacer()
-                            ParticipantView(event: event)
+                            ParticipantView(event: eventsVM.currentEvent!)
                                 .onTapGesture {
                                     if userAppState != AppState.guest.rawValue {
-                                        appCoordinator.push(.eventAttendeeView(named: event))
+                                        appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
                                     } else {
                                         showCreateAccountAlert = true
                                     }
@@ -93,7 +95,7 @@ struct EventDetailView: View {
                         .onTapGesture {
                             if userAppState != AppState.guest.rawValue {
                                 if let eventOrganizer = event.organizer {
-                                    appCoordinator.push(.organizerProfile(named: eventOrganizer))
+                                  appCoordinator.push(.socialProfile(user: eventOrganizer))
                                 }
                             } else {
                                 showCreateAccountAlert = true
@@ -127,8 +129,12 @@ struct EventDetailView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
-                                Text(event.isPrivate ?? false ? "Private, \(event.minAge ?? 18)+" : "Public, \(event.minAge ?? 18)+")
-                                    .font(CustomFont.detail)
+                                Text(
+                                    event.isPrivate ?? false
+                                        ? "Private" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
+                                        : "Public" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
+                                )
+                                .font(CustomFont.detail)
                             }
                         }
                         
@@ -148,7 +154,7 @@ struct EventDetailView: View {
                         
                         
                         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"),
-                           currentUserId != event.organizer?.userid && userAppState == AppState.signedIn.rawValue {
+                           currentUserId != event.organizer?._id && userAppState == AppState.signedIn.rawValue {
                             
                             VStack(alignment:.center) {
                                 Spacer()
@@ -227,6 +233,9 @@ struct EventDetailView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+            .refreshable {
+                eventsVM.getOneEvent(id: event._id)
+            }
             
             
         }
@@ -249,8 +258,8 @@ struct EventDetailView: View {
     func eventAlreadyJoinedOrNot()  {
         guard let currentUserId = KeychainManager.shared.keychain.get("appUserId") else { return }
         profileVM.getOneUserAndCheckAge(id: currentUserId, eventMinAge: event.minAge ?? 0)
-        self.eventAlreadyJoined = self.event.participants?.contains(where: { $0.userid == currentUserId }) ?? false
-        self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0.userid == currentUserId }) ?? false
+      self.eventAlreadyJoined = self.event.participants?.contains(where: { $0._id == currentUserId }) ?? false
+      self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0._id == currentUserId }) ?? false
         
     }
     

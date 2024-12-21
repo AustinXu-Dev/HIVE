@@ -10,7 +10,9 @@ import Kingfisher
 
 
 struct EventAttendeeView: View {
-    let event : EventModel
+    @State var event : EventModel
+    @EnvironmentObject private var eventsVM : GetEventsViewModel
+
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @StateObject var kickParticipantVM = KickParticipantViewModel()
     @State var showAlert = false
@@ -19,7 +21,7 @@ struct EventAttendeeView: View {
         VStack {
             Divider()
             
-            List(event.participants ?? [], id: \.userid) { participant in
+            List(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
                 HStack {
                     KFImage(URL(string: participant.profileImageUrl ?? ""))
                         .resizable()
@@ -28,7 +30,8 @@ struct EventAttendeeView: View {
                         .clipShape(Circle())
                     
                     VStack(alignment: .leading) {
-                        Text(participant.name ?? "Unknown")
+                      Text(participant.name ?? "Unknown")
+
                             .font(CustomFont.attendeeTitle)
                         
                         Text(participant.bio ?? "")
@@ -50,7 +53,8 @@ struct EventAttendeeView: View {
                         .buttonStyle(.borderedProminent)
                         .alert("Are you sure you want to kick?", isPresented: $showAlert, actions: {
                             Button("OK", role: .cancel) {
-                                kickAction(eventId: event._id, participantId: participant.userid ?? "")
+                              kickAction(eventId: event._id, participantId: participant._id ?? "")
+
                             }
                             Button("Cancel", role: .destructive) { }
                         })
@@ -62,7 +66,8 @@ struct EventAttendeeView: View {
                 .padding(.vertical, 8)
                 .background(Color.white.opacity(0.000001))
                 .onTapGesture {
-                    appCoordinator.push(.participantProfile(named: participant))
+                  appCoordinator.push(.socialProfile(user: participant))
+
                 }
             }
             .listStyle(PlainListStyle())
@@ -91,8 +96,8 @@ struct EventAttendeeView: View {
             
             ToolbarItem(placement: .primaryAction) {
                 
-                if let eventParticipants = event.participants {
-                    Text("\(eventParticipants.count) / \(event.maxParticipants)")
+                if let eventParticipants = eventsVM.currentEvent?.participants {
+                    Text("\(eventParticipants.count) / \(eventsVM.currentEvent?.maxParticipants ?? 0)")
                         .foregroundColor(.gray)
                         .bold()
                 }
@@ -101,9 +106,14 @@ struct EventAttendeeView: View {
         }
 
         .alert("Alert",isPresented: $kickParticipantVM.kickSuccess) {
-            Button("OK", role: .cancel) { }
+            Button("OK", role: .cancel) {
+                eventsVM.getOneEvent(id: event._id)
+            }
         } message: {
             Text(kickParticipantVM.successMessage ?? "")
+        }
+        .refreshable {
+            eventsVM.getOneEvent(id: event._id)
         }
         
         .navigationBarBackButtonHidden()
@@ -115,7 +125,8 @@ struct EventAttendeeView: View {
     
     func checkOrganizer() -> Bool{
         if let currentUserId = KeychainManager.shared.keychain.get("appUserId"){
-            return currentUserId == event.organizer?.userid
+          return currentUserId == event.organizer?._id
+
         } else {
             return false
         }

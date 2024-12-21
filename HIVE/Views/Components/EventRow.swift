@@ -16,15 +16,15 @@ struct EventRow: View {
             .resizable()
             .frame(width: 75,height: 75)
             .aspectRatio(contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 20))
+            .clipShape(RoundedRectangle(cornerRadius: 16))
         
         VStack(alignment:.leading,spacing:12){
           Text(event.name)
-            .font(CustomFont.eventRowEventTitle)
+                .heading5()
           HStack {
             if let eventDate = Date.stringToDate(event.startDate){
               Text(eventDate.toDayMonthYearString())
-                .font(CustomFont.eventRowEventDate)
+                    .heading7()
             }
             
             Spacer()

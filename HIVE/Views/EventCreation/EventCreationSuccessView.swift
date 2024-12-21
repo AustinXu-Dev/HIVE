@@ -36,6 +36,7 @@ struct EventCreationSuccessView: View {
             
             Button {
                 appCoordinator.popToRoot()
+                appCoordinator.setSelectedTab(index: .home)
             } label: {
                 Text("Done")
                     .font(CustomFont.onBoardingButtonFont)

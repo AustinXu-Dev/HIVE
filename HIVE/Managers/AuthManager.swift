@@ -11,6 +11,7 @@ final class AuthenticationManager {
   var isWaitingForVerification: Bool = false
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
   @ObservedObject var getAllUserVM = GetAllUsersViewModel()
+  var showAlert: Bool = false
   private init(){}
   
   
@@ -18,7 +19,7 @@ final class AuthenticationManager {
     print("sign up invoked")
     do {
       try await Auth.auth().createUser(withEmail: email, password: password)
-      try await sendEmailVerification()
+//      try await sendEmailVerification()
       print("sign up invoke success")
     } catch {
       throw error
@@ -86,6 +87,7 @@ final class AuthenticationManager {
   func sendEmailVerification() async throws {
     do {
       try await Auth.auth().currentUser?.sendEmailVerification()
+      showAlert = true
       isWaitingForVerification = true
       //wait agani for 3 mins
       try await waitForEmailVerification()

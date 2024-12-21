@@ -60,10 +60,10 @@ struct TestView: View {
         
         
       }
-      .onAppear(perform: {
-        
-        onGoingEventViewModel.getOrganizingEventsOfUser(userId: "672cf4df04f76de99c562ee5", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmNmNGRmMDRmNzZkZTk5YzU2MmVlNSIsImlhdCI6MTczMzAzNTA1MiwiZXhwIjoxNzMzMTIxNDUyfQ.RgH7J6fE1gGxeZOjVAWhH0GkuuzdSREKu9csfuxBOJ8")
-      })
+//      .onAppear(perform: {
+//        
+//        onGoingEventViewModel.getOrganizingEventsOfUser(userId: "672cf4df04f76de99c562ee5", token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MmNmNGRmMDRmNzZkZTk5YzU2MmVlNSIsImlhdCI6MTczMzAzNTA1MiwiZXhwIjoxNzMzMTIxNDUyfQ.RgH7J6fE1gGxeZOjVAWhH0GkuuzdSREKu9csfuxBOJ8")
+//      })
       .onChange(of: viewModel.manageSuccessful) { _, result in
         if result {
           status = "Success"
@@ -81,11 +81,11 @@ struct TestView: View {
 
 
 struct PendingParticipantsView: View {
-  let participants: [PendingParticipantModel]
+  let participants: [UserModel]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            ForEach(participants, id: \.userid) { participant in
+            ForEach(participants, id: \._id) { participant in
                 VStack(alignment: .leading, spacing: 10) {
                     Text(participant.name ?? "")
                         .font(.headline)

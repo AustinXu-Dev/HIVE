@@ -14,8 +14,8 @@ struct ParticipantView: View {
         HStack {
             HStack(spacing:-12) {
                 if let eventParticipants = event.participants {
-                    ForEach(eventParticipants.prefix(5),id: \.userid){ event in
-                        KFImage(URL(string: event.profileImageUrl ?? ""))
+                  ForEach(eventParticipants.prefix(5),id: \._id){ user in
+                        KFImage(URL(string: user.profileImageUrl ?? ""))
                             .resizable()
                             .aspectRatio(contentMode: .fill)
                             .frame(width:28,height: 28)
@@ -37,11 +37,9 @@ struct ParticipantView: View {
             }
             if let eventParticipants = event.participants {
                 Text("\(eventParticipants.count) / \(event.maxParticipants)")
-                    .font(CustomFont.eventBodyStyle)
+                    .light7()
             }
     }
-       
-      
 
     }
 }
