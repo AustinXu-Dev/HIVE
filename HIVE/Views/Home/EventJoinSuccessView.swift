@@ -29,11 +29,12 @@ struct EventJoinSuccessView: View {
             
             VStack(spacing: 8) {
                 Text(isPrivate ? "Request Sent!" : "You're in!")
-                    .font(CustomFont.successTitle)
+                  .heading1()
+                  .foregroundStyle(Color.black)
 
                 Text(isPrivate ? "Wait for the organizer to approve your request." : "Get ready for a great time.")
-                    .font(CustomFont.successSubtitle)
-                    .foregroundColor(.secondary)
+                    .body6()
+                    .foregroundColor(Color.black)
             }
             
             if isPrivate == true {
@@ -46,8 +47,8 @@ struct EventJoinSuccessView: View {
                 appCoordinator.popToRoot()
             } label: {
                 Text("Explore more")
-                    .font(CustomFont.onBoardingButtonFont)
-                    .foregroundColor(.gray)
+                  .body3()
+                  .foregroundColor(.black.opacity(0.5))
                     .padding(.bottom, 30)
             }
         }
