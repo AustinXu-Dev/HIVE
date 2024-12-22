@@ -43,6 +43,11 @@ extension View{
     func heading5() -> some View{
         self.modifier(CustomFontModifier(font: .custom(LatoFont.boldFont, size: 20)))
     }
+  
+  func heading5half() -> some View{
+      self.modifier(CustomFontModifier(font: .custom(LatoFont.boldFont, size: 18)))
+  }
+  
     
     func heading6() -> some View{
         self.modifier(CustomFontModifier(font: .custom(LatoFont.boldFont, size: 16)))

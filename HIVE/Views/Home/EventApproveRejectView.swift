@@ -75,15 +75,16 @@ struct PendingParticipantRow: View {
                     
                     VStack(alignment: .leading) {
                         Text("\(participant.name ?? "")")
-                            .bold()
-                            .font(CustomFont.pendingParticipantBoldText)
+                          .heading5()
+                          .foregroundStyle(Color.black)
                         +
                         Text(" wants to join ")
-                            .font(CustomFont.pendindParticipantText)
+                          .body5()
+                          .foregroundStyle(Color.black)
                         +
                       Text("\(event.name)")
-                            .bold()
-                            .font(CustomFont.pendingParticipantBoldText)
+                        .heading5()
+                        .foregroundStyle(Color.black)
                         
                         HStack(spacing: 10) {
                           if let participantId = participant._id {
@@ -91,7 +92,7 @@ struct PendingParticipantRow: View {
                                   handleApproveAction(eventId: event._id, participantId: participantId, action: .approve)
                                 } label: {
                                     Text(participantActions[participantId] == .approve ? "Accepted" : "Accept")
-                                        .font(.system(size: 14, weight: .bold))
+                                        .heading6()
                                         .foregroundColor(.white)
                                         .frame(width: 146, height: 41)
                                         .background(Color("approveColor"))
@@ -105,7 +106,7 @@ struct PendingParticipantRow: View {
                                   handleApproveAction(eventId: event._id, participantId: participantId, action: .reject)
                                 } label: {
                                     Text(participantActions[participantId] == .reject ? "Removed" : "Remove")
-                                        .font(.system(size: 14, weight: .bold))
+                                        .heading6()
                                         .foregroundColor(.black)
                                         .frame(width: 146, height: 41)
                                         .background(Color("rejectColor"))

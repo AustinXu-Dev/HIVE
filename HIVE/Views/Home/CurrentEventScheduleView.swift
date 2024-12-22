@@ -55,8 +55,7 @@ extension CurrentEventScheduleView {
     HStack {
       VStack(alignment:.center,spacing: 4){
         Text("Upcoming")
-          .bold()
-          .font(.headline)
+          .heading5()
           .onTapGesture {
             withAnimation(.interactiveSpring) {
               showHosting.toggle()
@@ -70,8 +69,7 @@ extension CurrentEventScheduleView {
      
       VStack(alignment:.center,spacing:4){
         Text("Hosting")
-          .bold()
-          .font(.headline)
+          .heading5()
           .onTapGesture {
             withAnimation(.interactiveSpring) {
               showHosting.toggle()
@@ -136,7 +134,7 @@ struct RelatedTimeFrameEvents: View {
   var body: some View {
     VStack(alignment: .leading, spacing: 24) {
       Text(timeFilter.rawValue)
-        .bold()
+        .heading5half()
       let filteredHostingEvents = viewModel.organizingEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
       let filteredJoiningEvents = viewModel.joiningEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
 //      if filteredHostingEvents.count != 0 || filteredJoiningEvents.count != 0 {

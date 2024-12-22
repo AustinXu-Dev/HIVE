@@ -15,11 +15,11 @@ struct CurrentEventRow: View {
           let formattedText = eventDate.toDayMonthString().split(separator: " ")
           VStack(alignment: .center, spacing: 6) {
             Text("\(formattedText.first ?? "")")
-              .fontWeight(.semibold)
-              .font(.subheadline)
+              .heading3()
             Text("\(formattedText.last ?? "")")
-              .font(.caption)
+              .heading5()
           }
+          .foregroundStyle(.black)
           
             .multilineTextAlignment(.center)
             .frame(maxHeight: 40)
@@ -30,11 +30,11 @@ struct CurrentEventRow: View {
         }
         VStack(alignment:.leading,spacing: 6) {
           Text(event.name)
-            .bold()
-            .font(.subheadline)
+            .heading5()
+            .foregroundStyle(Color.black)
           HStack {
             Text(event.location)
-              .font(.caption)
+              .heading6()
               .foregroundStyle(Color.black.opacity(0.65))
             Spacer()
             ParticipantView(event: event)

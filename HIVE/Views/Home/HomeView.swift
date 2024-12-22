@@ -70,7 +70,7 @@ struct HomeView: View {
         VStack(alignment: .leading) {
             HStack {
                 Text("Explore")
-                    .font(CustomFont.profileTitle)
+                    .heading5()
                     .fontWeight(.bold)
                     .padding(.horizontal)
                     .frame(alignment: .leading)
@@ -192,7 +192,7 @@ extension HomeView {
     private var accountCreationButton: some View {
         VStack {
             Text("Ready to Connect?")
-                .bold()
+            .heading4()
             Button {
                 userAppState =  AppState.notSignedIn.rawValue
             } label: {
@@ -200,7 +200,7 @@ extension HomeView {
             }
             
             Text("To join or host your own!")
-                .bold()
+              .body5()
         }
     }
 }

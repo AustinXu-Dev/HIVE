@@ -34,7 +34,7 @@ struct EventCard: View {
                         if let eventDate = Date.stringToDate(event.startDate) {
                             Text(eventDate.toDayMonthString())
                                 .foregroundStyle(Color.black)
-                                .font(.system(.caption))
+                                .heading6()
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal,8)
                         }
@@ -61,16 +61,21 @@ struct EventCard: View {
                             
                             
                             VStack(alignment:.leading,spacing:4){
+                              HStack(spacing:2) {
+                                Text(event.name)
+                                  .heading3()
                                 if let startTime = event.startTime.to12HourFormat() {
-                                    Text("\(event.name) - \(startTime)")
-                                        .foregroundStyle(Color.black)
-                                        .font(CustomFont.eventTitleStyle)
-                                        .lineLimit(2)
+                                  Text("- \(startTime)")
+                                    .heading5()
+                                    .lineLimit(2)
                                 }
+                                }
+                              .foregroundStyle(Color.black)
+
                                 HStack {
                                     Text(event.location)
-                                        .foregroundStyle(Color.black)
-                                        .font(CustomFont.eventSubtitleStyle)
+                                    .foregroundStyle(Color.black.opacity(0.63))
+                                        .heading6()
                                     Spacer()
                                     ParticipantView(event: event)
                                 }
