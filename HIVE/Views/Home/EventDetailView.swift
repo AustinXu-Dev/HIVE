@@ -42,41 +42,54 @@ struct EventDetailView: View {
                         KFImage(URL(string: event.eventImageUrl))
                             .resizable()
                             .aspectRatio(contentMode: .fill)
-                            .frame(width: UIScreen.main.bounds.width * 0.90)
+                            .frame(width: UIScreen.main.bounds.width * 0.90,alignment: .center)
                             .frame(height: 230)
                             .cornerRadius(10)
                         
                         
                         Text(event.name)
-                            .font(CustomFont.eventTitleStyle)
-                            .fontWeight(.bold)
+                            .heading2()
+                            .foregroundStyle(Color.black)
                         
                         HStack {
                             eventCategories
+                          HStack(spacing: 20) {
+                              Spacer()
+                              ParticipantView(event: eventsVM.currentEvent!)
+                                  .onTapGesture {
+                                      if userAppState != AppState.guest.rawValue {
+                                          appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
+                                      } else {
+                                          showCreateAccountAlert = true
+                                      }
+                                  }
+                          }
+                          .frame(alignment: .trailing)
                         }
                         
                         
-                        HStack(spacing: 20) {
-                            Spacer()
-                            ParticipantView(event: eventsVM.currentEvent!)
-                                .onTapGesture {
-                                    if userAppState != AppState.guest.rawValue {
-                                        appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
-                                    } else {
-                                        showCreateAccountAlert = true
-                                    }
-                                }
-                        }
-                        .frame(alignment: .trailing)
+//                        HStack(spacing: 20) {
+//                            Spacer()
+//                            ParticipantView(event: eventsVM.currentEvent!)
+//                                .onTapGesture {
+//                                    if userAppState != AppState.guest.rawValue {
+//                                        appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
+//                                    } else {
+//                                        showCreateAccountAlert = true
+//                                    }
+//                                }
+//                        }
+//                        .frame(alignment: .trailing)
                         
                         
                         Text(event.additionalInfo)
-                            .font(CustomFont.eventBodyStyle)
+                          .body8()
+                          .foregroundStyle(Color.black)
                         
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Host")
-                                .font(CustomFont.eventSubtitleStyle)
-                                .fontWeight(.semibold)
+                            .heading6()
+                            .foregroundStyle(Color.black.opacity(0.6))
                             HStack {
                                 if let eventOrganizer = event.organizer {
                                     KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
@@ -85,10 +98,12 @@ struct EventDetailView: View {
                                         .clipShape(Circle())
                                     VStack(alignment: .leading) {
                                         Text(eventOrganizer.name ?? "Organizer")
-                                            .font(CustomFont.hostTitle)
+                                          .heading7()
                                         Text(eventOrganizer.bio ?? "")
-                                            .font(CustomFont.hostDescription)
+                                          .body8()
                                     }
+                                    .foregroundStyle(Color.black)
+
                                 }
                             }
                         }
@@ -104,24 +119,29 @@ struct EventDetailView: View {
                         }
                         VStack(alignment: .leading, spacing: 8) {
                             Text("Details")
-                                .font(CustomFont.eventSubtitleStyle)
-                                .fontWeight(.semibold)
+                            .heading6()
+                            .foregroundStyle(Color.black.opacity(0.6))
                             HStack {
                                 Image("location")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
+                                    .foregroundStyle(Color.gray)
                                 Text(event.location)
-                                    .font(CustomFont.detail)
+                                .heading8()
+                                .foregroundStyle(Color.black)
                             }
                             HStack {
                                 Image("duration")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
+                                    .foregroundStyle(Color.gray)
                                 if let eventStartDate = event.startDate.formatDateString(), let startTime = event.startTime.to12HourFormat(), let endTime = event.endTime.to12HourFormat() {
                                     Text("\(eventStartDate), \(startTime) - \(endTime)")
-                                        .font(CustomFont.detail)
+                                    .heading8()
+                                    .foregroundStyle(Color.black)
+                                  
                                 }
                             }
                             HStack {
@@ -129,12 +149,14 @@ struct EventDetailView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width:22,height:22)
+                                    .foregroundStyle(Color.gray)
                                 Text(
                                     event.isPrivate ?? false
                                         ? "Private" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
                                         : "Public" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
                                 )
-                                .font(CustomFont.detail)
+                                .heading8()
+                                .foregroundStyle(Color.black)
                             }
                         }
                         
@@ -174,7 +196,7 @@ struct EventDetailView: View {
                                             .frame(width: 200, height: 60)
                                             .overlay {
                                                 Text(getButtonText())
-                                                    .font(.system(size: 24, weight: .bold))
+                                                  .heading4()
                                                     .foregroundColor(.black)
                                                     .frame(width: 200, height: 60)
                                                     .background(Color.white)
@@ -295,7 +317,7 @@ extension EventDetailView {
                 
                 Text(category)
                     .foregroundColor(.black)
-                    .font(CustomFont.eventSubtitleStyle)
+                    .body6()
                     .padding(.vertical, 6)
                     .padding(.horizontal, 14)
                     .overlay(

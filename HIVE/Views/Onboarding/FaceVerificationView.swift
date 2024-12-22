@@ -30,11 +30,11 @@ struct FaceVerificationView: View {
                 .padding(.bottom, 20)
             
             Text("Stand Out & Get Noticed!")
-                .font(CustomFont.faceIdViewBoldText)
+                .heading5()
                 .padding(.bottom, 10)
             
             Text("Verified profiles are more trusted and get more attention.")
-                .font(CustomFont.faceIdViewBodyText)
+                .body4()
                 .multilineTextAlignment(.center)
                 .lineLimit(2)
             

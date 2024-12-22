@@ -10,6 +10,7 @@ import SwiftUI
 struct ReusableAccountCreationButton: View {
     var body: some View {
       Text("Create an Account")
+          .heading6()
           .foregroundStyle(.white)
           .padding(10)
           .background(Color.black)

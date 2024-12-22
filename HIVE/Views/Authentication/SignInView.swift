@@ -125,10 +125,10 @@ extension SignInView {
         VStack {
             Text("Welcome to Hive!")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(CustomFont.onBoardingTitle)
+                .heading1()
             Text("Discover new friends and Bangkok's best spots.")
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .font(CustomFont.onBoardingDescription)
+                .body7()
         }
     }
     
@@ -151,7 +151,7 @@ extension SignInView {
                     }
                 } label: {
                     Text("Resend verification mail")
-                        .font(.caption)
+                        .heading9()
                         .foregroundStyle(Color.blue)
                 }
             }
@@ -160,7 +160,7 @@ extension SignInView {
                 showAlert = true
             } label: {
                 Text("Forgot password?")
-                    .font(.caption)
+                    .heading9()
                     .foregroundStyle(Color.black)
             }
         }
@@ -180,7 +180,7 @@ extension SignInView {
             }
         } label: {
             Text("Sign up/Log in")
-                .font(.headline)
+                .heading5()
                 .bold()
                 .frame(maxWidth: .infinity)
                 .foregroundStyle(Color.white)
@@ -200,7 +200,7 @@ extension SignInView {
                 .frame(maxWidth: .infinity)
                 .frame(height:1)
             Text("Or")
-                .font(.headline)
+                .body4()
                 .fontWeight(.medium)
             Rectangle()
                 .frame(maxWidth: .infinity)
@@ -214,7 +214,7 @@ extension SignInView {
         } label: {
             Text("Browse First")
                 .underline(true, color: .black)
-                .font(CustomFont.onBoardingButtonFont)
+                .body4()
         }.foregroundStyle(.black)
             .padding(.bottom, 20)
     }
