@@ -430,7 +430,7 @@ extension EventCreationView {
                             invalidFields.remove("title")
                         }
                         
-                        if newEventName.count > 50 {
+                        if newEventName.count > 40 {
                             invalidFields.insert("invalidTitle")
                         } else {
                             invalidFields.remove("invalidTitle")
@@ -445,7 +445,7 @@ extension EventCreationView {
                 .animation(.linear(duration: 0.001), value: invalidFields.contains("title") || invalidFields.contains("invalidTitle") )
             
             if invalidFields.contains("invalidTitle") {
-                Text("Char Limit - Only Up to 50")
+                Text("Char Limit - Only Up to 40")
                     .font(.system(size:12))
                     .foregroundStyle(Color.red)
                     .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidTitle"))
@@ -484,7 +484,7 @@ extension EventCreationView {
                             invalidFields.remove("location")
                         }
                         
-                        if newEventLocation.count > 30 {
+                        if newEventLocation.count > 50 {
                             invalidFields.insert("invalidLocation")
                         } else {
                             invalidFields.remove("invalidLocation")
@@ -499,7 +499,7 @@ extension EventCreationView {
                 .animation(.linear(duration: 0.001), value: invalidFields.contains("location") || invalidFields.contains("invalidLocation"))
             
             if invalidFields.contains("invalidLocation") {
-                Text("Char Limit - Only Up to 30")
+                Text("Char Limit - Only Up to 50")
                     .font(.system(size:12))
                     .foregroundStyle(Color.red)
                     .animation(.linear(duration: 0.001), value: invalidFields.contains("invalidLocation"))

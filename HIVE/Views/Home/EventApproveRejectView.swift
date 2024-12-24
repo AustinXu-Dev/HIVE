@@ -16,7 +16,7 @@ struct EventApproveRejectView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     ForEach(organizingEventsVM.organizingPrivateEvents, id: \._id) { event in
-                        PendingParticipantRow(event: event)
+                        PendingParticipantRow(event: event, pendingParticipants: event.pendingParticipants ?? [])
                             .environmentObject(manageEventViewModel)
                     }
                 }
@@ -52,12 +52,13 @@ struct EventApproveRejectView: View {
 
 struct PendingParticipantRow: View {
     let event: EventModel
+    let pendingParticipants: [UserModel]
     @EnvironmentObject var manageEventViewModel: ManageEventViewModel
     @State private var participantActions: [String: manageAction] = [:] // Track actions by participant ID
 
     var body: some View {
         VStack {
-          ForEach(event.pendingParticipants ?? [], id: \._id) { participant in
+          ForEach(pendingParticipants, id: \._id) { participant in
                 HStack(spacing: 12) {
                     if let imageUrl = participant.profileImageUrl, let url = URL(string: imageUrl) {
                         KFImage(url)
@@ -74,18 +75,19 @@ struct PendingParticipantRow: View {
                     }
                     
                     VStack(alignment: .leading) {
-                        Text("\(participant.name ?? "")")
-                          .heading5()
-                          .foregroundStyle(Color.black)
-                        +
-                        Text(" wants to join ")
-                          .body5()
-                          .foregroundStyle(Color.black)
-                        +
-                      Text("\(event.name)")
-                        .heading5()
-                        .foregroundStyle(Color.black)
-                        
+                        HStack{
+                            Text("\(participant.name ?? "")")
+                                .heading5()
+                                .foregroundStyle(Color.black)
+                            
+                            Text(" wants to join ")
+                                .body5()
+                                .foregroundStyle(Color.black)
+                            
+                            Text("\(event.name)")
+                                .heading5()
+                                .foregroundStyle(Color.black)
+                        }
                         HStack(spacing: 10) {
                           if let participantId = participant._id {
                                 Button {

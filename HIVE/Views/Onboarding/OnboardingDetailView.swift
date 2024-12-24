@@ -158,7 +158,7 @@ struct OnboardingDetailView: View {
                 .body5()
                 .lineLimit(4, reservesSpace: true)
                 .background(Color.clear)
-                .limitInputLength(value: $viewModel.bio, length: 60)
+                .limitInputLength(value: $viewModel.bio, length: 100)
                 .focused($isFocused)
             }
             .padding()
