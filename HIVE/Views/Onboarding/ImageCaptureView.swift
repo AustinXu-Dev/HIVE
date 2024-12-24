@@ -98,6 +98,17 @@ struct ImageCaptureView: View {
         } message: {
             Text("Click ok to upload image to the admin.")
         }
+        
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Back"){
+                    appCoordinator.pop()
+                }
+                .body6()
+                .foregroundStyle(.black)
+            }
+        }
     }
     
     func initialize(with image: UIImage) {

@@ -32,6 +32,19 @@ struct OnboardingView: View {
     var body: some View {
         ZStack{
             VStack{
+                HStack {
+                    Button("Back") {
+                        if currentStep > 0 {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                currentStep -= 1
+                            }
+                        }
+                    }
+                    .body6()
+                    .foregroundStyle(.black)
+                    Spacer()
+                }
+                .padding(.bottom, 10)
                 BarProgressView(steps: onboardingSteps.count, currentStep: $currentStep)
                 OnboardingDetailView(onboardingSteps: onboardingSteps, currentStep: currentStep, viewModel: viewModel, isFocused: $isFocused)
                 Spacer()
