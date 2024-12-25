@@ -138,8 +138,14 @@ extension SignInView {
                 isNew = isNewUser
             }
         } label: {
-            Image("continue_with_google")
+            Image("continue_with_google_text")
+                .padding(.vertical, 6)
         }
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 30)
+        )
+
     }
     
     private var forgetPasswordButton: some View {

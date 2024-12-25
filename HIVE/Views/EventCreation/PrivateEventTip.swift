@@ -9,6 +9,7 @@ import Foundation
 import TipKit
 
 struct PrivateEventTip: Tip{
+    
     var title: Text {
         Text("Make your event private")
     }

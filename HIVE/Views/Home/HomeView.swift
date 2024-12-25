@@ -39,9 +39,9 @@ struct HomeView: View {
         .refreshable {
           eventsVM.fetchEvents()
         }
-        .onChange(of: eventsVM.currentEvent, {
-            eventsVM.fetchEvents()
-        })
+//        .onChange(of: eventsVM.currentEvent, {
+//            eventsVM.fetchEvents()
+//        })
         .navigationBarBackButtonHidden()
         .toolbar(.hidden)
         .onAppear {
@@ -180,11 +180,6 @@ extension HomeView {
                     appCoordinator.push(.eventSchedule)
                   }
               }
-              
-            
-            
-           
-          
         }
         .frame(maxWidth: .infinity,alignment: .center)
     }

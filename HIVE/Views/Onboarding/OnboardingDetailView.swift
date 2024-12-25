@@ -25,6 +25,8 @@ struct OnboardingDetailView: View {
   @State private var isPickerPresented = false
   @State private var isUploading = false
   @FocusState.Binding var isFocused: Bool
+    
+  @State private var previousStep = 0
   
   var body: some View {
     VStack(alignment: .leading){
@@ -158,7 +160,7 @@ struct OnboardingDetailView: View {
                 .body5()
                 .lineLimit(4, reservesSpace: true)
                 .background(Color.clear)
-                .limitInputLength(value: $viewModel.bio, length: 60)
+                .limitInputLength(value: $viewModel.bio, length: 100)
                 .focused($isFocused)
             }
             .padding()
@@ -174,20 +176,16 @@ struct OnboardingDetailView: View {
   
     .frame(maxWidth: .infinity)
     .id(currentStep)
-    .transition(.asymmetric(insertion: .move(edge: .leading), removal: .move(edge: .trailing)))
-    .animation(.linear, value: currentStep)
-    .onTapGesture {
-      if currentStep != 3 {
-        self.hideKeyboard()
-        print("keyboard hide")
-        isFocused = false
-      }
-    }
-    .onChange(of: isFocused) { _, _ in
-//        if oldValue != newValue{
-//            UIApplication.shared.endEditing()
-//        }
-    }
+    .transition(
+        .asymmetric(
+            insertion: .opacity.combined(with: .move(edge: currentStep > previousStep ? .trailing : .leading)),
+            removal: .opacity.combined(with: .move(edge: currentStep < previousStep ? .trailing : .leading))
+        )
+    )
+    .animation(.easeInOut(duration: 0.3), value: currentStep)
+    .onChange(of: currentStep, { oldValue, newValue in
+        previousStep = newValue
+    })
     
   }
 }

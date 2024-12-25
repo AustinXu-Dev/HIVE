@@ -23,6 +23,7 @@ struct EventDetailView: View {
     @State private var currentId: String = ""
     @State private var showAgeRestrictionAlert = false
     @State private var isUnderage: Bool = false
+  @State private var userIsApproved: Bool = false
     
     @StateObject var profileVM = GetOneUserByIdViewModel()
         
@@ -121,16 +122,20 @@ struct EventDetailView: View {
                             Text("Details")
                             .heading6()
                             .foregroundStyle(Color.black.opacity(0.6))
-                            HStack {
-                                Image("location")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width:22,height:22)
-                                    .foregroundStyle(Color.gray)
-                                Text(event.location)
+                          HStack {
+                            Image("location")
+                              .resizable()
+                              .aspectRatio(contentMode: .fit)
+                              .frame(width:22,height:22)
+                              .foregroundStyle(Color.gray)
+                            if let isPrivate = event.isPrivate, !isPrivate {
+                              Text(event.location)
                                 .heading8()
                                 .foregroundStyle(Color.black)
+                            } else {
+                              Text(checkApproval() ? event.location : "(Available after acceptance)")
                             }
+                          }
                             HStack {
                                 Image("duration")
                                     .resizable()
@@ -152,9 +157,9 @@ struct EventDetailView: View {
                                     .foregroundStyle(Color.gray)
                                 Text(
                                     event.isPrivate ?? false
-                                        ? "Private" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
-                                        : "Public" + (event.minAge ?? 0 > 0 ? ", \(event.minAge!)+": "")
-                                )
+                                        ? "Private" + (event.minAge ?? 0 > 1 ? ", \(event.minAge!)+": "")
+                                        : "Public" + (event.minAge ?? 0 > 1 ? ", \(event.minAge!)+": "")
+                                )//(Available after acceptance)
                                 .heading8()
                                 .foregroundStyle(Color.black)
                             }
@@ -284,6 +289,15 @@ struct EventDetailView: View {
       self.hasRequestedToJoin = self.event.pendingParticipants?.contains(where: { $0._id == currentUserId }) ?? false
         
     }
+  
+  func checkApproval() -> Bool {
+    return ((event.participants?.contains(where: {$0._id == (profileVM.userDetail?._id ?? "")})) != nil)
+//    ForEach(event.participants ?? [], id: \._id){ participant in
+//      if participant._id == profileVM.userDetail?._id ?? "" {
+//        userIsApproved = true
+//      }
+//    }
+  }
     
 
 

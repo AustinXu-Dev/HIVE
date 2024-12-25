@@ -39,6 +39,7 @@ struct EventCreationSuccessView: View {
                 appCoordinator.setSelectedTab(index: .home)
             } label: {
                 Text("Done")
+                    .underline()
                     .font(CustomFont.onBoardingButtonFont)
                     .padding(.horizontal,24)
                     .padding(.vertical)
@@ -57,9 +58,10 @@ struct EventCreationSuccessView: View {
         .multilineTextAlignment(.center)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Text("HIVE")
-                .font(.largeTitle)
-                .fontWeight(.medium)
+                Image("HIVE")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width:80,height:35)
             }
         }
         .navigationBarBackButtonHidden()

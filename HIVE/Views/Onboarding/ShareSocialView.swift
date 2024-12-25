@@ -94,6 +94,7 @@ struct ShareSocialView: View {
             isFocused = false
             UIApplication.shared.endEditing()
         }
+        .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Skip"){
@@ -114,6 +115,15 @@ struct ShareSocialView: View {
                     appCoordinator.push(.faceVerification)
                 }
                 .body6()
+                .foregroundStyle(.black)
+            }
+            
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Back"){
+                    appCoordinator.pop()
+                }
+                .body6()
+                .foregroundStyle(.black)
             }
         }
     }

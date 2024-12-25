@@ -21,45 +21,68 @@ struct FaceVerificationView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @EnvironmentObject var viewModel: OnboardingViewModel
     @EnvironmentObject var googleVM: GoogleAuthenticationViewModel
+    @State private var isLoading = false
     
     var body: some View {
-        VStack{
-            Spacer()
-            
-            Image("faceId_icon")
-                .padding(.bottom, 20)
-            
-            Text("Stand Out & Get Noticed!")
-                .heading5()
-                .padding(.bottom, 10)
-            
-            Text("Verified profiles are more trusted and get more attention.")
-                .body4()
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-            
-            Spacer()
-            
-            BlackButton(text: "Verify now", color: .constant(.black)) {
-                withAnimation(.linear.delay(0.5)) {
-                    appCoordinator.push(.imageCapture)
+        ZStack{
+            VStack{
+                Spacer()
+                
+                Image("faceId_icon")
+                    .padding(.bottom, 20)
+                
+                Text("Stand Out & Get Noticed!")
+                    .heading5()
+                    .padding(.bottom, 10)
+                
+                Text("Verified profiles are more trusted and get more attention.")
+                    .body4()
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                
+                Spacer()
+                
+                BlackButton(text: "Verify now", color: .constant(.black)) {
+                    withAnimation(.linear.delay(0.5)) {
+                        appCoordinator.push(.imageCapture)
+                    }
                 }
+                .padding(.bottom, 30)
             }
-            .padding(.bottom, 30)
+            
+            if isLoading {
+                Color.black.opacity(0.5)
+                    .ignoresSafeArea()
+                
+                ProgressView("Processing...")
+                    .padding()
+                    .background(Color.white)
+                    .cornerRadius(10)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .navigationBarBackButtonHidden()
         .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Skip"){
-                        //MARK: - Post to backend without verification Image link, SignUp here
-                        skipButtonAction()
-                    }
-                    .font(CustomFont.onBoardingDescription)
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Skip"){
+                    //MARK: - Post to backend without verification Image link, SignUp here
+                    skipButtonAction()
                 }
+                .body6()
+                .foregroundStyle(.black)
+            }
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Back"){
+                    appCoordinator.pop()
+                }
+                .body6()
+                .foregroundStyle(.black)
+            }
         }
     }
     
     func skipButtonAction() -> Void{
+        isLoading = true
         signupVM.name = viewModel.name
         signupVM.dateOfBirth = formatDate(viewModel.birthday)
         signupVM.gender = viewModel.gender.rawValue
@@ -72,7 +95,10 @@ struct FaceVerificationView: View {
         signupVM.verificationImageUrl = ""
         
         signupVM.signUp()
-        appCoordinator.popToRoot()
+        DispatchQueue.main.asyncAfter(deadline: .now()+2.0){
+            isLoading = false
+            appCoordinator.popToRoot()
+        }
     }
     
     func formatDate(_ date: Date, format: String = "yyyy-MM-dd") -> String {
