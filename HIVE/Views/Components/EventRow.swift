@@ -40,8 +40,12 @@ struct EventRow: View {
       .frame(maxWidth: .infinity)
       .background {
         RoundedRectangle(cornerRadius: 20)
-          .stroke(Color.black.opacity(0.6),lineWidth:1)
-          .foregroundStyle(Color.gray.opacity(0.35))
+          .foregroundStyle(Color.gray.opacity(0.15))
+          .overlay {
+            RoundedRectangle(cornerRadius: 20)
+              .stroke(Color.black.opacity(0.6),lineWidth:1)
+              .foregroundStyle(Color.gray.opacity(0.35))
+          }
       }
      
     }

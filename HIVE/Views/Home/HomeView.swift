@@ -180,11 +180,6 @@ extension HomeView {
                     appCoordinator.push(.eventSchedule)
                   }
               }
-              
-            
-            
-           
-          
         }
         .frame(maxWidth: .infinity,alignment: .center)
     }

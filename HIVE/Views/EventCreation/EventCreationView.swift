@@ -16,7 +16,7 @@ struct EventCreationView: View {
     @State private var eventTitle: String = ""
     @State private var eventLocation: String = ""
     @State private var startDate : Date = Date()
-    @State private var endDate : Date = Date()
+    @State private var endDate : Date = (Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date())
     @State private var additionalInfo: String = ""
     @State private var selectedCategories: [String] = []
     @State private var isCategoryExpanded: Bool = false
@@ -36,7 +36,7 @@ struct EventCreationView: View {
     @State private var allowMinimumAge: Bool = false
     @State private var showRestriction: Bool = false
     @FocusState private var isFocused: Bool
-    private var privateEventTip = PrivateEventTip()
+  @State private var showPrivateEventTipAlert: Bool = false
     
     
     
@@ -55,8 +55,8 @@ struct EventCreationView: View {
             } else {
                 ScrollView {
                     VStack(spacing: 20) {
-//                        customToolbar
                         eventImage
+                        .frame(maxHeight: 200)
                         eventName
                         
                         eventVenue
@@ -108,6 +108,14 @@ struct EventCreationView: View {
                     }),
                           secondaryButton: .destructive(Text("Cancel")))
                 }
+                .alert(isPresented: $showPrivateEventTipAlert){
+                  Alert(title:  Text("Private Event")
+                        ,message:  Text("You will approve of who can attend.Location stays hidden until you approved."),
+                        dismissButton: .cancel(Text("Got it"))
+                        
+                  
+                  )
+                }
             }
         }
         .onTapGesture {
@@ -140,7 +148,7 @@ struct EventCreationView: View {
             invalidFields.insert("title")
         }
         
-        if eventTitle.count > 50 {
+        if eventTitle.count > 40 {
             invalidFields.insert("invalidTitle")
         }
         
@@ -148,7 +156,7 @@ struct EventCreationView: View {
             invalidFields.insert("location")
         }
         
-        if eventLocation.count > 30 {
+        if eventLocation.count > 50 {
             invalidFields.insert("invalidLocation")
         }
         
@@ -377,19 +385,7 @@ extension EventCreationView {
                     .cornerRadius(10)
             } else {
                 // Placeholder view when no image is selected
-                ZStack {
-                    RoundedRectangle(cornerRadius: 10)
-                        .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
-                        .fill(Color.gray.opacity(0.3))
-                        .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-                        .frame(height: 200)
-                    Circle()
-                        .frame(height: 40)
-                        .foregroundStyle(Color.black.opacity(0.5))
-                    Image(systemName: "photo")
-                        .font(.system(size: 20))
-                        .foregroundStyle(.white)
-                }
+              eventImagePlaceholder
             }
         }
         .onTapGesture {
@@ -400,6 +396,22 @@ extension EventCreationView {
         }
     }
 
+  
+  private var eventImagePlaceholder: some View {
+    ZStack {
+        RoundedRectangle(cornerRadius: 10)
+            .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
+            .fill(Color.gray.opacity(0.3))
+            .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+            .frame(height: 200)
+        Circle()
+            .frame(height: 40)
+            .foregroundStyle(Color.black.opacity(0.5))
+        Image(systemName: "photo")
+            .font(.system(size: 20))
+            .foregroundStyle(.white)
+    }
+  }
     
     private var eventName : some View {
         VStack(alignment: .center, spacing: 5) {
@@ -563,15 +575,31 @@ extension EventCreationView {
     
     private var eventRestriction: some View{
         VStack(alignment: .leading, spacing: 10) {
+          HStack {
             Toggle(isOn: $isPrivate) {
-                HStack{
-                    Text("Private")
-                        .font(CustomFont.createEventSubBody)
-                    Image(systemName: "info.circle")
-                        .popoverTip(privateEventTip)
-                }
+              HStack{
+                Text("Private")
+                  .font(CustomFont.createEventSubBody)
+                Image(systemName: "info.circle")
+                  .resizable()
+                  .aspectRatio(contentMode: .fit)
+                  .frame(width:15,height:15)
+                  .onTapGesture {
+                    showPrivateEventTipAlert.toggle()
+                  }
+                  .alert(isPresented: $showPrivateEventTipAlert){
+                    Alert(title:  Text("Private Event")
+                          ,message:  Text("You will approve of who can attend. Location stays hidden until you approved."),
+                          dismissButton: .cancel(Text("Got it"))
+                          
+                          
+                    )
+                  }
+                
+                
+              }
             }
-            
+          }
             HStack{
                 Text("Restriction")
                     .font(CustomFont.createEventSubBody)
@@ -666,6 +694,9 @@ extension EventCreationView {
             }
             Spacer()
         }
+        .onChange(of: selectedCategories) { _, _ in
+          validateCategory()
+        }
     }
 
     // Helper function to calculate rows for categories
@@ -751,7 +782,8 @@ extension EventCreationView {
             }
         }
     }
-    
+  
+
     private var publishButton: some View{
         VStack {
             Spacer()
