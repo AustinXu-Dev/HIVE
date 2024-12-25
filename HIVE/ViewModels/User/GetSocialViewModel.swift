@@ -31,33 +31,44 @@ class GetSocialViewModel: ObservableObject {
     fetchUserData(userId: userId)
   }
   
-   func fetchUserData(userId: String) {
-      let dispatchGroup = DispatchGroup()
-      incrementLoading()
-      
+  func fetchUserData(userId: String) {
+    let dispatchGroup = DispatchGroup()
+    incrementLoading()
+    
+    var followers: [UserModel] = []
+    var followings: [UserModel] = []
+    var followingsOfCurrentUser: [UserModel] = []
+     
+     
       dispatchGroup.enter()
-      getFollowingOfUser(userId: userId) {
+      getFollowingOfUser(userId: userId) { returnedFollowings in
+        followings = returnedFollowings
           dispatchGroup.leave()
       }
       
       dispatchGroup.enter()
-      getFollowersOfUser(userId: userId) {
+      getFollowersOfUser(userId: userId) { returnedFollowers in
+        followers = returnedFollowers
           dispatchGroup.leave()
       }
       
       dispatchGroup.enter()
-      getFollowingOfCurrentUser(toBeFollowedId: userId) {
+      getFollowingOfCurrentUser(toBeFollowedId: userId) { returnedFollowingsOfCurrentUser in
+        followingsOfCurrentUser = returnedFollowingsOfCurrentUser
           dispatchGroup.leave()
       }
       
       dispatchGroup.notify(queue: .main) {
+        self.followers = followers
+        self.followings = followings
+        self.followingsOfCurrentUser = followingsOfCurrentUser
           self.decrementLoading()
           print("All data fetches are complete!")
       }
   }
   
   
-  func getFollowingOfUser(userId: String, completion:  @escaping () -> ()) {
+  func getFollowingOfUser(userId: String, completion:  @escaping ([UserModel]) -> ()) {
     incrementLoading()
     let getFollowingUsecase = GetFollowingsOfUser(userId: userId)
     getFollowingUsecase.execute(getMethod: "GET") { [weak self] result in
@@ -65,23 +76,23 @@ class GetSocialViewModel: ObservableObject {
       switch result {
       case .success(let data):
         DispatchQueue.main.async {
-          self?.followings = data.following
+          completion(data.following)
         }
         print("fetch following success: \(data.following.count)")
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          completion([])
         }
         print(error.localizedDescription)
       }
     }
-    completion()
   }
   
-  func getFollowingOfCurrentUser(toBeFollowedId: String,completion:  @escaping () -> ()) {
+  func getFollowingOfCurrentUser(toBeFollowedId: String,completion:  @escaping ([UserModel]) -> ()) {
     incrementLoading()
     guard let userId = KeychainManager.shared.keychain.get("appUserId") else {
-      completion()
+      completion([])
       return
     }
     let getFollowingUsecase = GetFollowingsOfUser(userId: userId)
@@ -90,22 +101,22 @@ class GetSocialViewModel: ObservableObject {
       switch result {
       case .success(let data):
         DispatchQueue.main.async {
-          self?.followingsOfCurrentUser = data.following
+          completion(data.following)
         }
         self?.checkFollowingStatus(following: data.following,toBeFollowedId: toBeFollowedId)
         print("fetch following success: \(data.following.count)")
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          completion([])
         }
         print(error.localizedDescription)
       }
     }
-    completion()
   }
   
   
-  func getFollowersOfUser(userId: String,completion:  @escaping () -> ()) {
+  func getFollowersOfUser(userId: String,completion:  @escaping ([UserModel]) -> ()) {
     incrementLoading()
     let getFollowerUsecase = GetFollowersOfUser(userId: userId)
     getFollowerUsecase.execute(getMethod: "GET") { [weak self] result in
@@ -113,18 +124,19 @@ class GetSocialViewModel: ObservableObject {
       switch result {
       case .success(let data):
         DispatchQueue.main.async {
-          self?.followers = data.followers
+          completion(data.followers)
         }
         print("fetch followers success: \(data.followers.count)")
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          completion([])
         }
         print(error.localizedDescription)
 
       }
     }
-    completion()
+    
   }
   
   private func incrementLoading() {

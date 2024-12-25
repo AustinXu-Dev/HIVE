@@ -32,24 +32,32 @@ final class EventHistoryViewModel: ObservableObject {
      let dispatchGroup = DispatchGroup()
      incrementLoading()
      
-     dispatchGroup.enter()
-    getJoinedEventHistory(id: userId) {
-         dispatchGroup.leave()
-     }
+    
+    var joinedEvents: [EventModel] = []
+    var hostedEvents: [EventModel] = []
+
+    dispatchGroup.enter()
+    getJoinedEventHistory(id: userId) { returnedJoinedEvents in
+      joinedEvents = returnedJoinedEvents
+      dispatchGroup.leave()
+    }
      
-     dispatchGroup.enter()
-    getOrganizedEventHistory(id: userId) {
+    dispatchGroup.enter()
+    getOrganizedEventHistory(id: userId) { returnedHostedEvents in
+      hostedEvents = returnedHostedEvents
       dispatchGroup.leave()
     }
   
      
      dispatchGroup.notify(queue: .main) {
-         self.decrementLoading()
-         print("All data fetches are complete!")
+        self.joinedEventHistory = joinedEvents
+       self.hostedEventHistory = hostedEvents
+        self.decrementLoading()
+         print("All event histories fetching are complete!")
      }
  }
   
-  func getJoinedEventHistory(id: String,completion: @escaping () -> ()){
+  func getJoinedEventHistory(id: String,completion: @escaping ([EventModel]) -> ()){
     incrementLoading()
     let eventJoinHistoryUseCase = JoinedEventHistory(id: id)
     eventJoinHistoryUseCase.execute(getMethod: "GET") { [weak self] result in
@@ -59,22 +67,22 @@ final class EventHistoryViewModel: ObservableObject {
       switch result {
       case .success(let event):
         DispatchQueue.main.async {
-          self?.joinedEventHistory = event.message
+          completion(event.message)
         }
         print("event joined hisotry success")
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          completion([])
         }
         print("Get join event history ERROR OCCURED")
         print(self?.errorMessage ?? "")
       }
     }
-    completion()
   }
   
   
-  func getOrganizedEventHistory(id: String,completion: @escaping () -> ()){
+  func getOrganizedEventHistory(id: String,completion: @escaping ([EventModel]) -> ()){
     incrementLoading()
     let eventHostHistoryUsecase = OrganizedEventHistory(id: id)
     eventHostHistoryUsecase.execute(getMethod: "GET") { [weak self] result in
@@ -84,18 +92,18 @@ final class EventHistoryViewModel: ObservableObject {
       switch result {
       case .success(let event):
         DispatchQueue.main.async {
-          self?.hostedEventHistory = event.message
+          completion(event.message)
         }
         print("event hosted hisotry success")
       case .failure(let error):
         DispatchQueue.main.async {
           self?.errorMessage = error.localizedDescription
+          completion([])
         }
         print("ERROR OCCURED")
         print(self?.errorMessage ?? "")
       }
     }
-    completion()
   }
   
   private func incrementLoading() {
