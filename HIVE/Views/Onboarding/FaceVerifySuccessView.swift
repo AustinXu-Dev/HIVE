@@ -15,6 +15,8 @@ struct FaceVerifySuccessView: View {
     @EnvironmentObject var googleVM: GoogleAuthenticationViewModel
     @EnvironmentObject var signupVM: SignUpService
     
+    @State private var isLoading = false
+    
     var body: some View {
         ZStack{
             VStack{
@@ -35,6 +37,7 @@ struct FaceVerifySuccessView: View {
                 Spacer()
                 
                 BlackButton(text: "Done", color: .constant(.black)) {
+                    isLoading = true
                     viewModel.uploadVerificationIamge(uid: Auth.auth().currentUser?.uid ?? "", email: Auth.auth().currentUser?.email ?? "") {
                         print("Verification image url here: ", viewModel.verficationImageURL ?? "")
                         signupVM.name = viewModel.name
@@ -49,20 +52,36 @@ struct FaceVerifySuccessView: View {
                         signupVM.verificationImageUrl = viewModel.verficationImageURL ?? ""
                         
                         signupVM.signUp()
-                        appCoordinator.popToRoot()
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+                            isLoading = false
+                            appCoordinator.popToRoot()
+                        }
                     }
                 }
                 .padding(.bottom, 30)
             }
             
-            if viewModel.isUploading {
+            if viewModel.isUploading && isLoading{
                 Color.black.opacity(0.5)
                     .ignoresSafeArea()
                 
-                ProgressView("Uploading...")
+                ProgressView("Processing...")
                     .padding()
                     .background(Color.white)
                     .cornerRadius(10)
+            }
+            
+            
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Back"){
+                    appCoordinator.pop()
+                }
+                .body6()
+                .foregroundStyle(.black)
             }
         }
     }
