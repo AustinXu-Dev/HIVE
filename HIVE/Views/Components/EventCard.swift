@@ -30,7 +30,7 @@ struct EventCard: View {
                     )
                     .clipShape(TopRoundedCorners(radius: 20))
                 VStack(alignment:.leading) {
-                    VStack() {
+                    VStack {
                         if let eventDate = Date.stringToDate(event.startDate) {
                             Text(eventDate.toDayMonthString())
                                 .foregroundStyle(Color.black)
@@ -39,7 +39,7 @@ struct EventCard: View {
                                 .padding(.horizontal,8)
                         }
                     }
-                    .frame(width:42,height: 42)
+                    .frame(width:52,height: 52)
                     .background(RoundedRectangle(cornerRadius: 10))
                     .foregroundStyle(Color.white.opacity(0.8))
                     .padding(.horizontal,40)
@@ -64,10 +64,12 @@ struct EventCard: View {
                               HStack(spacing:2) {
                                 Text(event.name)
                                   .heading3()
+                                  .lineLimit(1)
+                                  .truncationMode(.tail)
                                 if let startTime = event.startTime.to12HourFormat() {
                                   Text("- \(startTime)")
                                     .heading5()
-                                    .lineLimit(2)
+                                    .lineLimit(1)
                                 }
                                 }
                               .foregroundStyle(Color.black)

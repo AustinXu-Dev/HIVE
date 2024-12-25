@@ -13,20 +13,13 @@ struct EventJoinSuccessView: View {
 
     var body: some View {
         VStack(spacing: 40) {
-            Text("HIVE")
-                .font(.largeTitle)
-                .fontWeight(.medium)
-                .padding(.top, 50)
-
-            Spacer()
-
             
-            Image(systemName: isPrivate ? "" : "party.popper.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 100)
-                    .foregroundColor(.yellow)
-            
+          Spacer()
+              Image("success_image")
+              .resizable()
+              .scaledToFit()
+              .frame(width: 100, height: 100)
+              
             VStack(spacing: 8) {
                 Text(isPrivate ? "Request Sent!" : "You're in!")
                   .heading1()
@@ -48,11 +41,20 @@ struct EventJoinSuccessView: View {
             } label: {
                 Text("Explore more")
                   .body3()
+                  .underline()
                   .foregroundColor(.black.opacity(0.5))
-                    .padding(.bottom, 30)
+                  .padding(.bottom, 30)
             }
         }
         .multilineTextAlignment(.center)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Image("HIVE")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width:80,height:35)
+            }
+        }
         .navigationBarBackButtonHidden()
     }
 }

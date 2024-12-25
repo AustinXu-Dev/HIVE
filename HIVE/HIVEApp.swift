@@ -29,6 +29,7 @@ struct HIVEApp: App {
     }
     
     init() {
-        try? Tips.configure([.displayFrequency(.hourly)])
+      try? Tips.configure([.displayFrequency(.immediate),.datastoreLocation(.applicationDefault)])
+      
     }
 }
