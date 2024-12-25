@@ -150,8 +150,7 @@ struct ProfileView: View {
                                 .offset(x: 50, y: 45)
                         }
                         .sheet(isPresented: $showImagePicker) {
-                            
-                            ImagePicker(selectedImage: $profileImage)
+                            PhotoPicker(selectedImage: $profileImage)
                         }
                         
                         HStack {
