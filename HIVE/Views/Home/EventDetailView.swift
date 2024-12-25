@@ -260,12 +260,18 @@ struct EventDetailView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
-            .refreshable {
-                eventsVM.getOneEvent(id: event._id)
+            
+            .onAppear {
+                if event._id != eventsVM.currentEvent?._id{
+                    eventsVM.getOneEvent(id: event._id)
+                }
             }
             
-            
         }
+        .refreshable {
+            eventsVM.getOneEvent(id: event._id)
+        }
+        
     }
     
     private func getButtonText() -> String{
