@@ -11,11 +11,12 @@ import Foundation
 class GetEventsViewModel : ObservableObject {
     
     @Published var events : [EventModel] = []
-    @Published var currentEvent: EventModel? = nil{
-        didSet{
-            getOneEvent(id: currentEvent?._id ?? "")
-        }
-    }
+    @Published var currentEvent: EventModel? = nil
+//    {
+//        didSet{
+//            getOneEvent(id: currentEvent?._id ?? "")
+//        }
+//    }
     @Published var isLoading : Bool = false
     @Published var errorMessage : String? = nil
     @Published var showErrorAlert: Bool = false
@@ -30,6 +31,7 @@ class GetEventsViewModel : ObservableObject {
     private let getAllEvents = GetAllEvents()
     
     func fetchEvents() {
+        guard !isLoading else { return }
         isLoading = true
         getAllEvents.execute(token: nil) { [weak self] result in
             switch result {
@@ -58,6 +60,9 @@ class GetEventsViewModel : ObservableObject {
                 switch result {
                 case .success(let event):
                     self.currentEvent = event.message
+                    if let index = self.events.firstIndex(where: { $0._id == id }) {
+                        self.events[index] = event.message
+                    }
                 case .failure(let failure):
                     print("Get one event error: \(failure.localizedDescription)")
                 }

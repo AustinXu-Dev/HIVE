@@ -33,15 +33,20 @@ struct OnboardingView: View {
         ZStack{
             VStack{
                 HStack {
-                    Button("Back") {
-                        if currentStep > 0 {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                currentStep -= 1
+                    if currentStep > 0{
+                        Button("Back") {
+                            if currentStep > 0 {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    currentStep -= 1
+                                }
                             }
                         }
+                        .body6()
+                        .foregroundStyle(.black)
+                    } else {
+                        Button("") { }
+                            .body6()
                     }
-                    .body6()
-                    .foregroundStyle(.black)
                     Spacer()
                 }
                 .padding(.bottom, 10)
