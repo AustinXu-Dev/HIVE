@@ -245,7 +245,7 @@ struct ProfileView: View {
                                 TextField("Enter Instagram Link", text: $editedInstagramLink)
                                     .textFieldStyle(RoundedBorderTextFieldStyle())
                                     .focused($isFocused)
-                                    .padding(.horizontal, 30)
+                                    .padding(.horizontal, 40)
                                     .onAppear {
                                         editedInstagramLink = profileVM.userDetail?.instagramLink ?? ""
                                     }
