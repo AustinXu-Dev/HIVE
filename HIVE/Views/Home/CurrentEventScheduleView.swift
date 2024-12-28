@@ -28,7 +28,7 @@ struct CurrentEventScheduleView: View {
     .refreshable {
       print("REFERSHING")
       if let userId = KeychainManager.shared.keychain.get("appUserId") {
-        viewModel.fetchAllEventHistory(userId: userId)
+        viewModel.fetchAllCurrentEvents(userId: userId)
         print("rfreshed with \(viewModel.joiningEvents.count)")
       }
     }
