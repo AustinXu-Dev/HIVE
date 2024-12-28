@@ -27,14 +27,12 @@ final class GetOngoingEventsViewModel: ObservableObject {
   
   init(){
     if let userId = KeychainManager.shared.keychain.get("appUserId") {
-      fetchAllEventHistory(userId: userId)
-      print("Joining events: \(joiningEvents.count)")
-      print("Hosting events: \(organizingEvents.count)")
+      fetchAllCurrentEvents(userId: userId)
     }
   }
   
   
-  func fetchAllEventHistory(userId: String){
+  func fetchAllCurrentEvents(userId: String){
     let dispatchGroup = DispatchGroup()
     incrementLoading()
     
@@ -70,6 +68,10 @@ final class GetOngoingEventsViewModel: ObservableObject {
     
   }
   
+  var privateHostingEvents: [EventModel] {
+    return organizingEvents.filter({$0.isPrivate ?? false})
+  }
+  
   
   func filerPrivateEvents(event: [EventModel]) -> [EventModel] {
     return event.filter({$0.isPrivate ?? false})
@@ -87,7 +89,8 @@ final class GetOngoingEventsViewModel: ObservableObject {
       case .success(let response):
         DispatchQueue.main.async {
           self?.organizingEvents = response.message
-          self?.organizingPrivateEvents = self?.filerPrivateEvents(event: self?.organizingEvents ?? []) ?? []
+//          self?.organizingPrivateEvents = self?.filerPrivateEvents(event: self?.organizingEvents ?? []) ?? []
+//          print("organizing private events count: \(self?.organizingPrivateEvents.count)")
         }
       case .failure(let error):
         DispatchQueue.main.async {
@@ -109,7 +112,6 @@ final class GetOngoingEventsViewModel: ObservableObject {
       case .success(let response):
         DispatchQueue.main.async {
           self?.joiningEvents = response.message
-          print("Joining Events: \(response.message)")
           print("joining events is appened \(self?.joiningEvents.count)")
         }
       case .failure(let error):

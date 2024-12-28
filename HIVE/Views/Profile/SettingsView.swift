@@ -58,7 +58,7 @@ struct SettingsView: View {
                         .padding(.vertical, 8)
                     }
                 }
-                
+               
                 LineView()
                 
                 Group {
@@ -89,7 +89,8 @@ struct SettingsView: View {
                     }
                 }
                 
-                Button(action: {
+                Button(action: {                  
+
                     showLogoutAlert = true
                 }) {
                     Text("Log out")
