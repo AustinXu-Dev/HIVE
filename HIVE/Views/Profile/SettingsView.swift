@@ -90,6 +90,7 @@ struct SettingsView: View {
                 }
                 
                 Button(action: {                  
+
                     showLogoutAlert = true
                 }) {
                     Text("Log out")
