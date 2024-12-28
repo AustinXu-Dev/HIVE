@@ -10,6 +10,10 @@ import SwiftUI
 struct SettingsView: View {
     @ObservedObject var profileEditVM: ProfileEditViewModel
     @Environment(\.dismiss) private var dismiss
+    @State private var showLogoutAlert = false 
+    @StateObject var socialVM: GetSocialViewModel
+    @EnvironmentObject var appCoordinator: AppCoordinatorImpl
+    @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     
     var body: some View {
         NavigationView {
@@ -26,8 +30,15 @@ struct SettingsView: View {
                             .foregroundColor(.black)
                             .body4()
                             .onTapGesture {
-                                profileEditVM.isEditingProfileImage = true
-                                profileEditVM.isEditingDescription = true
+                                profileEditVM.isEditingProfileImage = false
+                                profileEditVM.isEditingDescription = false
+                                
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    profileEditVM.isEditingProfileImage = true
+                                    profileEditVM.isEditingDescription = true
+                                }
+                                
+                                // Dismiss SettingsView
                                 dismiss()
                             }
                         Spacer()
@@ -47,7 +58,7 @@ struct SettingsView: View {
                         .padding(.vertical, 8)
                     }
                 }
-                
+               
                 LineView()
                 
                 Group {
@@ -78,9 +89,8 @@ struct SettingsView: View {
                     }
                 }
                 
-                
-                Button(action: {
-                  
+                Button(action: {                  
+                    showLogoutAlert = true
                 }) {
                     Text("Log out")
                         .font(.body)
@@ -92,9 +102,17 @@ struct SettingsView: View {
                         .cornerRadius(8)
                 }
                 .padding(.horizontal)
+                .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
+                    Button("Cancel", role: .cancel) {}
+                    Button("Logout", role: .destructive) {
+                        googleVM.signOutWithGoogle()
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3){
+                            appCoordinator.setSelectedTab(index: .home)
+                        }
+                    }
+                }
                 
                 Spacer()
-                
             }
             .padding(.horizontal)
             .navigationBarTitle("Settings", displayMode: .large)
@@ -110,7 +128,6 @@ struct LineView: View {
     }
 }
 
-
 struct EditProfileView: View {
     var body: some View {
         Text("Edit Profile")
@@ -124,4 +141,5 @@ struct BlockedUsersView: View {
             .navigationTitle("Blocked Users")
     }
 }
+
 

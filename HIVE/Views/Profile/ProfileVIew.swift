@@ -38,7 +38,6 @@ struct ProfileView: View {
     @FocusState private var isFocused: Bool
     @State private var showBioEditSheet = false
     
-    
     init(){
         let userId = KeychainManager.shared.keychain.get("appUserId")
         _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
@@ -74,17 +73,28 @@ struct ProfileView: View {
                         HStack {
                             Spacer()
                             if isEditingDescription  {
-                                Button(action: {
-                                    if profileImage != nil || descriptionText != editedDescriptionText || instagramLink != editedInstagramLink {
+                                if (profileImage != nil && isEditingProfileImage) ||
+                                    (descriptionText != editedDescriptionText) ||
+                                    (instagramLink != editedInstagramLink) {
+                                    Button(action: {
                                         descriptionText = editedDescriptionText
                                         updateProfile()
+                                        isEditingDescription = false
+                                        isEditingProfileImage = false
+                                    }) {
+                                        Text("Confirm")
+                                            .font(.callout)
+                                            .foregroundColor(.black)
                                     }
-                                    isEditingDescription = false
-                                    isEditingProfileImage = false
-                                }) {
-                                    Text("Confirm")
-                                        .font(.callout)
-                                        .foregroundColor(.black)
+                                } else {
+                                    Button(action: {
+                                        isEditingDescription = false
+                                        isEditingProfileImage = false
+                                    }) {
+                                        Text("Cancel")
+                                            .font(.callout)
+                                            .foregroundColor(.red)
+                                    }
                                 }
                             } else if isEditable {
                                 Button(action: {
@@ -204,9 +214,9 @@ struct ProfileView: View {
                             .padding(.horizontal, 116)
                             .padding(.vertical, 5)
                             .onTapGesture {
-                              if let currentUser = profileVM.userDetail {
-                                appCoordinator.push(.followerView(followingsSocial: socialVM.followings, follwersSocial: socialVM.followers, currentUser: currentUser))
-                              }
+                                if let currentUser = profileVM.userDetail {
+                                    appCoordinator.push(.followerView(followingsSocial: socialVM.followings, follwersSocial: socialVM.followers, currentUser: currentUser))
+                                }
                             }
                         }
                         
@@ -215,8 +225,8 @@ struct ProfileView: View {
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .focused($isFocused)
                                 .padding(.horizontal, 30)
-                                .onChange(of: profileEditVM.editedDescriptionText) { newValue in
-                                    profileVM.userDetail?.bio = newValue
+                                .onAppear {
+                                    editedDescriptionText = profileVM.userDetail?.bio ?? ""
                                 }
                         } else {
                             Text(profileVM.userDetail?.bio ?? "")
@@ -227,21 +237,20 @@ struct ProfileView: View {
                         }
                         
                         if isEditingDescription || isEditingProfileImage {
-                            if let instagramLink = profileVM.userDetail?.instagramLink, !instagramLink.isEmpty {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    Text("Instagram Profile URL")
-                                        .font(.system(size: 16, weight: .medium))
-                                        .foregroundColor(.gray)
-                                    
-                                    TextField("\(profileVM.userDetail?.instagramLink ?? "")", text: $editedInstagramLink)
-                                        .padding(.horizontal)
-                                        .padding(.vertical, 10)
-                                        .background(Color(UIColor.systemGray6))
-                                        .cornerRadius(12)
-                                        .font(.system(size: 16))
-                                }
-                                .padding(.horizontal, 30)
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text("Instagram Profile URL")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(.gray)
+                                
+                                TextField("Enter Instagram Link", text: $editedInstagramLink)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                    .focused($isFocused)
+                                    .padding(.horizontal, 40)
+                                    .onAppear {
+                                        editedInstagramLink = profileVM.userDetail?.instagramLink ?? ""
+                                    }
                             }
+                            .padding(.horizontal, 30)
                         }
                         
                         if !isEditingDescription || !isEditingProfileImage {
@@ -284,8 +293,8 @@ struct ProfileView: View {
                 }
                 .navigationBarBackButtonHidden(true)
                 .onAppear {
-                    profileEditVM.editedDescriptionText = profileVM.userDetail?.bio ?? ""
-                    editedInstagramLink = profileVM.userDetail?.instagramLink ?? ""
+                    descriptionText = profileVM.userDetail?.bio ?? ""
+                    instagramLink = profileVM.userDetail?.instagramLink ?? ""
                 }
                 .onChange(of: profileEditVM.isEditingDescription) { newValue in
                     if newValue {
@@ -296,7 +305,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $showBioEditSheet) {
-            SettingsView(profileEditVM: profileEditVM)
+            SettingsView(profileEditVM: profileEditVM, socialVM: socialVM)
         }
         
         .onTapGesture {
@@ -311,7 +320,7 @@ struct ProfileView: View {
         guard let uid = KeychainManager.shared.keychain.get("appUserId"),
               let userToken = TokenManager.share.getToken(),
               let email = profileVM.userDetail?.email else { return }
-
+        
         if editedInstagramLink != profileVM.userDetail?.instagramLink {
             profileVM.userDetail?.instagramLink = editedInstagramLink
             updateProfileVM.instagramLink = editedInstagramLink
@@ -345,7 +354,7 @@ struct ProfileView: View {
             }
         }
     }
-
+    
     private func storeImageUrlAndRetrieveImage(uid: String, email: String, imageUrl: String) {
         updateProfileVM.storeImageUrl(imageUrl: imageUrl, uid: uid, email: email) { result in
             switch result {
