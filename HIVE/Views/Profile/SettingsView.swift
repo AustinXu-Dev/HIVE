@@ -80,6 +80,7 @@ struct SettingsView: View {
                 
                 
                 Button(action: {
+                  
                 }) {
                     Text("Log out")
                         .font(.body)

@@ -248,6 +248,7 @@ struct ProfileView: View {
                             EventHistory(viewModel:eventHistoryVM)
                         }
                         
+                      /*
                         Button {
                             showLogoutAlert = true
                         } label: {
@@ -262,17 +263,18 @@ struct ProfileView: View {
                                 .padding(.bottom,20)
                         }
                         .padding(EdgeInsets(top: 60, leading: 0, bottom: 20, trailing: 0))
+                      */
                     }
                 }
-                .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
-                    Button("Cancel", role: .cancel) {}
-                    Button("Logout", role: .destructive) {
-                        googleVM.signOutWithGoogle()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3){
-                            appCoordinator.setSelectedTab(index: .home)
-                        }
-                    }
-                }
+//                .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
+//                    Button("Cancel", role: .cancel) {}
+//                    Button("Logout", role: .destructive) {
+//                        googleVM.signOutWithGoogle()
+//                        DispatchQueue.main.asyncAfter(deadline: .now() + 3){
+//                            appCoordinator.setSelectedTab(index: .home)
+//                        }
+//                    }
+//                }
                 .refreshable {
                     refreshProfile()
                     if let userId = KeychainManager.shared.keychain.get("appUserId") {

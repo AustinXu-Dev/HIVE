@@ -105,7 +105,7 @@ struct EventAttendeeView: View {
             }
         }
 
-        .alert("Alert",isPresented: $kickParticipantVM.kickSuccess) {
+        .alert("Kicked",isPresented: $kickParticipantVM.kickSuccess) {
             Button("OK", role: .cancel) {
                 eventsVM.getOneEvent(id: event._id)
             }
