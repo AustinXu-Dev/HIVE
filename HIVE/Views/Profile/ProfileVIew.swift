@@ -215,38 +215,60 @@ struct ProfileView: View {
                             }
                         }
                         
-                        if isEditingDescription {
-                            TextField("Enter New Bio", text: $editedDescriptionText)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .focused($isFocused)
-                                .padding(.horizontal, 30)
-                                .onAppear {
-                                    editedDescriptionText = profileVM.userDetail?.bio ?? ""
-                                }
-                        } else {
-                            Text(profileVM.userDetail?.bio ?? "")
-                                .light4()
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal, 40)
-                        }
-                        
-                        if isEditingDescription || isEditingProfileImage {
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text("Instagram Profile URL")
-                                    .font(.system(size: 16, weight: .medium))
-                                    .foregroundColor(.gray)
-                                
-                                TextField("Enter Instagram Link", text: $editedInstagramLink)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                        VStack(spacing: 20) {
+                            
+                            if isEditingDescription {
+                                TextField("Enter New Bio", text: $editedDescriptionText)
+                                    .multilineTextAlignment(.center)
+                                    .padding()
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(Color.clear)
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .stroke(Color.white, lineWidth: 2)
+                                    )
+                                    .overlay(
+                                        Rectangle()
+                                            .fill(Color.black)
+                                            .frame(height: 1)
+                                            .offset(y: 15)
+                                       
+                                    )
                                     .focused($isFocused)
-                                    .padding(.horizontal, 40)
+                                    .padding(.horizontal, 20)
                                     .onAppear {
-                                        editedInstagramLink = profileVM.userDetail?.instagramLink ?? ""
+                                        editedDescriptionText = profileVM.userDetail?.bio ?? ""
                                     }
+                            } else {
+                                Text(profileVM.userDetail?.bio ?? "")
+                                    .light4()
+                                    .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal, 10)
                             }
-                            .padding(.horizontal, 30)
+                            
+                            VStack(alignment: .leading, spacing: 8) {
+                                if isEditingDescription || isEditingProfileImage {
+                                    Text("Instagram Profile URL")
+                                        .font(.system(size: 16, weight: .medium))
+                                        .padding(.horizontal, 10)
+                                        .foregroundColor(.gray)
+                                    
+                                    TextField("Enter Instagram Link", text: $editedInstagramLink)
+                                        .padding(10)
+                                        .background(Color(UIColor.systemGray5).opacity(0.5))
+                                        .cornerRadius(31)
+                                        .focused($isFocused)
+                                        .padding(.horizontal, 10)
+                                        .onAppear {
+                                            editedInstagramLink = profileVM.userDetail?.instagramLink ?? ""
+                                        }
+                                }
+                            }
                         }
+                        .padding()
                         
                         if !isEditingDescription || !isEditingProfileImage {
                             EventHistory(viewModel:eventHistoryVM)
