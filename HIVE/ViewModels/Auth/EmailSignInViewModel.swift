@@ -24,12 +24,9 @@ final class EmailSignInViewModel: ObservableObject {
   @Published var passwordFieldErrorMessage: TextFieldValidationError? = nil
   @Published var emailFieldIsValid:Bool = false
   @Published var passwordFieldIsValid:Bool = false
-
-  
   @Published var hasWaiting3Mintutes: Bool = false
 
-  
-  
+
   func handleAuthentication() async {
       do {
         //attempting to sign in

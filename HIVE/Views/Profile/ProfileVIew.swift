@@ -30,19 +30,13 @@ struct ProfileView: View {
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     @EnvironmentObject var profileVM : GetOneUserByIdViewModel
     @StateObject var updateProfileVM = UpdateUserViewModel()
-    @StateObject var socialVM: GetSocialViewModel
+    @EnvironmentObject var socialVM: GetSocialViewModel
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @Environment(\.isGuest) private var isGuest: Bool
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-    @StateObject var eventHistoryVM: EventHistoryViewModel
+  @EnvironmentObject var eventHistoryVM: EventHistoryViewModel
     @FocusState private var isFocused: Bool
     @State private var showBioEditSheet = false
-    
-    init(){
-        let userId = KeychainManager.shared.keychain.get("appUserId")
-        _socialVM = StateObject(wrappedValue: GetSocialViewModel(userId: userId ?? ""))
-        _eventHistoryVM = StateObject(wrappedValue: EventHistoryViewModel(userId: userId ?? ""))
-    }
     
     var body: some View {
         ZStack {
@@ -130,7 +124,8 @@ struct ProfileView: View {
                                         .shadow(radius: 5)
                                         .opacity(isEditingProfileImage ? 0.5 : 1.0)
                                     
-                                    if profileVM.userDetail?.verificationStatus == VertificationEnum.approved.rawValue {
+                                  //hide the checkmark in edit mode
+                                  if profileVM.userDetail?.verificationStatus == VertificationEnum.approved.rawValue && !profileEditVM.isEditingDescription && !profileEditVM.isEditingProfileImage {
                                         Image(systemName: "checkmark.seal.fill")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
@@ -296,7 +291,7 @@ struct ProfileView: View {
                     descriptionText = profileVM.userDetail?.bio ?? ""
                     instagramLink = profileVM.userDetail?.instagramLink ?? ""
                 }
-                .onChange(of: profileEditVM.isEditingDescription) { newValue in
+                .onChange(of: profileEditVM.isEditingDescription) { _,newValue in
                     if newValue {
                         isEditingDescription = true
                         isEditingProfileImage = profileEditVM.isEditingProfileImage
@@ -305,7 +300,7 @@ struct ProfileView: View {
             }
         }
         .sheet(isPresented: $showBioEditSheet) {
-            SettingsView(profileEditVM: profileEditVM, socialVM: socialVM)
+            SettingsView(profileEditVM: profileEditVM)
         }
         
         .onTapGesture {

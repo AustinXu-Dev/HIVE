@@ -12,6 +12,9 @@ final class AuthenticationManager {
   @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
   @ObservedObject var getAllUserVM = GetAllUsersViewModel()
   var showAlert: Bool = false
+  let tokenExpirationManager = TokenExpirationManager.shared //already init here
+  
+  
   private init(){}
   
   
@@ -48,6 +51,8 @@ final class AuthenticationManager {
             signInService.email = authResult.user.email ?? ""
             signInService.password = authResult.user.uid
             signInService.signIn()
+            
+            tokenExpirationManager.saveTokenExpirationDate()
             userAppState = AppState.signedIn.rawValue
             return
           }

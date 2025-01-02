@@ -11,7 +11,6 @@ struct SettingsView: View {
     @ObservedObject var profileEditVM: ProfileEditViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showLogoutAlert = false 
-    @StateObject var socialVM: GetSocialViewModel
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @ObservedObject var googleVM = GoogleAuthenticationViewModel()
     
@@ -45,7 +44,7 @@ struct SettingsView: View {
                     }
                     .padding(.vertical, 8)
                     
-                    NavigationLink(destination: BlockedUsersView()) {
+                    
                         HStack {
                             Image(systemName: "exclamationmark.circle")
                                 .font(.title3)
@@ -56,13 +55,13 @@ struct SettingsView: View {
                             Spacer()
                         }
                         .padding(.vertical, 8)
-                    }
+                    
                 }
                
                 LineView()
                 
                 Group {
-                    NavigationLink(destination: BlockedUsersView()) {
+                
                         HStack {
                             Image(systemName: "lock.circle")
                                 .font(.title3)
@@ -73,9 +72,9 @@ struct SettingsView: View {
                             Spacer()
                         }
                         .padding(.vertical, 8)
-                    }
                     
-                    NavigationLink(destination: BlockedUsersView()) {
+                    
+             
                         HStack {
                             Image(systemName: "doc.text")
                                 .font(.title3)
@@ -86,7 +85,7 @@ struct SettingsView: View {
                             Spacer()
                         }
                         .padding(.vertical, 8)
-                    }
+                    
                 }
                 
                 Button(action: {                  

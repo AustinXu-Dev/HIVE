@@ -27,7 +27,9 @@ class GoogleAuthenticationViewModel: ObservableObject {
     var isNew: Bool?
     
     private var cancellables = Set<AnyCancellable>()
+  let tokenExpirationManager = TokenExpirationManager.shared //already init here
 
+  
     init() {
         // Initialize any necessary state here if needed
     }
@@ -121,6 +123,8 @@ class GoogleAuthenticationViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             print("Existing User")
                             self.signInService.signIn()
+                          self.tokenExpirationManager.saveTokenExpirationDate()
+                          
                           self.userAppState = AppState.signedIn.rawValue
                           print("User app state is \(self.userAppState)")
                             completion(nil, false) // Returning false for existing user
@@ -151,6 +155,7 @@ class GoogleAuthenticationViewModel: ObservableObject {
             try FirebaseManager.shared.auth.signOut()
             TokenManager.share.deleteToken()
             KeychainManager.shared.keychain.delete("appUserId")
+          UserDefaults.standard.removeObject(forKey: "TokenExpirationDate")
             DispatchQueue.main.async {
               //MARK: -UserDefaults.standard.set(false, forKey: "appState")
               self.userAppState = AppState.notSignedIn.rawValue
