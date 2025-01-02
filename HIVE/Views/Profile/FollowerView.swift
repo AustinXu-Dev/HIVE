@@ -156,11 +156,12 @@ struct FollowerView: View {
 
     func performSearch(for query: String, in user: UserModel) -> Bool {
         let lowercasedQuery = query.lowercased()
-        let userName = user.name?.lowercased()
-      let userDescription = user.bio?.lowercased()
+        let userName = user.name?.lowercased() ?? ""
+        let userDescription = user.bio?.lowercased() ?? ""
 
-      return ((userName?.contains(lowercasedQuery)) != nil) || ((userDescription?.contains(lowercasedQuery)) != nil)
+        return userName.contains(lowercasedQuery) || userDescription.contains(lowercasedQuery)
     }
+
 
     private func dismissKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
