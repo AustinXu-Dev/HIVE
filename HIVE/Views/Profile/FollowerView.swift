@@ -98,9 +98,8 @@ struct FollowerView: View {
                   ForEach(filteredUsers,id: \._id){ user in
                         HStack {
                           KFImage(URL(string: user.profileImageUrl ?? "" ))
-
                                 .resizable()
-                                .scaledToFit()
+                                .scaledToFill()
                                 .frame(width: 50, height: 50)
                                 .clipShape(Circle())
                             VStack(alignment: .leading) {
@@ -113,10 +112,12 @@ struct FollowerView: View {
                             }
                             Spacer()
                         }
+                        .padding(.horizontal,6)
+                        .background(Color.white.opacity(0.00001))
                         .onTapGesture {
                           appCoordinator.push(.socialProfile(user: user))
                         }
-                        .padding(6)
+                       // .padding(.horizontal,6)
 
                         .listRowSeparator(.hidden)
                     }
