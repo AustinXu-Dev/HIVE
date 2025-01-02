@@ -24,8 +24,8 @@ class UserFollowViewModel: ObservableObject {
       switch result {
       case .success(let data):
         DispatchQueue.main.async {
-          self?.followedButtonClicked = true
           self?.followSuccess = data.success
+          self?.followedButtonClicked = true
         }
       case .failure(let error):
         self?.setUpErrorAlert(error: error.localizedDescription)

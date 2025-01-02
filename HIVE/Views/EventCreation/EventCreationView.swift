@@ -542,6 +542,7 @@ extension EventCreationView {
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
                 .datePickerStyle(.compact)
+                .environment(\.calendar, Calendar(identifier: .gregorian))
                 .onChange(of: startDate) { _,_ in
                     validateDate()
                 }
@@ -561,7 +562,8 @@ extension EventCreationView {
                            in: Date()...,
                            displayedComponents: [.date, .hourAndMinute])
                 .labelsHidden()
-                .datePickerStyle(CompactDatePickerStyle())
+                .datePickerStyle(.compact)
+                .environment(\.calendar, Calendar(identifier: .gregorian))
                 .onChange(of: endDate) { _,_ in
                     validateDate()
                 }

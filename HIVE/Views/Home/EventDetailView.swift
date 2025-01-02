@@ -56,33 +56,21 @@ struct EventDetailView: View {
                             eventCategories
                           HStack(spacing: 20) {
                               Spacer()
-                              ParticipantView(event: eventsVM.currentEvent!)
-                                  .onTapGesture {
-                                      if userAppState != AppState.guest.rawValue {
-                                          appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
-                                      } else {
-                                          showCreateAccountAlert = true
-                                      }
+                            if let currentEvent = eventsVM.currentEvent {
+                              ParticipantView(event: currentEvent)
+                                .onTapGesture {
+                                  if userAppState != AppState.guest.rawValue {
+                                    appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
+                                  } else {
+                                    showCreateAccountAlert = true
                                   }
+                                }
+                            }
                           }
                           .frame(alignment: .trailing)
                         }
                         
-                        
-//                        HStack(spacing: 20) {
-//                            Spacer()
-//                            ParticipantView(event: eventsVM.currentEvent!)
-//                                .onTapGesture {
-//                                    if userAppState != AppState.guest.rawValue {
-//                                        appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
-//                                    } else {
-//                                        showCreateAccountAlert = true
-//                                    }
-//                                }
-//                        }
-//                        .frame(alignment: .trailing)
-                        
-                        
+                                                
                         Text(event.additionalInfo)
                           .body8()
                           .foregroundStyle(Color.black)
@@ -134,6 +122,7 @@ struct EventDetailView: View {
                                 .foregroundStyle(Color.black)
                             } else {
                               Text(checkApproval() ? event.location : "(Available after acceptance)")
+                                .heading8()
                             }
                           }
                             HStack {
