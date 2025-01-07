@@ -381,13 +381,14 @@ extension EventCreationView {
                 Image(uiImage: eventPhoto)
                     .resizable()
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: 180)
-                    .cornerRadius(10)
+                    .frame(height: 230)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
             } else {
                 // Placeholder view when no image is selected
               eventImagePlaceholder
             }
         }
+        .frame(height: 230)
         .onTapGesture {
             showPhotoPicker = true
         }
@@ -403,11 +404,12 @@ extension EventCreationView {
             .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
             .fill(Color.gray.opacity(0.3))
             .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-            .frame(height: 200)
+            .frame(height: 230)
         Circle()
             .frame(height: 40)
             .foregroundStyle(Color.black.opacity(0.5))
         Image(systemName: "photo")
+            .frame(width:25,height:25)
             .font(.system(size: 20))
             .foregroundStyle(.white)
     }

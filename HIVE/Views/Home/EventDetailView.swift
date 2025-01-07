@@ -58,7 +58,7 @@ struct EventDetailView: View {
                               Spacer()
                             if let currentEvent = eventsVM.currentEvent {
                               ParticipantView(event: currentEvent)
-                                    .fixedSize(horizontal: true, vertical: true)
+                                    
                                 .onTapGesture {
                                   if userAppState != AppState.guest.rawValue {
                                     appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))

@@ -58,6 +58,7 @@ struct OnboardingDetailView: View {
               .datePickerStyle(.wheel)
               .labelsHidden() // Hides label to avoid blank space
               .environment(\.locale, Locale(identifier: "en_US")) // Sets to US format
+              .environment(\.calendar, Calendar(identifier: .gregorian))
               .padding()
             
             
