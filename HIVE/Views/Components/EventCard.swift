@@ -79,7 +79,7 @@ struct EventCard: View {
                                     .foregroundStyle(Color.black.opacity(0.63))
                                         .heading6()
                                     Spacer()
-                                    ParticipantView(event: event)
+                                    ParticipantView(event: event, participantCount: 4)
                                 }
                             }
                             .padding(.horizontal,40)
@@ -93,8 +93,6 @@ struct EventCard: View {
                 
             }
         }
-      
-        .frame(width: UIScreen.main.bounds.width * 0.98) // Constrain the card width
     }
 }
 

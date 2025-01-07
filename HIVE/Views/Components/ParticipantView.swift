@@ -10,11 +10,12 @@ import Kingfisher
 
 struct ParticipantView: View {
     let event : EventModel
+    let participantCount: Int
     var body: some View {
         HStack {
             HStack(spacing:-12) {
                 if let eventParticipants = event.participants {
-                  ForEach(eventParticipants.prefix(5),id: \._id){ user in
+                    ForEach(eventParticipants.prefix(participantCount),id: \._id){ user in
                         KFImage(URL(string: user.profileImageUrl ?? ""))
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -45,7 +46,7 @@ struct ParticipantView: View {
 }
 
 #Preview {
-    ParticipantView(event: EventMock.instance.eventA)
+    ParticipantView(event: EventMock.instance.eventA, participantCount: 3)
 }
 
 

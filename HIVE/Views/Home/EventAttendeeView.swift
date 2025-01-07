@@ -18,64 +18,63 @@ struct EventAttendeeView: View {
     @State var showAlert = false
 
     var body: some View {
-        VStack {
-            Divider()
-            
-            List(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
-                HStack {
-                    KFImage(URL(string: participant.profileImageUrl ?? ""))
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 50, height: 50)
-                        .clipShape(Circle())
-                    
-                    VStack(alignment: .leading) {
-                      Text(participant.name ?? "Unknown")
-
-                            .font(CustomFont.attendeeTitle)
+        ScrollView {
+            VStack{
+                ForEach(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
+                    HStack {
+                        KFImage(URL(string: participant.profileImageUrl ?? ""))
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 50, height: 50)
+                            .clipShape(Circle())
                         
-                        Text(participant.bio ?? "")
-                            .font(CustomFont.attendeeDescription)
-                            .foregroundColor(.gray)
-                    }
-                  
-                    Spacer()
-                    
-                    if checkOrganizer(){
-                        Button(action: {
-                            showAlert = true
-                        }) {
-                            Text("Kick")
-                                .foregroundStyle(.red)
-                                .font(CustomFont.pendingParticipantBoldText)
+                        VStack(alignment: .leading) {
+                            Text(participant.name ?? "Unknown")
+                            
+                                .font(CustomFont.attendeeTitle)
+                            
+                            Text(participant.bio ?? "")
+                                .lineLimit(1)
+                                .truncationMode(.tail)
+                                .font(CustomFont.attendeeDescription)
+                                .foregroundColor(.gray)
                         }
-                        .tint(Color("kickButtonColor"))
-                        .buttonStyle(.borderedProminent)
-                        .alert("Are you sure you want to kick?", isPresented: $showAlert, actions: {
-                            Button("OK", role: .cancel) {
-                              kickAction(eventId: event._id, participantId: participant._id ?? "")
-
+                        
+                        Spacer()
+                        
+                        if checkOrganizer(){
+                            Button(action: {
+                                showAlert = true
+                            }) {
+                                Text("Kick")
+                                    .foregroundStyle(.red)
+                                    .font(CustomFont.pendingParticipantBoldText)
                             }
-                            Button("Cancel", role: .destructive) { }
-                        })
+                            .tint(Color("kickButtonColor"))
+                            .buttonStyle(.borderedProminent)
+                            .alert("Are you sure you want to kick?", isPresented: $showAlert, actions: {
+                                Button("OK", role: .cancel) {
+                                    kickAction(eventId: event._id, participantId: participant._id ?? "")
+                                    
+                                }
+                                Button("Cancel", role: .destructive) { }
+                            })
+                        }
+                        
                     }
-
+                    .padding(.horizontal)
+                    .frame(maxWidth:.infinity)
+                    .padding(.vertical, 8)
+                    .background(Color.white.opacity(0.000001))
+                    .onTapGesture {
+                        appCoordinator.push(.socialProfile(user: participant))
+                        
+                    }
                 }
-                .padding(.horizontal)
-                .frame(maxWidth:.infinity)
-                .padding(.vertical, 8)
-                .background(Color.white.opacity(0.000001))
-                .onTapGesture {
-                  appCoordinator.push(.socialProfile(user: participant))
-
-                }
+                .scrollIndicators(.hidden)
             }
-            .listStyle(PlainListStyle())
-            .scrollIndicators(.hidden)
-            
-
-            
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
               Button(action: {
@@ -88,7 +87,7 @@ struct EventAttendeeView: View {
             }
           
             ToolbarItem(placement: .principal) {
-                Text("See who's going")
+                Text("Participants")
                     .font(.headline)
                     .bold()
 

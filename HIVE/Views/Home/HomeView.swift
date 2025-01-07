@@ -17,51 +17,49 @@ struct HomeView: View {
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
     
     
-  var body: some View {
-    ZStack {
-        Color.white
-            .ignoresSafeArea(.all)
-      if eventsVM.isLoading {
-        ProgressView("Loading...")
-      } else {
-        ScrollView(.vertical,showsIndicators: false) {
-          VStack(alignment: .center,spacing:14) {
-            headerRow
-              .padding(.horizontal)
-            if isGuest {
-              accountCreationButton
+    var body: some View {
+        ZStack {
+            Color.white
+                .ignoresSafeArea(.all)
+            if eventsVM.isLoading {
+                ProgressView("Loading...")
+            } else {
+                ScrollView(.vertical,showsIndicators: false) {
+                    VStack(alignment: .center,spacing:14) {
+                        headerRow
+                            .padding(.horizontal)
+                        if isGuest {
+                            accountCreationButton
+                        }
+                        eventsScrollView
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.horizontal, 12)
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .refreshable {
+                    eventsVM.fetchEvents()
+                }
+                .navigationBarBackButtonHidden()
+                .toolbar(.hidden)
+                .onAppear {
+                    print("user app State \(userAppState)")
+                }
+                
+                
             }
-            eventsScrollView
-                  .fixedSize(horizontal: false, vertical: true)
-          }
-          .padding(.horizontal)
         }
-        .refreshable {
-          eventsVM.fetchEvents()
+        .onTapGesture {
+            print("screen is is pressed")
         }
-//        .onChange(of: eventsVM.currentEvent, {
-//            eventsVM.fetchEvents()
-//        })
-        .navigationBarBackButtonHidden()
-        .toolbar(.hidden)
-        .onAppear {
-          print("user app State \(userAppState)")
+        .alert(isPresented: $eventsVM.showErrorAlert){
+            Alert(title: Text("⚠️Fail to get the events⚠️"),
+                  message: Text(eventsVM.errorMessage ?? ""),
+                  dismissButton: .cancel(Text("OK"))
+            )
         }
         
         
-      }
-    }
-    .onTapGesture {
-        print("screen is is pressed")
-    }
-    .alert(isPresented: $eventsVM.showErrorAlert){
-      Alert(title: Text("⚠️Fail to get the events⚠️"),
-            message: Text(eventsVM.errorMessage ?? ""),
-            dismissButton: .cancel(Text("OK"))
-      )
-    }
-
-
         
         
     }
@@ -79,12 +77,12 @@ struct HomeView: View {
             //  ScrollView(.vertical, showsIndicators: false) {
             VStack(alignment:.leading, spacing: 30) {
                 ForEach(filteredEvents, id: \._id) { event in
-                        EventCard(event: event)
-                    .contentShape(TopRoundedCorners(radius: 20))
-                    .onTapGesture {
-                        eventsVM.currentEvent = event
-                        appCoordinator.push(.eventDetailView(named: event))
-                    }
+                    EventCard(event: event)
+                        .contentShape(TopRoundedCorners(radius: 20))
+                        .onTapGesture {
+                            eventsVM.currentEvent = event
+                            appCoordinator.push(.eventDetailView(named: event))
+                        }
                 }
             }
             //  }
@@ -139,24 +137,24 @@ struct HomeView: View {
 extension HomeView {
     private var headerRow: some View {
         HStack {
-              Menu {
-                  ForEach(TimeFilter.allCases, id: \.self) { filter in
-                      Button(action: {
-                          selectedTimeFilter = filter
-                      }) {
-                          Text(filter.rawValue)
-                      }
-                  }
-              } label: {
+            Menu {
+                ForEach(TimeFilter.allCases, id: \.self) { filter in
+                    Button(action: {
+                        selectedTimeFilter = filter
+                    }) {
+                        Text(filter.rawValue)
+                    }
+                }
+            } label: {
                 Label("\(selectedTimeFilter.rawValue)", systemImage: "slider.horizontal.3")
-                  .foregroundStyle(Color.black)
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width:25,height:25)
-              }
+                    .foregroundStyle(Color.black)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:25,height:25)
+            }
             
             Spacer()
             
-              Image(.HIVE)
+            Image(.HIVE)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 40,height: 40)
@@ -164,21 +162,21 @@ extension HomeView {
             
             Spacer()
             
-              HStack(spacing:4) {
+            HStack(spacing:4) {
                 Image(systemName: "bell")
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width:25,height:25)
-                  .onTapGesture {
-                      print("bell is pressed")
-                    appCoordinator.push(.eventApproveRejectView)
-                  }
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:25,height:25)
+                    .onTapGesture {
+                        print("bell is pressed")
+                        appCoordinator.push(.eventApproveRejectView)
+                    }
                 Image(systemName: "calendar")
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width:25,height:25)
-                  .onTapGesture {
-                    appCoordinator.push(.eventSchedule)
-                  }
-              }
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width:25,height:25)
+                    .onTapGesture {
+                        appCoordinator.push(.eventSchedule)
+                    }
+            }
         }
         .frame(maxWidth: .infinity,alignment: .center)
     }
@@ -186,7 +184,7 @@ extension HomeView {
     private var accountCreationButton: some View {
         VStack {
             Text("Ready to Connect?")
-            .heading4()
+                .heading4()
             Button {
                 userAppState =  AppState.notSignedIn.rawValue
             } label: {
@@ -194,7 +192,7 @@ extension HomeView {
             }
             
             Text("To join or host your own!")
-              .body5()
+                .body5()
         }
     }
 }

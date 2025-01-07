@@ -56,7 +56,7 @@ struct EventCreationView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         eventImage
-                        .frame(maxHeight: 200)
+                        .frame(maxHeight: 230)
                         eventName
                         
                         eventVenue
@@ -383,9 +383,15 @@ extension EventCreationView {
                     .aspectRatio(contentMode: .fill)
                     .frame(height: 230)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .onTapGesture {
+                        showPhotoPicker = true
+                    }
             } else {
                 // Placeholder view when no image is selected
               eventImagePlaceholder
+                    .onTapGesture {
+                        showPhotoPicker = true
+                    }
             }
         }
         .frame(height: 230)
@@ -399,20 +405,23 @@ extension EventCreationView {
 
   
   private var eventImagePlaceholder: some View {
-    ZStack {
-        RoundedRectangle(cornerRadius: 10)
-            .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
-            .fill(Color.gray.opacity(0.3))
-            .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-            .frame(height: 230)
-        Circle()
-            .frame(height: 40)
-            .foregroundStyle(Color.black.opacity(0.5))
-        Image(systemName: "photo")
-            .frame(width:25,height:25)
-            .font(.system(size: 20))
-            .foregroundStyle(.white)
-    }
+      ZStack {
+              RoundedRectangle(cornerRadius: 10)
+                  .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
+                  .fill(Color.gray.opacity(0.3))
+                  .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+              
+              Circle()
+                  .frame(height: 40)
+                  .foregroundStyle(Color.black.opacity(0.5))
+              
+              Image(systemName: "photo")
+                  .frame(width: 25, height: 25)
+                  .font(.system(size: 20))
+                  .foregroundStyle(.white)
+          }
+          .frame(height: 230)
+          .clipShape(RoundedRectangle(cornerRadius: 10))
   }
     
     private var eventName : some View {

@@ -37,7 +37,7 @@ struct CurrentEventRow: View {
               .heading6()
               .foregroundStyle(Color.black.opacity(0.65))
             Spacer()
-            ParticipantView(event: event)
+              ParticipantView(event: event, participantCount: 4)
               .fixedSize(horizontal: true, vertical: false)
           }
         }

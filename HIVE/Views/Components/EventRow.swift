@@ -29,7 +29,7 @@ struct EventRow: View {
             
             Spacer()
            
-            ParticipantView(event: event)
+              ParticipantView(event: event, participantCount: 3)
               .fixedSize(horizontal: true, vertical: false)
           }
         }
