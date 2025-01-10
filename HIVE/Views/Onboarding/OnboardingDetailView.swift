@@ -57,12 +57,15 @@ struct OnboardingDetailView: View {
             DatePicker("", selection: $viewModel.birthday, displayedComponents: .date)
               .datePickerStyle(.wheel)
               .labelsHidden() // Hides label to avoid blank space
-              .environment(\.locale, Locale(identifier: "en_US")) // Sets to US format
               .environment(\.calendar, Calendar(identifier: .gregorian))
+              .environment(\.locale, Locale(identifier: "en_US"))
+
               .padding()
-            
-            
           }
+          .environment(\.calendar, Calendar(identifier: .gregorian))
+          .environment(\.locale, Locale(identifier: "en_US"))
+
+
           Spacer()
             .frame(maxWidth: .infinity)
             .multilineTextAlignment(.center)

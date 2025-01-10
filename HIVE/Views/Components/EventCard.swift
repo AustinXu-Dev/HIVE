@@ -76,8 +76,11 @@ struct EventCard: View {
 
                                 HStack {
                                     Text(event.location)
-                                    .foregroundStyle(Color.black.opacity(0.63))
+                                        .foregroundStyle(Color.black.opacity(0.63))
                                         .heading6()
+                                        .lineLimit(2)
+                                        .truncationMode(.tail)
+                                    
                                     Spacer()
                                     ParticipantView(event: event, participantCount: 4)
                                 }

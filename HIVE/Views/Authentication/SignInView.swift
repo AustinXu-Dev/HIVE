@@ -48,7 +48,7 @@ struct SignInView: View {
                     browseFirstButton
                 }
                 .padding()
-                .padding(.top,40)
+               // .padding(.top,40)
                 .frame(maxWidth: .infinity)
                 .navigationBarBackButtonHidden(true)
             }

@@ -78,7 +78,7 @@ struct EventCreationView: View {
                     .onTapGesture {
                         isFocused = false
                     }
-                    .padding()
+                    .padding(.horizontal,16)
                     
                 }
                 
@@ -380,26 +380,22 @@ extension EventCreationView {
                 // Display the selected image
                 Image(uiImage: eventPhoto)
                     .resizable()
+                    .frame(maxWidth: UIScreen.main.bounds.width - 16)
+                    .frame(maxHeight: 230)
                     .aspectRatio(contentMode: .fill)
-                    .frame(height: 230)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
-                    .onTapGesture {
-                        showPhotoPicker = true
-                    }
+                    .clipShape((RoundedRectangle(cornerRadius: 10)))
             } else {
                 // Placeholder view when no image is selected
               eventImagePlaceholder
-                    .onTapGesture {
-                        showPhotoPicker = true
-                    }
             }
         }
+        .frame(maxWidth: UIScreen.main.bounds.width - 16)
         .frame(height: 230)
-        .onTapGesture {
-            showPhotoPicker = true
-        }
         .sheet(isPresented: $showPhotoPicker) {
             PhotoPicker(selectedImage: $selectedImage)
+        }
+        .onTapGesture {
+            showPhotoPicker = true
         }
     }
 
@@ -420,8 +416,9 @@ extension EventCreationView {
                   .font(.system(size: 20))
                   .foregroundStyle(.white)
           }
-          .frame(height: 230)
           .clipShape(RoundedRectangle(cornerRadius: 10))
+          .frame(height: 230)
+      
   }
     
     private var eventName : some View {
@@ -554,6 +551,7 @@ extension EventCreationView {
                 .labelsHidden()
                 .datePickerStyle(.compact)
                 .environment(\.calendar, Calendar(identifier: .gregorian))
+                .environment(\.locale, Locale(identifier: "en_US"))
                 .onChange(of: startDate) { _,_ in
                     validateDate()
                 }
@@ -562,6 +560,9 @@ extension EventCreationView {
                 //                        alignment: .bottom
                 //                    )
             }
+            .environment(\.calendar, Calendar(identifier: .gregorian))
+            .environment(\.locale, Locale(identifier: "en_US"))
+
             HStack {
                 Text("End:")
                     .font(CustomFont.createEventSubBody)
@@ -575,6 +576,8 @@ extension EventCreationView {
                 .labelsHidden()
                 .datePickerStyle(.compact)
                 .environment(\.calendar, Calendar(identifier: .gregorian))
+                .environment(\.locale, Locale(identifier: "en_US"))
+
                 .onChange(of: endDate) { _,_ in
                     validateDate()
                 }
@@ -583,6 +586,9 @@ extension EventCreationView {
                 //                        alignment: .bottom
                 //                    )
             }
+            .environment(\.calendar, Calendar(identifier: .gregorian))
+            .environment(\.locale, Locale(identifier: "en_US"))
+
         }
     }
     

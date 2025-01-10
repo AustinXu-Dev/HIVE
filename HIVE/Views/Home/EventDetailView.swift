@@ -83,6 +83,8 @@ struct EventDetailView: View {
                                         .heading7()
                                     Text(eventOrganizer.bio ?? "")
                                         .body8()
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.leading)
                                 }
                                 .foregroundStyle(Color.black)
                                 
@@ -195,6 +197,7 @@ struct EventDetailView: View {
                             .shadow(color: Color("shadowColor"), radius: 10, x: 0, y: 0)
                         }
                         .frame(maxWidth:.infinity,alignment:.center)
+                        .padding(.bottom,12)
                         
                     }
                 }

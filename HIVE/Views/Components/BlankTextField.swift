@@ -58,7 +58,7 @@ struct BlankTextField: View {
         Text(errorText?.rawValue ?? "")
           .font(CustomFont.createEventBody)
           .foregroundStyle(Color.red.opacity(0.75))
-          .lineLimit(5)
+          .lineLimit(nil)
           .multilineTextAlignment(.leading)
       }
       
