@@ -9,14 +9,14 @@ import SwiftUI
 import PhotosUI
 
 struct EventCreationView: View {
-    @State private var selectedItem: PhotosPickerItem? // Holds the selected item
-    @State private var selectedImage: UIImage? // Holds the selected image
+    @State private var selectedItem: PhotosPickerItem?
+    @State private var selectedImage: UIImage?
     @State private var showPhotoPicker: Bool = false
     
     @State private var eventTitle: String = ""
     @State private var eventLocation: String = ""
-    @State private var startDate : Date = Date()
-    @State private var endDate : Date = (Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date())
+    @State private var startDate: Date = Date()
+    @State private var endDate: Date = (Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date())
     @State private var additionalInfo: String = ""
     @State private var selectedCategories: [String] = []
     @State private var isCategoryExpanded: Bool = false
@@ -36,96 +36,94 @@ struct EventCreationView: View {
     @State private var allowMinimumAge: Bool = false
     @State private var showRestriction: Bool = false
     @FocusState private var isFocused: Bool
-  @State private var showPrivateEventTipAlert: Bool = false
+    @State private var showPrivateEventTipAlert: Bool = false
     
-    
-    
-    let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill","Outdoor","Bar","Dance","Quiet","Games","Exclusive","Networking"]
+    let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill", "Outdoor", "Bar", "Dance", "Quiet", "Games", "Exclusive", "Networking"]
     
     var body: some View {
-        ZStack {
-            Color.white
-                .ignoresSafeArea(edges: .all)
-            if eventCreationVM.isLoading {
-                VStack {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
-                }
-            } else {
-                ScrollView {
-                    VStack(spacing: 20) {
-                        eventImage
-                        .frame(maxHeight: 230)
-                        eventName
-                        
-                        eventVenue
-                        
-                        Divider()
-                        
-                        eventDateTime
-                        eventRestriction
-                        
-                        Divider()
-                        
-                        eventCategory
-                        
-                        eventAdditionalInfo
-                        
-                        publishButton
-                        
-                    }
-                    .onTapGesture {
-                        isFocused = false
-                    }
-                    .padding(.horizontal,16)
-                    
-                }
+        NavigationView {
+            ZStack {
+                Color.white
+                    .ignoresSafeArea(edges: .all)
                 
-                
-                .navigationBarBackButtonHidden()
-                
-                .onAppear {
-                    if let userId = KeychainManager.shared.keychain.get("appUserId"){
-                        profileVM.getOneUserById(id: userId)
+                if eventCreationVM.isLoading {
+                    VStack {
+                        Spacer()
+                        ProgressView()
+                        Spacer()
                     }
-                    
-                    if userAppState == AppState.guest.rawValue {
-                        self.showCreateAccountAlert = true
+                } else {
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            eventImage
+                                .frame(maxHeight: 230)
+                            eventName
+                            eventVenue
+                            
+                            Divider()
+                            
+                            eventDateTime
+                            eventRestriction
+                            
+                            Divider()
+                            
+                            eventCategory
+                            
+                            eventAdditionalInfo
+                            
+                            publishButton
+                        }
+                        .padding(.top, 16)
+                        .onTapGesture {
+                            isFocused = false
+                        }
+                        .padding(.horizontal, 16)
                     }
-                }
-                .onReceive(eventCreationVM.$eventCreationSuccess) { success in
-                    if success {
-                        appCoordinator.push(.eventCreationSuccess)
-                    }
-                }
-                .alert(isPresented: $showCreateAccountAlert) {
-                    Alert(title: Text("Create or Log In to An Account"),
-                          message: Text("To host events, you must create a new accout first or log in to the existing account."),
-                          primaryButton:  .default(Text("Sign Up/Sign In"), action: {
-                        appCoordinator.popToRoot()
-                        userAppState = AppState.notSignedIn.rawValue
-                    }),
-                          secondaryButton: .destructive(Text("Cancel")))
-                }
-                .alert(isPresented: $showPrivateEventTipAlert){
-                  Alert(title:  Text("Private Event")
-                        ,message:  Text("You will approve of who can attend.Location stays hidden until you approved."),
-                        dismissButton: .cancel(Text("Got it"))
+                    .navigationTitle("Create Event")
+                    .navigationBarTitleDisplayMode(.inline)
+                    .navigationBarBackButtonHidden()
+                    .onAppear {
+                        if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                            profileVM.getOneUserById(id: userId)
+                        }
                         
-                  
-                  )
+                        if userAppState == AppState.guest.rawValue {
+                            self.showCreateAccountAlert = true
+                        }
+                    }
+                    .onReceive(eventCreationVM.$eventCreationSuccess) { success in
+                        if success {
+                            appCoordinator.push(.eventCreationSuccess)
+                        }
+                    }
+                    .alert(isPresented: $showCreateAccountAlert) {
+                        Alert(
+                            title: Text("Create or Log In to An Account"),
+                            message: Text("To host events, you must create a new account first or log in to the existing account."),
+                            primaryButton: .default(Text("Sign Up/Sign In"), action: {
+                                appCoordinator.popToRoot()
+                                userAppState = AppState.notSignedIn.rawValue
+                            }),
+                            secondaryButton: .destructive(Text("Cancel"))
+                        )
+                    }
+                    .alert(isPresented: $showPrivateEventTipAlert) {
+                        Alert(
+                            title: Text("Private Event"),
+                            message: Text("You will approve who can attend. Location stays hidden until you approve."),
+                            dismissButton: .cancel(Text("Got it"))
+                        )
+                    }
                 }
             }
+            .onTapGesture {
+                self.hideKeyboard()
+                print("Keyboard hidden")
+            }
         }
-        .onTapGesture {
-            self.hideKeyboard()
-            print("keyboad hidden")
-        }
-        
     }
+
     
-    // Function to toggle category selection
     func toggleCategory(_ category: String) {
         if selectedCategories.contains(category) {
             selectedCategories.removeAll { $0 == category }
@@ -134,7 +132,6 @@ struct EventCreationView: View {
         }
     }
     
-    // Function to validate the form
     private func validateForm() {
         
         invalidFields.removeAll()
@@ -329,55 +326,9 @@ extension EventCreationView {
         }
     }
     
-    
-//    private var eventImage: some View {
-//        VStack {
-//            PhotosPicker(
-//                selection: $selectedItem,
-//                matching: .images,
-//                photoLibrary: .shared()) {
-//                    // Display selected image or placeholder
-//                    if let eventPhoto = selectedImage {
-//                        Image(uiImage: eventPhoto)
-//                            .resizable()
-//                            .aspectRatio(contentMode: .fill)
-//                            .frame(height: 180)
-//                            .cornerRadius(10)
-//                    } else {
-//                        ZStack {
-//                            RoundedRectangle(cornerRadius: 10)
-//                                .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
-//                                .fill(Color.gray.opacity(0.3))
-//                                .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-//                                .frame(height: 200)
-//                            Circle()
-//                                .frame(height: 40)
-//                                .foregroundStyle(Color.black.opacity(0.5))
-//                            Image(systemName: "photo")
-//                                .font(.system(size: 20))
-//                                .foregroundStyle(.white)
-//                        }
-//                    }
-//                }
-//                .onChange(of: selectedItem) { _,newItem in
-//                    Task {
-//                        // Retrieve selected asset
-//                        if let newItem = newItem {
-//                            // Retrieve the selected asset in the background
-//                            if let data = try? await newItem.loadTransferable(type: Data.self) {
-//                                if let image = UIImage(data: data) {
-//                                    selectedImage = image // Assign the image
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
-//        }
-//    }
     private var eventImage: some View {
         VStack {
             if let eventPhoto = selectedImage {
-                // Display the selected image
                 Image(uiImage: eventPhoto)
                     .resizable()
                     .frame(maxWidth: UIScreen.main.bounds.width - 16)
@@ -385,8 +336,7 @@ extension EventCreationView {
                     .aspectRatio(contentMode: .fill)
                     .clipShape((RoundedRectangle(cornerRadius: 10)))
             } else {
-                // Placeholder view when no image is selected
-              eventImagePlaceholder
+                eventImagePlaceholder
             }
         }
         .frame(maxWidth: UIScreen.main.bounds.width - 16)
@@ -398,28 +348,28 @@ extension EventCreationView {
             showPhotoPicker = true
         }
     }
-
-  
-  private var eventImagePlaceholder: some View {
-      ZStack {
-              RoundedRectangle(cornerRadius: 10)
-                  .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
-                  .fill(Color.gray.opacity(0.3))
-                  .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
-              
-              Circle()
-                  .frame(height: 40)
-                  .foregroundStyle(Color.black.opacity(0.5))
-              
-              Image(systemName: "photo")
-                  .frame(width: 25, height: 25)
-                  .font(.system(size: 20))
-                  .foregroundStyle(.white)
-          }
-          .clipShape(RoundedRectangle(cornerRadius: 10))
-          .frame(height: 230)
-      
-  }
+    
+    
+    private var eventImagePlaceholder: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(Color.red, lineWidth: invalidFields.contains("photo") ? 1.0 : 0.0)
+                .fill(Color.gray.opacity(0.3))
+                .animation(.linear(duration: 0.001), value: invalidFields.contains("title"))
+            
+            Circle()
+                .frame(height: 40)
+                .foregroundStyle(Color.black.opacity(0.5))
+            
+            Image(systemName: "photo")
+                .frame(width: 25, height: 25)
+                .font(.system(size: 20))
+                .foregroundStyle(.white)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .frame(height: 230)
+        
+    }
     
     private var eventName : some View {
         VStack(alignment: .center, spacing: 5) {
@@ -555,14 +505,10 @@ extension EventCreationView {
                 .onChange(of: startDate) { _,_ in
                     validateDate()
                 }
-                //                .overlay(
-                //                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
-                //                        alignment: .bottom
-                //                    )
             }
             .environment(\.calendar, Calendar(identifier: .gregorian))
             .environment(\.locale, Locale(identifier: "en_US"))
-
+            
             HStack {
                 Text("End:")
                     .font(CustomFont.createEventSubBody)
@@ -577,48 +523,44 @@ extension EventCreationView {
                 .datePickerStyle(.compact)
                 .environment(\.calendar, Calendar(identifier: .gregorian))
                 .environment(\.locale, Locale(identifier: "en_US"))
-
+                
                 .onChange(of: endDate) { _,_ in
                     validateDate()
                 }
-                //                .overlay(
-                //                        invalidFields.contains("invalidDateRange") ? Color.red.frame(height: 1) : Color.clear.frame(height: 1),
-                //                        alignment: .bottom
-                //                    )
             }
             .environment(\.calendar, Calendar(identifier: .gregorian))
             .environment(\.locale, Locale(identifier: "en_US"))
-
+            
         }
     }
     
     private var eventRestriction: some View{
         VStack(alignment: .leading, spacing: 10) {
-          HStack {
-            Toggle(isOn: $isPrivate) {
-              HStack{
-                Text("Private")
-                  .font(CustomFont.createEventSubBody)
-                Image(systemName: "info.circle")
-                  .resizable()
-                  .aspectRatio(contentMode: .fit)
-                  .frame(width:15,height:15)
-                  .onTapGesture {
-                    showPrivateEventTipAlert.toggle()
-                  }
-                  .alert(isPresented: $showPrivateEventTipAlert){
-                    Alert(title:  Text("Private Event")
-                          ,message:  Text("You will approve of who can attend. Location stays hidden until you approved."),
-                          dismissButton: .cancel(Text("Got it"))
-                          
-                          
-                    )
-                  }
-                
-                
-              }
+            HStack {
+                Toggle(isOn: $isPrivate) {
+                    HStack{
+                        Text("Private")
+                            .font(CustomFont.createEventSubBody)
+                        Image(systemName: "info.circle")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width:15,height:15)
+                            .onTapGesture {
+                                showPrivateEventTipAlert.toggle()
+                            }
+                            .alert(isPresented: $showPrivateEventTipAlert){
+                                Alert(title:  Text("Private Event")
+                                      ,message:  Text("You will approve of who can attend. Location stays hidden until you approved."),
+                                      dismissButton: .cancel(Text("Got it"))
+                                      
+                                      
+                                )
+                            }
+                        
+                        
+                    }
+                }
             }
-          }
             HStack{
                 Text("Restriction")
                     .font(CustomFont.createEventSubBody)
@@ -657,7 +599,7 @@ extension EventCreationView {
             }
         }
     }
-        
+    
     private var eventCategory: some View {
         VStack(alignment: .leading, spacing: 10) {
             // Title and Description
@@ -693,7 +635,7 @@ extension EventCreationView {
                         Spacer()
                     }
                 }
-
+                
             }
             
             // Expand/Collapse Button
@@ -714,10 +656,10 @@ extension EventCreationView {
             Spacer()
         }
         .onChange(of: selectedCategories) { _, _ in
-          validateCategory()
+            validateCategory()
         }
     }
-
+    
     // Helper function to calculate rows for categories
     private func getRows(items: [String], maxWidth: CGFloat) -> [[String]] {
         var rows: [[String]] = []
@@ -744,9 +686,9 @@ extension EventCreationView {
         }
         return rows
     }
-
     
-
+    
+    
     
     private var eventAdditionalInfo : some View {
         VStack(alignment: .leading) {
@@ -801,8 +743,8 @@ extension EventCreationView {
             }
         }
     }
-  
-
+    
+    
     private var publishButton: some View{
         VStack {
             Spacer()

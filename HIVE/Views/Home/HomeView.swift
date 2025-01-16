@@ -149,7 +149,7 @@ extension HomeView {
                 Label("\(selectedTimeFilter.rawValue)", systemImage: "slider.horizontal.3")
                     .foregroundStyle(Color.black)
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:25,height:25)
+                    .frame(width:26,height:26)
             }
             
             Spacer()
@@ -157,22 +157,23 @@ extension HomeView {
             Image(.HIVE)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(width: 40,height: 40)
+                .frame(width: 78,height: 34)
                 .offset(x:8)
+                .padding(.leading, 20)
             
             Spacer()
             
             HStack(spacing:4) {
                 Image(systemName: "bell")
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:25,height:25)
+                    .frame(width:27,height:27)
                     .onTapGesture {
                         print("bell is pressed")
                         appCoordinator.push(.eventApproveRejectView)
                     }
                 Image(systemName: "calendar")
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:25,height:25)
+                    .frame(width:30,height:30)
                     .onTapGesture {
                         appCoordinator.push(.eventSchedule)
                     }

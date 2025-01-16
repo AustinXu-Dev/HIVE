@@ -86,7 +86,6 @@ struct FollowerView: View {
 
                     Spacer()
                 }
-                .background(Color(.systemGray6))
                 .cornerRadius(10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 24)
