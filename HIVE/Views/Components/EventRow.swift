@@ -12,19 +12,23 @@ struct EventRow: View {
   let event: EventModel
     var body: some View {
       HStack {
-        KFImage(URL(string: event.eventImageUrl))
+//        KFImage(URL(string: event.eventImageUrl))
+          Image(event.eventImageUrl)
             .resizable()
+            .aspectRatio(contentMode: .fill)
             .frame(width: 75,height: 75)
-            .aspectRatio(contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 16))
-        
         VStack(alignment:.leading,spacing:12){
           Text(event.name)
                 .heading5()
+                .lineLimit(1)
+                .truncationMode(.tail)
           HStack {
             if let eventDate = Date.stringToDate(event.startDate){
               Text(eventDate.toDayMonthYearString())
                     .heading7()
+                    .lineLimit(1)
+                    .truncationMode(.tail)
             }
             
             Spacer()

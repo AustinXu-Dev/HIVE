@@ -14,9 +14,9 @@ struct EventCard: View {
             ZStack(alignment:.topLeading) {
                 KFImage(URL(string: event.eventImageUrl))
                     .resizable()
+                    .frame(width: UIScreen.main.bounds.width * 0.98, height: 270) // Constrains size
                     .aspectRatio(contentMode: .fill)
                     .frame(maxWidth: .infinity)
-                    .frame(width: UIScreen.main.bounds.width * 0.98, height: 270) // Constrains size
                     .overlay(
                         TopRoundedCorners(radius: 20)
                             .stroke(

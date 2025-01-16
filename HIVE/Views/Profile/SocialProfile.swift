@@ -46,6 +46,7 @@ struct SocialProfile: View {
             }
         }
       }
+        .multilineTextAlignment(.center)
         .refreshable {
           socialVM.fetchUserData(userId: social._id ?? "")
           eventHistoryVM.getAllEventHistories(userId: social._id ?? "")
@@ -69,11 +70,11 @@ extension SocialProfile {
   private var socialProfilePhoto: some View {
     ZStack(alignment:.bottomTrailing){
       KFImage(URL(string: social.profileImageUrl ?? ""))
-        .resizable()
-        .aspectRatio(contentMode: .fill)
-        .frame(width: 120, height: 120)
-        .clipShape(Circle())
-        .shadow(radius: 5)
+            .resizable()
+            .aspectRatio(contentMode: .fill)
+            .frame(width: 120, height: 120)
+            .clipShape(Circle())
+            .shadow(radius: 5)
       if social.verificationStatus == VertificationEnum.approved.rawValue {
         Image(systemName: "checkmark.seal.fill")
           .resizable()
@@ -174,5 +175,7 @@ extension SocialProfile {
     Text(social.bio ?? "")
       .font(CustomFont.bioStyle)
       .foregroundColor(.gray)
+      .multilineTextAlignment(.center)
+      .padding(.horizontal,8)
   }
 }

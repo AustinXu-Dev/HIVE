@@ -16,15 +16,17 @@ struct CurrentEventRow: View {
           VStack(alignment: .center, spacing: 6) {
             Text("\(formattedText.first ?? "")")
               .heading3()
+//              .fontWeight(.medium)
             Text("\(formattedText.last ?? "")")
               .heading5()
+//              .fontWeight(.medium)
           }
           .foregroundStyle(.black)
           
             .multilineTextAlignment(.center)
-            .frame(maxHeight: 40)
+            .frame(maxHeight: 65)
             .padding(.vertical)
-            .padding(.horizontal)
+            .padding(.horizontal,30)
             .background(UnevenRoundedRectangle(topLeadingRadius: 20,bottomLeadingRadius: 20).foregroundStyle(.ongoingEventDate))
           
         }
@@ -37,17 +39,18 @@ struct CurrentEventRow: View {
               .heading6()
               .foregroundStyle(Color.black.opacity(0.65))
             Spacer()
-              ParticipantView(event: event, participantCount: 4)
-              .fixedSize(horizontal: true, vertical: false)
+              SmallParticipantView(event: event, participantCount: 4)
+                  .scaleEffect(0.75)
           }
         }
-        .frame(maxHeight: 40)
+        .frame(maxHeight: 65)
         .padding(.vertical)
-        .padding(.horizontal)
+        .padding(.horizontal,6)
         .background(UnevenRoundedRectangle(bottomTrailingRadius: 20, topTrailingRadius: 20).foregroundStyle(.ongoingEventName))
     
       }
       .frame(maxWidth: .infinity)
+      .fixedSize(horizontal: false, vertical: true)
       
     }
 }

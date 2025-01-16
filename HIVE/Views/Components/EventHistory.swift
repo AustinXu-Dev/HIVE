@@ -24,7 +24,6 @@ struct EventHistory: View {
                 .body4()
                 .bold()
                 .onTapGesture {
-                  print("tapped")
                   withAnimation(.smooth.speed(5.0)) {
                     showHostingView = false
                   }
@@ -69,7 +68,7 @@ struct EventHistory: View {
               noEvents
             }
           } else {
-            if viewModel.joinedEventHistory.count != 0 {
+            if viewModel.hostedEventHistory.count != 0 {
               ForEach(viewModel.hostedEventHistory,id: \._id){ event in
                 VStack(alignment:.center,spacing: 12){
                   EventRow(event: event)

@@ -292,6 +292,7 @@ struct ProfileView: View {
                       */
                     }
                 }
+                .multilineTextAlignment(.center)
 //                .alert("Are you sure you want to logout?", isPresented: $showLogoutAlert) {
 //                    Button("Cancel", role: .cancel) {}
 //                    Button("Logout", role: .destructive) {

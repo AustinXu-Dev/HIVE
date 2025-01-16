@@ -77,6 +77,7 @@ struct EventDetailView: View {
                             if let eventOrganizer = event.organizer {
                                 KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
                                     .resizable()
+                                    .aspectRatio(contentMode: .fill)
                                     .frame(width: 40, height: 40)
                                     .clipShape(Circle())
                                 VStack(alignment: .leading) {

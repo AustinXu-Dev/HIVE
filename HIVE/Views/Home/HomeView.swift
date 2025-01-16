@@ -36,7 +36,7 @@ struct HomeView: View {
                     }
                     .padding(.horizontal, 12)
                 }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(maxWidth: .infinity, maxHeight: .infinity,alignment: .center)
                 .refreshable {
                     eventsVM.fetchEvents()
                 }

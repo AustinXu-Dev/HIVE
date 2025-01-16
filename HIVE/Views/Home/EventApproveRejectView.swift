@@ -78,9 +78,10 @@ extension PendingParticipantRow {
     Group {
       if let imageUrl = participant.profileImageUrl, let url = URL(string: imageUrl) {
          KFImage(url)
-          .resizable()
-          .frame(width: 50, height: 50)
-          .clipShape(Circle())
+              .resizable()
+              .aspectRatio(contentMode: .fill)
+              .frame(width: 50, height: 50)
+              .clipShape(Circle())
       } else {
          Image("profile_image")
           .resizable()
