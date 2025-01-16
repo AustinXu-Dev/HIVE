@@ -62,8 +62,19 @@ extension APIManager {
             }
             
             if !(200...299).contains(httpResponse.statusCode) {
-                print("In API Manager: ",httpResponse.statusCode, httpResponse.statusCode.description)
-                completion(.failure(URLError(.badServerResponse)))
+                if let responseData = data {
+                    // Attempt to decode the response body to get a readable error message
+                    do {
+                        if let errorResponse = try? JSONDecoder().decode(ErrorResponse.self, from: responseData) {
+                            // Pass a meaningful error containing the response message
+                            completion(.failure(APIError.serverError(errorResponse.message)))
+                        } else {
+                            completion(.failure(URLError(.badServerResponse)))
+                        }
+                    }
+                } else {
+                    completion(.failure(URLError(.badServerResponse)))
+                }
                 return
             }
             
@@ -89,5 +100,24 @@ extension APIManager {
             }
         }
         task.resume()
+    }
+}
+
+struct ErrorResponse: Codable {
+    let success: Bool
+    let message: String
+}
+
+enum APIError: LocalizedError {
+    case serverError(String)
+    case unknown
+    
+    var errorDescription: String? {
+        switch self {
+        case .serverError(let message):
+            return message
+        case .unknown:
+            return "An unknown error occurred"
+        }
     }
 }

@@ -13,6 +13,7 @@ class JoinEventViewModel: ObservableObject {
     @Published var errorMessage: String? = nil
     @Published var successMessage: String? = nil
     @Published var joinSuccess : Bool = false
+    @Published var joinFailure: Bool = false
 
     func joinEvent(eventId: String, token: String) {
         let joinEvent = JoinEvent(eventId: eventId)
@@ -35,8 +36,12 @@ class JoinEventViewModel: ObservableObject {
                        
                     }
                 case .failure(let error):
-                    self?.errorMessage = "Failed to join event: \(error.localizedDescription)"
-                  
+                    self?.joinFailure = true
+                    if let apiError = error as? APIError {
+                        self?.errorMessage = apiError.errorDescription
+                    } else {
+                        self?.errorMessage = "Failed to join event: \(error.localizedDescription)"
+                    }
                     print(error.localizedDescription)
                 }
             }

@@ -22,6 +22,7 @@ struct EventDetailView: View {
     @State private var hasRequestedToJoin: Bool = false
     @State private var currentId: String = ""
     @State private var showAgeRestrictionAlert = false
+    @State private var showErrorJoiningAlert = false
     @State private var isUnderage: Bool = false
     @State private var userIsApproved: Bool = false
     
@@ -214,7 +215,11 @@ struct EventDetailView: View {
                     appCoordinator.push(.eventJoinSuccess(isPrivate: event.isPrivate ?? false))
                 }
             }
-            
+            .onReceive(joinEventVM.$joinFailure) { failure in
+                if failure{
+                    showErrorJoiningAlert = true
+                }
+            }
             
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -244,6 +249,14 @@ struct EventDetailView: View {
                     dismissButton: .default(Text("OK"))
                 )
             }
+            .alert(isPresented: $showErrorJoiningAlert) {
+                Alert(
+                    title: Text("Unable to Join"),
+                    message: Text(joinEventVM.errorMessage!),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
+            
             
             .onAppear {
                 if event._id != eventsVM.currentEvent?._id{
