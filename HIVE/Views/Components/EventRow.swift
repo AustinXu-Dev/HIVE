@@ -12,8 +12,7 @@ struct EventRow: View {
   let event: EventModel
     var body: some View {
       HStack {
-//        KFImage(URL(string: event.eventImageUrl))
-          Image(event.eventImageUrl)
+        KFImage(URL(string: event.eventImageUrl))
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 75,height: 75)
