@@ -41,103 +41,109 @@ struct EventCreationView: View {
     let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill", "Outdoor", "Bar", "Dance", "Quiet", "Games", "Exclusive", "Networking"]
     
     var body: some View {
-            ZStack {
-                Color.white
-                    .ignoresSafeArea(edges: .all)
-                if eventCreationVM.isLoading {
-                    VStack {
-                        Spacer()
-                        ProgressView()
-                        Spacer()
-                    }
-                } else {
-                    ScrollView {
-                        VStack(spacing: 20) {
-                            eventImage
-                                .frame(maxHeight: 230)
-                            eventName
-                            eventVenue
-                            
-                            Divider()
-                            
-                            eventDateTime
-                            eventRestriction
-                            
-                            Divider()
-                            
-                            eventCategory
-                            
-                            eventAdditionalInfo
-                            
-                            publishButton
-                        }
-                        //                        .safeAreaInset(edge: .top, content: {
-                        //                            Color.clear
-                        //                                                  .frame(height: 70)
-                        //                        })
-                        //                        .overlay {
-                        //                            Text("Create Event")
-                        //                                .heading5()
-                        //                                .frame(maxHeight:.infinity,alignment: .top)
-                        //                        }
+        ZStack {
+            Color.white
+                .ignoresSafeArea(edges: .all)
+            if eventCreationVM.isLoading {
+                VStack {
+                    Spacer()
+                    ProgressView()
+                    Spacer()
+                }
+            } else {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        eventImage
+                            .frame(maxHeight: 230)
+                        eventName
+                        eventVenue
                         
-                        /*
-                         Color.clear
-                         .frame(height: 70)
-                         */
+                        Divider()
                         
-                        .padding(.top, 16)
-                        .onTapGesture {
-                            isFocused = false
-                        }
-                        .padding(.horizontal, 16)
-                    }
+                        eventDateTime
+                        eventRestriction
                         
-                       
-                
-                    .onAppear {
-                        if let userId = KeychainManager.shared.keychain.get("appUserId") {
-                            profileVM.getOneUserById(id: userId)
-                        }
+                        Divider()
                         
-                        if userAppState == AppState.guest.rawValue {
-                            self.showCreateAccountAlert = true
-                        }
+                        eventCategory
+                        
+                        eventAdditionalInfo
+                        
+                        publishButton
                     }
-                    .onReceive(eventCreationVM.$eventCreationSuccess) { success in
-                        if success {
-                            appCoordinator.push(.eventCreationSuccess)
-                        }
+                    .padding(.top, 16)
+                    .onTapGesture {
+                        isFocused = false
                     }
-                    .alert(isPresented: $showCreateAccountAlert) {
-                        Alert(
-                            title: Text("Create or Log In to An Account"),
-                            message: Text("To host events, you must create a new account first or log in to the existing account."),
-                            primaryButton: .default(Text("Sign Up/Sign In"), action: {
-                                appCoordinator.popToRoot()
-                                userAppState = AppState.notSignedIn.rawValue
-                            }),
-                            secondaryButton: .destructive(Text("Cancel"))
-                        )
+                    .padding(.horizontal, 16)
+                }
+                .safeAreaInset(edge: .top, content: {
+                    Color.clear
+                        .frame(height: 50)
+                })
+                .overlay {
+                    headerRow
+                }
+                .onAppear {
+                    if let userId = KeychainManager.shared.keychain.get("appUserId") {
+                        profileVM.getOneUserById(id: userId)
                     }
-                    .alert(isPresented: $showPrivateEventTipAlert) {
-                        Alert(
-                            title: Text("Private Event"),
-                            message: Text("You will approve who can attend. Location stays hidden until you approve."),
-                            dismissButton: .cancel(Text("Got it"))
-                        )
+                    
+                    if userAppState == AppState.guest.rawValue {
+                        self.showCreateAccountAlert = true
                     }
                 }
+                .onReceive(eventCreationVM.$eventCreationSuccess) { success in
+                    if success {
+                        appCoordinator.push(.eventCreationSuccess)
+                    }
+                }
+                .alert(isPresented: $showCreateAccountAlert) {
+                    Alert(
+                        title: Text("Create or Log In to An Account"),
+                        message: Text("To host events, you must create a new account first or log in to the existing account."),
+                        primaryButton: .default(Text("Sign Up/Sign In"), action: {
+                            appCoordinator.popToRoot()
+                            userAppState = AppState.notSignedIn.rawValue
+                        }),
+                        secondaryButton: .destructive(Text("Cancel"))
+                    )
+                }
+                .alert(isPresented: $showPrivateEventTipAlert) {
+                    Alert(
+                        title: Text("Private Event"),
+                        message: Text("You will approve who can attend. Location stays hidden until you approve."),
+                        dismissButton: .cancel(Text("Got it"))
+                    )
+                }
             }
-            .navigationBarBackButtonHidden()
-            .toolbar(.hidden)
-            .onTapGesture {
-                self.hideKeyboard()
-                print("Keyboard hidden")
-            }
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar(.hidden)
+        .onTapGesture {
+            self.hideKeyboard()
+            print("Keyboard hidden")
+        }
         
     }
 
+    private var headerRow: some View {
+        ZStack{
+            Color.clear
+                .frame(height: 120)
+                .background(.white)
+                .blur(radius: 1)
+                .ignoresSafeArea(edges: .top)
+            HStack {
+                Spacer()
+                Text("Create Event")
+                    .heading5()
+                Spacer()
+            }
+            .offset(y: -30)
+            .padding(.horizontal)
+        }.frame(maxHeight: .infinity, alignment: .top)
+    }
     
     func toggleCategory(_ category: String) {
         if selectedCategories.contains(category) {
