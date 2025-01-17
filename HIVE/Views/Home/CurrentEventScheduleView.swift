@@ -4,7 +4,8 @@ struct CurrentEventScheduleView: View {
   
   @StateObject var viewModel: GetOngoingEventsViewModel
   @State private var showHosting: Bool = false
-  
+    let screenWidth = UIScreen.main.bounds.size.width
+
   
   init(){
     _viewModel = StateObject(wrappedValue: GetOngoingEventsViewModel())
@@ -21,6 +22,7 @@ struct CurrentEventScheduleView: View {
           
         }
         .padding(.horizontal)
+        
         
       }
   }
@@ -130,17 +132,21 @@ struct RelatedTimeFrameEvents: View {
   var timeFilter: TimeFilter
   @Binding var showHosting: Bool
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
-  
+    let screenWidth = UIScreen.main.bounds.size.width
+
   var body: some View {
     VStack(alignment: .leading, spacing: 24) {
       Text(timeFilter.rawValue)
         .heading5half()
+        .padding(.horizontal,(screenWidth <= 320 || screenWidth <= 375) ? 12 : 0)
+
       let filteredHostingEvents = viewModel.organizingEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
       let filteredJoiningEvents = viewModel.joiningEvents.filter { viewModel.matchesTimeFilter(event: $0, timeFilter: timeFilter) }
 //      if filteredHostingEvents.count != 0 || filteredJoiningEvents.count != 0 {
         ForEach(showHosting ? filteredHostingEvents : filteredJoiningEvents, id: \._id) { event in
           CurrentEventRow(event: event)
             .padding(.horizontal,12)
+            .scaleEffect((screenWidth <= 320 || screenWidth <= 375) ? 0.95 : 1.0) //iphone SE size
             .onTapGesture {
               appCoordinator.push(.eventDetailView(named: event))
             }

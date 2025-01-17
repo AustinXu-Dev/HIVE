@@ -15,7 +15,7 @@ struct HomeView: View {
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
     @Environment(\.isGuest) private var isGuest: Bool
     @AppStorage("appState") private var userAppState: String = AppState.notSignedIn.rawValue
-    
+    let screenSize = UIScreen.main.bounds.size
     
     var body: some View {
         ZStack {
@@ -143,7 +143,8 @@ extension HomeView {
     private var headerRow: some View {
         ZStack{
             Color.clear
-                .frame(height: 120)
+                //.frame(height: 120)
+                .frame(height:screenSize.height <= 667 ? 90 : 120)
                 .background(.white)
                 .blur(radius: 1)
                 .ignoresSafeArea(edges: .top)

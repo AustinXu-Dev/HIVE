@@ -40,6 +40,12 @@ struct EventCreationView: View {
     
     let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill", "Outdoor", "Bar", "Dance", "Quiet", "Games", "Exclusive", "Networking"]
     
+    let isIPad = UIDevice.current.userInterfaceIdiom == .pad
+   
+    let screenSize = UIScreen.main.bounds.size
+   
+
+    
     var body: some View {
         ZStack {
             Color.white
@@ -70,6 +76,7 @@ struct EventCreationView: View {
                         eventAdditionalInfo
                         
                         publishButton
+                            .padding(.bottom,8)
                     }
                     .padding(.top, 16)
                     .onTapGesture {
@@ -130,7 +137,9 @@ struct EventCreationView: View {
     private var headerRow: some View {
         ZStack{
             Color.clear
-                .frame(height: 120)
+               // .frame(height: 120)
+                .frame(height: screenSize.height <= 667 ? 90 : 120 )// iPhone SE (1st and 2nd gen) or smaller)
+
                 .background(.white)
                 .blur(radius: 1)
                 .ignoresSafeArea(edges: .top)
@@ -140,7 +149,8 @@ struct EventCreationView: View {
                     .heading5()
                 Spacer()
             }
-            .offset(y: -30)
+//            .offset(y: -30)
+            .offset(y: isIPad ? -40 : -30)
             .padding(.horizontal)
         }.frame(maxHeight: .infinity, alignment: .top)
     }
