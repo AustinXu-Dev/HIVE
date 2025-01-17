@@ -40,7 +40,7 @@ struct CurrentEventRow: View {
               .foregroundStyle(Color.black.opacity(0.65))
             Spacer()
               SmallParticipantView(event: event, participantCount: 4)
-                  .scaleEffect(0.75)
+                
           }
         }
         .frame(maxHeight: 65)

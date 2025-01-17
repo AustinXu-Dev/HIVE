@@ -178,12 +178,20 @@ final class GetOngoingEventsViewModel: ObservableObject {
       case .all:
           return true
       case .today:
-          return Calendar.current.isDate(eventStartDate, inSameDayAs: currentDate)
+//          return Calendar.current.isDate(eventStartDate, inSameDayAs: currentDate)
+          let gregorianCalendar = Calendar(identifier: .gregorian)
+          return gregorianCalendar.isDate(eventStartDate, inSameDayAs: currentDate)
       case .thisWeek:
-          return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .weekOfYear)
+//          return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .weekOfYear)
+          let gregorianCalendar = Calendar(identifier: .gregorian)
+          return gregorianCalendar.isDate(eventStartDate, equalTo: currentDate, toGranularity: .weekOfYear)
       case .thisMonth:
-          return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .month)
+//          return Calendar.current.isDate(eventStartDate, equalTo: currentDate, toGranularity: .month)
+          let gregorianCalendar = Calendar(identifier: .gregorian)
+          return gregorianCalendar.isDate(eventStartDate, equalTo: currentDate, toGranularity: .month)
+
       }
+         
   }
   
   // Parse the event date string and convert it to Thailand's local time zone

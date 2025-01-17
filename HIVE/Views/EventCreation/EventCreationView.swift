@@ -41,7 +41,6 @@ struct EventCreationView: View {
     let categories = ["Drinks", "Casual", "Music", "Party", "Private", "Gathering", "Active", "Chill", "Outdoor", "Bar", "Dance", "Quiet", "Games", "Exclusive", "Networking"]
     
     var body: some View {
-        NavigationView {
             ZStack {
                 Color.white
                     .ignoresSafeArea(edges: .all)
@@ -55,6 +54,8 @@ struct EventCreationView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 20) {
+                        
+                    
                             eventImage
                                 .frame(maxHeight: 230)
                             eventName
@@ -73,15 +74,27 @@ struct EventCreationView: View {
                             
                             publishButton
                         }
+//                        .safeAreaInset(edge: .top, content: {
+//                            Color.clear
+//                                                  .frame(height: 70)
+//                        })
+//                        .overlay {
+//                            Text("Create Event")
+//                                .heading5()
+//                                .frame(maxHeight:.infinity,alignment: .top)
+//                        }
+                        
+                        /*
+                         Color.clear
+                                               .frame(height: 70)
+                         */
+                        
                         .padding(.top, 16)
                         .onTapGesture {
                             isFocused = false
                         }
                         .padding(.horizontal, 16)
                     }
-                    .navigationTitle("Create Event")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .navigationBarBackButtonHidden()
                     .onAppear {
                         if let userId = KeychainManager.shared.keychain.get("appUserId") {
                             profileVM.getOneUserById(id: userId)
@@ -116,11 +129,25 @@ struct EventCreationView: View {
                     }
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
+            .navigationTitle("Create Event")
+//            .toolbar {
+//                
+//                ToolbarItem(placement: .principal) {
+                   
+
+//                }
+//            }
+        
+                           //.offset(y: 0)
+
+          
+      //      .navigationBarBackButtonHidden()
             .onTapGesture {
                 self.hideKeyboard()
                 print("Keyboard hidden")
             }
-        }
+        
     }
 
     
