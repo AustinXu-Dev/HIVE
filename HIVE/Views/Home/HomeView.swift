@@ -26,8 +26,6 @@ struct HomeView: View {
             } else {
                 ScrollView(.vertical,showsIndicators: false) {
                     VStack(alignment: .center,spacing:14) {
-                        headerRow
-                            .padding(.horizontal)
                         if isGuest {
                             accountCreationButton
                         }
@@ -45,10 +43,17 @@ struct HomeView: View {
                 .onAppear {
                     print("user app State \(userAppState)")
                 }
-                
+                .safeAreaInset(edge: .top, content: {
+                    Color.clear
+                        .frame(height: 70)
+                })
+                .overlay {
+                    headerRow
+                }
                 
             }
         }
+
         .onTapGesture {
             print("screen is is pressed")
         }
@@ -136,50 +141,58 @@ struct HomeView: View {
 
 extension HomeView {
     private var headerRow: some View {
-        HStack {
-            Menu {
-                ForEach(TimeFilter.allCases, id: \.self) { filter in
-                    Button(action: {
-                        selectedTimeFilter = filter
-                    }) {
-                        Text(filter.rawValue)
+        ZStack{
+            Color.clear
+                .frame(height: 120)
+                .background(.white)
+                .blur(radius: 1)
+                .ignoresSafeArea(edges: .top)
+            HStack {
+                Menu {
+                    ForEach(TimeFilter.allCases, id: \.self) { filter in
+                        Button(action: {
+                            selectedTimeFilter = filter
+                        }) {
+                            Text(filter.rawValue)
+                        }
                     }
+                } label: {
+                    Label("\(selectedTimeFilter.rawValue)", systemImage: "slider.horizontal.3")
+                        .foregroundStyle(Color.black)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:26,height:26)
                 }
-            } label: {
-                Label("\(selectedTimeFilter.rawValue)", systemImage: "slider.horizontal.3")
-                    .foregroundStyle(Color.black)
+                
+                Spacer()
+                
+                Image(.HIVE)
+                    .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .frame(width:26,height:26)
+                    .frame(width: 78,height: 34)
+                    .offset(x:8)
+                    .padding(.leading, 20)
+                
+                Spacer()
+                
+                HStack(spacing:4) {
+                    Image(systemName: "bell")
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:27,height:27)
+                        .onTapGesture {
+                            print("bell is pressed")
+                            appCoordinator.push(.eventApproveRejectView)
+                        }
+                    Image(systemName: "calendar")
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width:30,height:30)
+                        .onTapGesture {
+                            appCoordinator.push(.eventSchedule)
+                        }
+                }
             }
-            
-            Spacer()
-            
-            Image(.HIVE)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 78,height: 34)
-                .offset(x:8)
-                .padding(.leading, 20)
-            
-            Spacer()
-            
-            HStack(spacing:4) {
-                Image(systemName: "bell")
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:27,height:27)
-                    .onTapGesture {
-                        print("bell is pressed")
-                        appCoordinator.push(.eventApproveRejectView)
-                    }
-                Image(systemName: "calendar")
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width:30,height:30)
-                    .onTapGesture {
-                        appCoordinator.push(.eventSchedule)
-                    }
-            }
-        }
-        .frame(maxWidth: .infinity,alignment: .center)
+            .offset(y: -30)
+            .padding(.horizontal)
+        }.frame(maxHeight: .infinity, alignment: .top)
     }
     
     private var accountCreationButton: some View {
