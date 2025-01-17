@@ -145,7 +145,7 @@ struct ImageCaptureView: View {
             let quality = result.faceCaptureQuality ?? -1
             print("Face capture quality: \(quality)")
             
-            if quality < 0.4 {
+            if quality < 0.3 {
                 print("Face quality too low: \(quality)")
                 DispatchQueue.main.async {
                     self.isLoading = false

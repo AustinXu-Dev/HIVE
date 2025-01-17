@@ -30,12 +30,16 @@ struct CurrentEventRow: View {
             .background(UnevenRoundedRectangle(topLeadingRadius: 20,bottomLeadingRadius: 20).foregroundStyle(.ongoingEventDate))
           
         }
-        VStack(alignment:.leading,spacing: 6) {
+        VStack(alignment:.leading,spacing: 12 ) {
           Text(event.name)
             .heading5()
+            .lineLimit(1)
+            .truncationMode(.tail)
             .foregroundStyle(Color.black)
           HStack {
             Text(event.location)
+            .lineLimit(1)
+            .truncationMode(.tail)
               .heading6()
               .foregroundStyle(Color.black.opacity(0.65))
             Spacer()

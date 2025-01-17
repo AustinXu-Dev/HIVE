@@ -44,7 +44,6 @@ struct EventCreationView: View {
             ZStack {
                 Color.white
                     .ignoresSafeArea(edges: .all)
-                
                 if eventCreationVM.isLoading {
                     VStack {
                         Spacer()
@@ -54,8 +53,6 @@ struct EventCreationView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 20) {
-                        
-                    
                             eventImage
                                 .frame(maxHeight: 230)
                             eventName
@@ -74,19 +71,19 @@ struct EventCreationView: View {
                             
                             publishButton
                         }
-//                        .safeAreaInset(edge: .top, content: {
-//                            Color.clear
-//                                                  .frame(height: 70)
-//                        })
-//                        .overlay {
-//                            Text("Create Event")
-//                                .heading5()
-//                                .frame(maxHeight:.infinity,alignment: .top)
-//                        }
+                        //                        .safeAreaInset(edge: .top, content: {
+                        //                            Color.clear
+                        //                                                  .frame(height: 70)
+                        //                        })
+                        //                        .overlay {
+                        //                            Text("Create Event")
+                        //                                .heading5()
+                        //                                .frame(maxHeight:.infinity,alignment: .top)
+                        //                        }
                         
                         /*
                          Color.clear
-                                               .frame(height: 70)
+                         .frame(height: 70)
                          */
                         
                         .padding(.top, 16)
@@ -95,6 +92,9 @@ struct EventCreationView: View {
                         }
                         .padding(.horizontal, 16)
                     }
+                        
+                       
+                
                     .onAppear {
                         if let userId = KeychainManager.shared.keychain.get("appUserId") {
                             profileVM.getOneUserById(id: userId)
@@ -129,20 +129,8 @@ struct EventCreationView: View {
                     }
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationTitle("Create Event")
-//            .toolbar {
-//                
-//                ToolbarItem(placement: .principal) {
-                   
-
-//                }
-//            }
-        
-                           //.offset(y: 0)
-
-          
-      //      .navigationBarBackButtonHidden()
+            .navigationBarBackButtonHidden()
+            .toolbar(.hidden)
             .onTapGesture {
                 self.hideKeyboard()
                 print("Keyboard hidden")
