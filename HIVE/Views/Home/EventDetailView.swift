@@ -39,9 +39,8 @@ struct EventDetailView: View {
                 } else {
                     KFImage(URL(string: event.eventImageUrl))
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: .infinity,alignment: .center)
                         .frame(height: 230)
+                        .aspectRatio(contentMode: .fill)
                         .cornerRadius(10)
                     
                     
