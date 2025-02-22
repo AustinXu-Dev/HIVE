@@ -83,7 +83,6 @@ struct OnboardingDetailView: View {
                   .tag(Gender.diverse)
                   .body5()
           }
-          
           .pickerStyle(SegmentedPickerStyle())
           .padding()
         }

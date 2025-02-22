@@ -21,6 +21,7 @@
 		BC71B5352CC157DF00F516C2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5342CC157DF00F516C2 /* FirebaseFirestore */; };
 		BC71B5372CC157DF00F516C2 /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5362CC157DF00F516C2 /* FirebaseStorage */; };
 		BC71B5542CC3AC0100F516C2 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = BC71B5532CC3AC0100F516C2 /* KeychainSwift */; };
+		CDC099BC2D639F4A002C44BA /* Mantis in Frameworks */ = {isa = PBXBuildFile; productRef = CDC099BB2D639F4A002C44BA /* Mantis */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -53,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CDC099BC2D639F4A002C44BA /* Mantis in Frameworks */,
 				B7B4E3062CC6EA92001E4399 /* Kingfisher in Frameworks */,
 				BC71B5312CC157DF00F516C2 /* FirebaseAppDistribution-Beta in Frameworks */,
 				B327E5C62CF4B7DA00FDE44B /* TOCropViewController in Frameworks */,
@@ -131,6 +133,7 @@
 				B7B4E3052CC6EA92001E4399 /* Kingfisher */,
 				B327E5C32CF4B7DA00FDE44B /* CropViewController */,
 				B327E5C52CF4B7DA00FDE44B /* TOCropViewController */,
+				CDC099BB2D639F4A002C44BA /* Mantis */,
 			);
 			productName = HIVE;
 			productReference = BC71B4F02CBE7F0000F516C2 /* HIVE.app */;
@@ -166,6 +169,7 @@
 				BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				B7B4E3042CC6EA92001E4399 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 				B327E5C22CF4B7DA00FDE44B /* XCRemoteSwiftPackageReference "TOCropViewController" */,
+				CDC099BA2D639F49002C44BA /* XCRemoteSwiftPackageReference "Mantis" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = BC71B4F12CBE7F0000F516C2 /* Products */;
@@ -457,6 +461,14 @@
 				minimumVersion = 24.0.0;
 			};
 		};
+		CDC099BA2D639F49002C44BA /* XCRemoteSwiftPackageReference "Mantis" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/guoyingtao/Mantis.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.7.5;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -529,6 +541,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = BC71B5522CC3AC0100F516C2 /* XCRemoteSwiftPackageReference "keychain-swift" */;
 			productName = KeychainSwift;
+		};
+		CDC099BB2D639F4A002C44BA /* Mantis */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CDC099BA2D639F49002C44BA /* XCRemoteSwiftPackageReference "Mantis" */;
+			productName = Mantis;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
