@@ -32,7 +32,7 @@ struct EventDetailView: View {
         
         ScrollView {
             VStack(alignment: .leading, spacing: 16){
-                if joinEventVM.isLoading{
+                if joinEventVM.isLoading || profileVM.isLoading {
                     Spacer()
                     ProgressView()
                     Spacer()
@@ -172,8 +172,7 @@ struct EventDetailView: View {
                             Spacer()
                             Button(action: {
                                 if let userToken = TokenManager.share.getToken(), !eventAlreadyJoined {
-                                    
-                                    if profileVM.isUnderage{
+                                    if profileVM.isUnderage {
                                         showAgeRestrictionAlert = true
                                     } else {
                                         joinEventVM.joinEvent(eventId: event._id, token: userToken)
