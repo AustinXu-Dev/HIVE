@@ -115,7 +115,7 @@ struct OnboardingDetailView: View {
               
             }
             .sheet(isPresented: $viewModel.isPickerPresented) {
-              PhotoPicker(selectedImage: $viewModel.profileImage)
+                PhotoPicker(selectedImage: $viewModel.profileImage, cropSize: nil)
             }
           // Show a progress view if uploading
           if viewModel.isUploading {

@@ -362,7 +362,7 @@ extension EventCreationView {
             if let eventPhoto = selectedImage {
                 Image(uiImage: eventPhoto)
                     .resizable()
-                    .frame(maxWidth: UIScreen.main.bounds.width - 16)
+                    .frame(maxWidth: 360)
                     .frame(maxHeight: 230)
                     .aspectRatio(contentMode: .fill)
                     .clipShape((RoundedRectangle(cornerRadius: 10)))
@@ -370,10 +370,10 @@ extension EventCreationView {
                 eventImagePlaceholder
             }
         }
-        .frame(maxWidth: UIScreen.main.bounds.width - 16)
+        .frame(maxWidth: .infinity)
         .frame(height: 230)
         .sheet(isPresented: $showPhotoPicker) {
-            PhotoPicker(selectedImage: $selectedImage)
+            PhotoPicker(selectedImage: $selectedImage, cropSize: CGSize(width: 360, height: 230))
         }
         .onTapGesture {
             showPhotoPicker = true
