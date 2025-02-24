@@ -62,8 +62,8 @@ struct PhotoPicker: UIViewControllerRepresentable {
             parent.selectedImage = image
             parent.presentationMode.wrappedValue.dismiss()
         }
-
-        func cropViewControllerDidCancel(_ cropViewController: TOCropViewController) {
+        
+        func cropViewController(_ cropViewController: TOCropViewController, didFinishCancelled cancelled: Bool) {
             parent.presentationMode.wrappedValue.dismiss()
         }
     }
