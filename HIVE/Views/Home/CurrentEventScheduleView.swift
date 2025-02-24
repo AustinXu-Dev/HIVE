@@ -148,7 +148,7 @@ struct RelatedTimeFrameEvents: View {
             .padding(.horizontal,12)
             .scaleEffect((screenWidth <= 320 || screenWidth <= 375) ? 0.95 : 1.0) //iphone SE size
             .onTapGesture {
-              appCoordinator.push(.eventDetailView(named: event))
+                appCoordinator.push(.eventDetailView(named: event, comesFromHome: false))
             }
         }
     

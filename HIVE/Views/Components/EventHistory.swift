@@ -58,7 +58,7 @@ struct EventHistory: View {
               VStack(alignment:.center,spacing: 12){
                 EventRow(event: event)
                   .onTapGesture {
-                    appCoordinator.push(.eventDetailView(named: event))
+                      appCoordinator.push(.eventDetailView(named: event, comesFromHome: false))
                   }
                 
               }
@@ -73,7 +73,7 @@ struct EventHistory: View {
                 VStack(alignment:.center,spacing: 12){
                   EventRow(event: event)
                     .onTapGesture {
-                      appCoordinator.push(.eventDetailView(named: event))
+                        appCoordinator.push(.eventDetailView(named: event, comesFromHome: false))
                     }
                 }
                 

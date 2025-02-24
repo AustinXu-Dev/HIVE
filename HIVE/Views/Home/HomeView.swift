@@ -86,7 +86,7 @@ struct HomeView: View {
                         .contentShape(TopRoundedCorners(radius: 20))
                         .onTapGesture {
                             eventsVM.currentEvent = event
-                            appCoordinator.push(.eventDetailView(named: event))
+                            appCoordinator.push(.eventDetailView(named: event, comesFromHome: true))
                         }
                 }
             }

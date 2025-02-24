@@ -18,7 +18,7 @@ enum Screen: Identifiable, Hashable {
   case verifySuccess
   case home
   case tab
-  case eventDetailView(named : EventModel)
+  case eventDetailView(named : EventModel,comesFromHome: Bool)
   case eventCreationForm
   case eventCreationSuccess
   case eventJoinSuccess(isPrivate: Bool)

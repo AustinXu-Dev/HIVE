@@ -25,7 +25,8 @@ struct EventDetailView: View {
     @State private var showErrorJoiningAlert = false
     @State private var isUnderage: Bool = false
     @State private var userIsApproved: Bool = false
-    
+
+    var comesFromHome: Bool
     @StateObject var profileVM = GetOneUserByIdViewModel()
     
     var body: some View {
@@ -53,7 +54,7 @@ struct EventDetailView: View {
                     HStack{
                         Spacer()
                         if let currentEvent = eventsVM.currentEvent {
-                            ParticipantView(event: currentEvent, participantCount: 3)
+                            ParticipantView(event: comesFromHome ? currentEvent : event, participantCount: 3)
                                 .onTapGesture {
                                     if userAppState != AppState.guest.rawValue {
                                         appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
@@ -72,7 +73,7 @@ struct EventDetailView: View {
                         Text("Host")
                             .heading6()
                             .foregroundStyle(Color.black.opacity(0.6))
-                        HStack {
+                        HStack(alignment:.center) {
                             if let eventOrganizer = event.organizer {
                                 KFImage(URL(string: eventOrganizer.profileImageUrl ?? ""))
                                     .resizable()
@@ -321,9 +322,7 @@ struct TagView: View {
     }
 }
 
-#Preview {
-    EventDetailView(event: EventMock.instance.eventA)
-}
+
 
 
 extension EventDetailView {
