@@ -83,7 +83,7 @@ struct SearchView: View {
                         }, id: \.self) { event in
                             EventCard(event: event)
                                 .onTapGesture {
-                                    appCoordinator.push(.eventDetailView(named: event))
+                                    appCoordinator.push(.eventDetailView(named: event, comesFromHome: true))
                                 }
                         }
                     }
@@ -140,7 +140,7 @@ extension SearchView {
                     EventCard(event: event)
                     
                         .onTapGesture {
-                            appCoordinator.push(.eventDetailView(named: event))
+                            appCoordinator.push(.eventDetailView(named: event, comesFromHome: true))
                         }
                 }
             }

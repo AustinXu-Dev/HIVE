@@ -47,8 +47,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             FaceVerifySuccessView()
         case .home:
             TabScreenView()
-        case .eventDetailView(named: let event):
-            EventDetailView(event: event)
+        case .eventDetailView(named: let event,comesFromHome: let comesFromHome):
+            EventDetailView(event: event,comesFromHome: comesFromHome)
         case .eventCreationForm:
             EventCreationView()
         case .eventJoinSuccess(isPrivate: let isPrivate):

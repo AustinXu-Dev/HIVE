@@ -19,7 +19,7 @@ struct EventAttendeeView: View {
 
     var body: some View {
         ScrollView {
-            VStack{
+            VStack {
                 ForEach(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
                     HStack {
                         KFImage(URL(string: participant.profileImageUrl ?? ""))
