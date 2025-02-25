@@ -22,9 +22,6 @@ final class GetOngoingEventsViewModel: ObservableObject {
     }
   }
   
-  
-  
-  
   init(){
     if let userId = KeychainManager.shared.keychain.get("appUserId") {
       fetchAllCurrentEvents(userId: userId)
@@ -149,27 +146,6 @@ final class GetOngoingEventsViewModel: ObservableObject {
   
   
   
-//   public func matchesTimeFilter(event: EventModel, timeFilter: TimeFilter) -> Bool {
-//      guard let eventStartDate = parseDate(event.startDate) else { return false }
-//      let currentDate = Date()
-//     let calendar = Calendar(identifier: .gregorian)
-//      
-//      switch timeFilter {
-//      case .all:
-//        return true
-//      case .today:
-//        return calendar.isDate(eventStartDate, inSameDayAs: currentDate)
-//      case .thisWeek:
-//        guard let weekStart = calendar.dateInterval(of: .weekOfYear, for: currentDate) else { return false }
-//             return weekStart.contains(eventStartDate)
-//      case .thisMonth:
-//        let eventYear = calendar.component(.year, from: eventStartDate)
-//        let eventMonth = calendar.component(.month, from: eventStartDate)
-//        let currentYear = calendar.component(.year, from: currentDate)
-//        let currentMonth = calendar.component(.month, from: currentDate)
-//        return eventYear == currentYear && eventMonth == currentMonth
-//      }
-//  }
      public func matchesTimeFilter(event: EventModel, timeFilter: TimeFilter) -> Bool {
       guard let eventStartDate = parseDate(event.startDate) else { return false }
       let currentDate = Date()

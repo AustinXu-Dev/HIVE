@@ -42,9 +42,9 @@ struct SmallParticipantView: View {
 
             }
     }
-
     }
 }
 #Preview {
     SmallParticipantView(event: EventMock.instance.eventA, participantCount: 4)
 }
+
