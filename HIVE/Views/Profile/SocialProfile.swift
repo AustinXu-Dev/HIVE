@@ -6,8 +6,11 @@ struct SocialProfile: View {
   let social: UserModel
   @EnvironmentObject var appCoordinator: AppCoordinatorImpl
   @StateObject var socialVM: GetSocialViewModel
-  @StateObject var userFollowVM = UserFollowViewModel()
-  @StateObject var eventHistoryVM: EventHistoryViewModel
+    @StateObject var userFollowVM = UserFollowViewModel()
+    @StateObject var eventHistoryVM: EventHistoryViewModel
+    
+    @State private var isFollowedButtonDisabled = false
+    
 
   init(social:UserModel) {
     self.social = social
@@ -28,7 +31,7 @@ struct SocialProfile: View {
           followersAndFollowings
           if let userId = KeychainManager.shared.keychain.get("appUserId"), userId != social._id {
             followButton
-              .disabled(userFollowVM.followedButtonClicked || socialVM.alreadyFollowing)
+                  .disabled(userFollowVM.followedButtonClicked || socialVM.alreadyFollowing || isFollowedButtonDisabled)
           }
           bio
           EventHistory(viewModel: eventHistoryVM)
@@ -57,7 +60,7 @@ struct SocialProfile: View {
    
     .navigationBarBackButtonHidden()
     .alert(isPresented: $userFollowVM.showErrorAlert){
-      Alert(title: Text("Unknown Error Occured"),
+      Alert(title: Text("Error Occurred"),
             message: Text(userFollowVM.errorMessage),
             dismissButton: .cancel(Text("OK"))
       )
@@ -147,6 +150,10 @@ extension SocialProfile {
   
   private var followButton: some View {
     Button {
+        isFollowedButtonDisabled = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2){
+            isFollowedButtonDisabled = false
+        }
       if let userId = social._id, let token = TokenManager.share.getToken() {
         userFollowVM.followUser(userId: userId, token: token)
       }

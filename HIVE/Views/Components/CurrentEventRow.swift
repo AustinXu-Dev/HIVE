@@ -16,10 +16,8 @@ struct CurrentEventRow: View {
           VStack(alignment: .center, spacing: 6) {
             Text("\(formattedText.first ?? "")")
               .heading3()
-//              .fontWeight(.medium)
             Text("\(formattedText.last ?? "")")
               .heading5()
-//              .fontWeight(.medium)
           }
           .foregroundStyle(.black)
           
