@@ -53,16 +53,28 @@ struct EventDetailView: View {
                     
                     HStack{
                         Spacer()
-                        if let currentEvent = eventsVM.currentEvent {
-                            ParticipantView(event: comesFromHome ? currentEvent : event, participantCount: 3)
+                        if comesFromHome{
+                            if let currentEvent = eventsVM.currentEvent {
+                                ParticipantView(event: comesFromHome ? currentEvent : event, participantCount: 3)
+                                    .onTapGesture {
+                                        if userAppState != AppState.guest.rawValue {
+                                            appCoordinator.push(.eventAttendeeView(named: comesFromHome ? currentEvent : event, comesFromHome: comesFromHome))
+                                        } else {
+                                            showCreateAccountAlert = true
+                                        }
+                                    }
+                            }
+                        } else {
+                            ParticipantView(event: event, participantCount: 3)
                                 .onTapGesture {
                                     if userAppState != AppState.guest.rawValue {
-                                        appCoordinator.push(.eventAttendeeView(named: eventsVM.currentEvent!))
+                                        appCoordinator.push(.eventAttendeeView(named: event, comesFromHome: comesFromHome))
                                     } else {
                                         showCreateAccountAlert = true
                                     }
                                 }
                         }
+                        
                     }
                     
                     Text(event.additionalInfo)
@@ -259,15 +271,21 @@ struct EventDetailView: View {
             
             
             .onAppear {
-                if event._id != eventsVM.currentEvent?._id{
-                    eventsVM.getOneEvent(id: event._id)
+                if comesFromHome{
+                    if event._id != eventsVM.currentEvent?._id{
+                        eventsVM.getOneEvent(id: event._id)
+                    }
+                    print("come from home")
                 }
             }
             
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .refreshable {
-            eventsVM.getOneEvent(id: event._id)
+            if comesFromHome{
+                eventsVM.getOneEvent(id: event._id)
+                print("come from home")
+            }
         }
         
     }

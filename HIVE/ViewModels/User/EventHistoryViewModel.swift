@@ -52,6 +52,8 @@ final class EventHistoryViewModel: ObservableObject {
      dispatchGroup.notify(queue: .main) {
         self.joinedEventHistory = joinedEvents
        self.hostedEventHistory = hostedEvents
+         print(self.joinedEventHistory.count)
+         print(self.hostedEventHistory.count)
         self.decrementLoading()
          print("All event histories fetching are complete!")
      }

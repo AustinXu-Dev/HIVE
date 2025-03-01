@@ -11,6 +11,7 @@ import Kingfisher
 
 struct EventAttendeeView: View {
     @State var event : EventModel
+    var comesFromHome: Bool
     @EnvironmentObject private var eventsVM : GetEventsViewModel
 
     @EnvironmentObject var appCoordinator: AppCoordinatorImpl
@@ -20,7 +21,7 @@ struct EventAttendeeView: View {
     var body: some View {
         ScrollView {
             VStack {
-                ForEach(eventsVM.currentEvent?.participants ?? [], id: \._id) { participant in
+                ForEach(showEvents(), id: \._id) { participant in
                     HStack {
                         KFImage(URL(string: participant.profileImageUrl ?? ""))
                             .resizable()
@@ -93,11 +94,19 @@ struct EventAttendeeView: View {
             }
             
             ToolbarItem(placement: .primaryAction) {
-                
-                if let eventParticipants = eventsVM.currentEvent?.participants {
-                    Text("\(eventParticipants.count) / \(eventsVM.currentEvent?.maxParticipants ?? 0)")
-                        .foregroundColor(.gray)
-                        .bold()
+                if comesFromHome{
+                    if let eventParticipants = eventsVM.currentEvent?.participants {
+                        Text("\(eventParticipants.count) / \(eventsVM.currentEvent?.maxParticipants ?? 0)")
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                } else {
+                    if let eventParticipants = event.participants{
+                        Text("\(eventParticipants.count) / \(event.maxParticipants)")
+                            .foregroundColor(.gray)
+                            .bold()
+                    }
+                    
                 }
                   
             }
@@ -129,9 +138,13 @@ struct EventAttendeeView: View {
             return false
         }
     }
+    
+    func showEvents() -> [UserModel]{
+        return comesFromHome ? eventsVM.currentEvent?.participants ?? [] : event.participants ?? []
+    }
 }
 
 #Preview {
-    EventAttendeeView(event: EventMock.instance.eventA)
+    EventAttendeeView(event: EventMock.instance.eventA, comesFromHome: true)
 }
 

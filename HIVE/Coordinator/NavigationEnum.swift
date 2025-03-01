@@ -22,7 +22,7 @@ enum Screen: Identifiable, Hashable {
   case eventCreationForm
   case eventCreationSuccess
   case eventJoinSuccess(isPrivate: Bool)
-  case eventAttendeeView(named : EventModel)
+    case eventAttendeeView(named : EventModel, comesFromHome: Bool)
   case eventApproveRejectView
   case followerView(followingsSocial: [UserModel], follwersSocial: [UserModel], currentUser:UserModel)
   case eventSchedule

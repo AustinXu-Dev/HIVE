@@ -53,8 +53,8 @@ class AppCoordinatorImpl: AppCoordinatorProtocol {
             EventCreationView()
         case .eventJoinSuccess(isPrivate: let isPrivate):
             EventJoinSuccessView(isPrivate: isPrivate)
-        case .eventAttendeeView(named: let event):
-            EventAttendeeView(event: event)
+        case .eventAttendeeView(named: let event, comesFromHome: let comesFromHome):
+            EventAttendeeView(event: event, comesFromHome: comesFromHome)
         case .tab:
             TabScreenView()
         case .eventCreationSuccess:
